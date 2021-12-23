@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: blogs_service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blogs-service
+    username: postgres
+    password: Root@1234
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+      idle-timeout: 30000
+      max-lifetime: 60000
+      minimum-idle: 5
+      maximum-pool-size: 30
+      pool-name: customer-pool
+    jpa:
+      show-sql: true
+      open-in-view: true
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: true
+    jackson:
+      property-naming-strategy: SNAKE_CASE
