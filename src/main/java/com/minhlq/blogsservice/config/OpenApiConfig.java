@@ -31,19 +31,13 @@ public class OpenApiConfig {
                     .addSecuritySchemes(APP_AUTH, new SecurityScheme()
                             .type(SecurityScheme.Type.HTTP)
                             .scheme(BEARER)
-                            .bearerFormat(JWT)
-                    )
-            )
+                            .bearerFormat(JWT)))
             .info(new Info()
                     .title("Blogs API")
                     .version(version)
                     .description(description)
                     .termsOfService("http://swagger.io/terms/")
-                    .license(new License()
-                            .name("Apache 2.0")
-                            .url("http://springdoc.org")
-                    )
-            );
+                    .license(new License().name("Apache 2.0").url("http://springdoc.org")));
   }
 
 }

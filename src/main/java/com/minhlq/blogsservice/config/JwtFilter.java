@@ -3,6 +3,7 @@ package com.minhlq.blogsservice.config;
 import com.minhlq.blogsservice.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+
+import static java.util.Collections.emptyList;
 
 @Component
 @RequiredArgsConstructor
@@ -27,12 +29,15 @@ public class JwtFilter extends OncePerRequestFilter {
   private final UserDetailsService userDetailsService;
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                  @NonNull HttpServletResponse response,
+                                  @NonNull FilterChain filterChain) throws ServletException, IOException {
     String jwt = jwtService.getJwtFromRequest(request);
     if (StringUtils.isNoneBlank(jwt)) {
       String username = jwtService.getUsernameFromJwt(jwt);
       UserDetails user = userDetailsService.loadUserByUsername(username);
-      UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+      UsernamePasswordAuthenticationToken authenticationToken =
+              new UsernamePasswordAuthenticationToken(user, null, emptyList());
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
