@@ -3,7 +3,6 @@ package com.minhlq.blogsservice.exception.handler;
 import com.minhlq.blogsservice.exception.ErrorResource;
 import com.minhlq.blogsservice.exception.FieldErrorResource;
 import com.minhlq.blogsservice.exception.InvalidRequestException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -47,10 +45,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(BadCredentialsException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  public Map<String, String> handleInvalidAuthentication(BadCredentialsException e) {
-    log.error("Handle BadCredentialsException: ", e);
+  public Map<String, String> handleInvalidAuthentication(BadCredentialsException ex) {
     Map<String, String> body = new HashMap<>();
     body.put("message", "invalid username or password!");
+
     return body;
   }
 

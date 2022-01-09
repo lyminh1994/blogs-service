@@ -2,7 +2,6 @@ server:
   port: 8080
   servlet:
     context-path: /
-
 spring:
   application:
     name: blogs_service
@@ -19,7 +18,7 @@ spring:
       max-lifetime: 60000
       minimum-idle: 5
       maximum-pool-size: 30
-      pool-name: customer-pool
+      pool-name: blogs-pool
   jpa:
     show-sql: true
     open-in-view: true
@@ -33,7 +32,13 @@ spring:
     property-naming-strategy: SNAKE_CASE
 jwt:
   secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
-  session-time: 86400
+  session-time: 3600000
 springdoc:
   version: "@project.version@"
   description: "@project.description@"
+logging:
+  level:
+    com.minhlq.blogsservice: DEBUG
+    org.springframework.web: ERROR
+    org.hibernate.SQL: INFO
+    org.hibernate.type: TRACE

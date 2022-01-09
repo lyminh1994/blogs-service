@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class ProfileResponse {
 
   @JsonIgnore
-  private String id;
+  private Long id;
 
   private String username;
 
