@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static java.util.Collections.emptyList;
-
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -35,9 +33,9 @@ public class JwtFilter extends OncePerRequestFilter {
     String jwt = jwtService.getJwtFromRequest(request);
     if (StringUtils.isNoneBlank(jwt)) {
       String username = jwtService.getUsernameFromJwt(jwt);
-      UserDetails user = userDetailsService.loadUserByUsername(username);
+      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
       UsernamePasswordAuthenticationToken authenticationToken =
-              new UsernamePasswordAuthenticationToken(user, null, emptyList());
+              new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }

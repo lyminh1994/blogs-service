@@ -1,15 +1,17 @@
 package com.minhlq.blogsservice.mapper;
 
+import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.model.User;
-import com.minhlq.blogsservice.model.UserPrinciple;
+import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+@Mapper
 public interface UserMapper {
 
   UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
-  User toUser(UserPrinciple userPrinciple);
+  User toUser(UserPrincipal userPrinciple);
 
-  UserPrinciple toUserPrinciple(User user);
+  UserPrincipal toUserPrinciple(User user);
 
 }

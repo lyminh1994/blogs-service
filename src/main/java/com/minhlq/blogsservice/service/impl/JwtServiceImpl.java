@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.model.User;
+import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -28,7 +28,7 @@ public class JwtServiceImpl implements JwtService {
   private long sessionTime;
 
   @Override
-  public String createJwt(User user) {
+  public String createJwt(UserPrincipal user) {
     JwtBuilder builder = Jwts.builder()
             .setSubject(user.getUsername())
             .setExpiration(Date.from(Instant.now().plusMillis(sessionTime)))

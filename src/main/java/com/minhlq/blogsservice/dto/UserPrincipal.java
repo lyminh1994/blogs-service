@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.model;
+package com.minhlq.blogsservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Collection;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPrinciple implements UserDetails {
+public class UserPrincipal implements UserDetails {
 
   private String id;
 
