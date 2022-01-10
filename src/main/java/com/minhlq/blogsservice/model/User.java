@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Getter
@@ -37,7 +36,6 @@ public class User {
   @Column(name = "email", unique = true)
   private String email;
 
-  @Lob
   @Column(name = "bio")
   private String bio;
 

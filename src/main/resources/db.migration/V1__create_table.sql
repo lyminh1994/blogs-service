@@ -7,3 +7,11 @@ CREATE TABLE users
     bio      TEXT,
     image    VARCHAR(511)
 );
+CREATE TABLE follows
+(
+    user_id   INT NOT NULL,
+    follow_id INT NOT NULL,
+    PRIMARY KEY (user_id, follow_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (follow_id) REFERENCES users(id)
+);

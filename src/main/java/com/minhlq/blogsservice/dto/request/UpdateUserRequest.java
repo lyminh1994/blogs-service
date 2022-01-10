@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.dto.request;
 
-import com.minhlq.blogsservice.validation.DuplicatedEmailConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +15,6 @@ public class UpdateUserRequest {
 
   @Builder.Default
   @Email(message = "should be an email")
-  @DuplicatedEmailConstraint(message = "email already exist")
   private final String email = "";
 
   @Builder.Default

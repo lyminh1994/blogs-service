@@ -11,10 +11,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -35,16 +33,14 @@ public abstract class AbstractModel implements Serializable {
    * The date the resource was created, as GMT.
    */
   @CreatedDate
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "date_created", nullable = false, updatable = false)
-  private Date createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
 
   /**
    * The date the resource was last modified, as GMT.
    */
   @LastModifiedDate
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "date_modified", nullable = false)
-  private Date lastUpdatedAt;
+  @Column(name = "updated_at", nullable = false)
+  private Instant updatedAt;
 
 }
