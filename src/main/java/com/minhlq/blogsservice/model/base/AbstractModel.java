@@ -1,20 +1,19 @@
 package com.minhlq.blogsservice.model.base;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
+import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
-import java.time.Instant;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
@@ -22,11 +21,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractModel implements Serializable {
 
-  /**
-   * Unique identifier for the resource.
-   */
+  private static final long serialVersionUID = 6060681001671723425L;
+
+  /** Unique identifier for the resource. */
   @Id
   @GeneratedValue(strategy = IDENTITY)
+  @Column(name = "id", nullable = false)
   private Long id;
 
   /**
