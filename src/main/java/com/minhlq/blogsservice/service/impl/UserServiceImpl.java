@@ -23,19 +23,23 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserPrincipal updateProfile(UpdateUserDto updateUserDto) {
-    User user = userRepository.findById(updateUserDto.getTargetUser().getId()).map(current -> {
-      UpdateUserRequest params = updateUserDto.getParams();
-      if (StringUtils.isNotBlank(params.getPassword())) {
-        current.setPassword(passwordEncoder.encode(params.getPassword()));
-      }
-      current.setEmail(params.getEmail());
-      current.setBio(params.getBio());
-      current.setImage(params.getImage());
+    User user =
+        userRepository
+            .findById(updateUserDto.getTargetUser().getId())
+            .map(
+                current -> {
+                  UpdateUserRequest params = updateUserDto.getParams();
+                  if (StringUtils.isNotBlank(params.getPassword())) {
+                    current.setPassword(passwordEncoder.encode(params.getPassword()));
+                  }
+                  current.setEmail(params.getEmail());
+                  current.setBio(params.getBio());
+                  current.setImage(params.getImage());
 
-      return userRepository.save(current);
-    }).orElseThrow(ResourceNotFoundException::new);
+                  return userRepository.save(current);
+                })
+            .orElseThrow(ResourceNotFoundException::new);
 
     return UserMapper.MAPPER.toUserPrinciple(user);
   }
-
 }

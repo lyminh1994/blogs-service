@@ -36,6 +36,9 @@ jwt:
 springdoc:
   version: "@project.version@"
   description: "@project.description@"
+  terms-of-service: http://swagger.io/terms/
+  license-name: Apache 2.0
+  license-url: http://springdoc.org
 logging:
   level:
     com.minhlq.blogsservice: DEBUG

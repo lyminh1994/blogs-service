@@ -3,6 +3,12 @@ package com.minhlq.blogsservice.exception.handler;
 import com.minhlq.blogsservice.exception.ErrorResource;
 import com.minhlq.blogsservice.exception.FieldErrorResource;
 import com.minhlq.blogsservice.exception.InvalidRequestException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,26 +22,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({InvalidRequestException.class})
   public ResponseEntity<Object> handleInvalidRequest(RuntimeException ex, WebRequest request) {
     InvalidRequestException invalidRequestException = (InvalidRequestException) ex;
-    List<FieldErrorResource> errorResources = invalidRequestException.getErrors().getFieldErrors().stream()
-            .map(fieldError -> new FieldErrorResource(
-                    fieldError.getObjectName(),
-                    fieldError.getField(),
-                    fieldError.getCode(),
-                    fieldError.getDefaultMessage())
-            ).collect(Collectors.toList());
+    List<FieldErrorResource> errorResources =
+        invalidRequestException.getErrors().getFieldErrors().stream()
+            .map(
+                fieldError ->
+                    new FieldErrorResource(
+                        fieldError.getObjectName(),
+                        fieldError.getField(),
+                        fieldError.getCode(),
+                        fieldError.getDefaultMessage()))
+            .collect(Collectors.toList());
     ErrorResource error = new ErrorResource(errorResources);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -54,17 +56,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   @NonNull
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                @NonNull HttpHeaders headers,
-                                                                @NonNull HttpStatus status,
-                                                                @NonNull WebRequest request) {
-    List<FieldErrorResource> errorResources = ex.getBindingResult().getFieldErrors().stream()
-            .map(fieldError -> new FieldErrorResource(
-                    fieldError.getObjectName(),
-                    fieldError.getField(),
-                    fieldError.getCode(),
-                    fieldError.getDefaultMessage())
-            ).collect(Collectors.toList());
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex,
+      @NonNull HttpHeaders headers,
+      @NonNull HttpStatus status,
+      @NonNull WebRequest request) {
+    List<FieldErrorResource> errorResources =
+        ex.getBindingResult().getFieldErrors().stream()
+            .map(
+                fieldError ->
+                    new FieldErrorResource(
+                        fieldError.getObjectName(),
+                        fieldError.getField(),
+                        fieldError.getCode(),
+                        fieldError.getDefaultMessage()))
+            .collect(Collectors.toList());
 
     return ResponseEntity.badRequest().body(new ErrorResource(errorResources));
   }
@@ -72,13 +78,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler({ConstraintViolationException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResource handleConstraintViolation(ConstraintViolationException ex) {
-    List<FieldErrorResource> errors = ex.getConstraintViolations().stream()
-            .map(violation -> new FieldErrorResource(
-                    violation.getRootBeanClass().getName(),
-                    getParam(violation.getPropertyPath().toString()),
-                    violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),
-                    violation.getMessage())
-            ).collect(Collectors.toList());
+    List<FieldErrorResource> errors =
+        ex.getConstraintViolations().stream()
+            .map(
+                violation ->
+                    new FieldErrorResource(
+                        violation.getRootBeanClass().getName(),
+                        getParam(violation.getPropertyPath().toString()),
+                        violation
+                            .getConstraintDescriptor()
+                            .getAnnotation()
+                            .annotationType()
+                            .getSimpleName(),
+                        violation.getMessage()))
+            .collect(Collectors.toList());
 
     return new ErrorResource(errors);
   }
@@ -91,5 +104,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       return String.join(".", Arrays.copyOfRange(splits, 2, splits.length));
     }
   }
-
 }

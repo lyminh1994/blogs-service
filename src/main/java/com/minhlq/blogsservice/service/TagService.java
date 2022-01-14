@@ -1,8 +1,9 @@
 package com.minhlq.blogsservice.service;
 
-import java.util.List;
+import com.minhlq.blogsservice.dto.PagingResponse;
+import org.springframework.data.domain.PageRequest;
 
 public interface TagService {
 
-  List<String> getTags();
+  PagingResponse<String> getTags(PageRequest pageRequest);
 }

@@ -44,19 +44,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf()
-            .disable()
-            .cors()
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-            .and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS).permitAll()
-            .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/articles/feed").authenticated()
-            .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/articles/**", "/profiles/**", "/tags").permitAll()
-            .anyRequest().authenticated();
+        .disable()
+        .cors()
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+        .and()
+        .authorizeRequests()
+        .antMatchers(HttpMethod.OPTIONS)
+        .permitAll()
+        .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
+        .permitAll()
+        .antMatchers(HttpMethod.GET, "/articles/feed")
+        .authenticated()
+        .antMatchers(HttpMethod.POST, "/auth/**")
+        .permitAll()
+        .antMatchers(HttpMethod.GET, "/articles/**", "/profiles/**", "/tags")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
 
     http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
   }

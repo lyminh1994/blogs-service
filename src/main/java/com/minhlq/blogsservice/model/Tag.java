@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tags")
-public class Tag {
+public class Tag implements Serializable {
+
+  private static final long serialVersionUID = 8913248819352319927L;
 
   @Id
   @Column(name = "id", nullable = false)

@@ -12,5 +12,4 @@ public class InvalidRequestException extends RuntimeException {
     super("");
     this.errors = errors;
   }
-
 }

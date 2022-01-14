@@ -7,8 +7,7 @@ public interface ProfileService {
 
   ProfileResponse findByUsername(String username, UserPrincipal currentUser);
 
-  ProfileResponse follow(String username, UserPrincipal currentUser);
+  ProfileResponse followByUsername(String username, UserPrincipal currentUser);
 
-  ProfileResponse unFollow(String username, UserPrincipal currentUser);
-
+  ProfileResponse unFollowByUsername(String username, UserPrincipal currentUser);
 }

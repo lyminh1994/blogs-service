@@ -9,6 +9,7 @@ import com.minhlq.blogsservice.model.User;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.JwtService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,8 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +32,13 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public UserTokenResponse createUser(RegisterRequest registerRequest) {
-    User user = userRepository.save(User.builder()
-            .email(registerRequest.getEmail())
-            .username(registerRequest.getUsername())
-            .password(passwordEncoder.encode(registerRequest.getPassword()))
-            .build());
+    User user =
+        userRepository.save(
+            User.builder()
+                .email(registerRequest.getEmail())
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .build());
 
     UserPrincipal userPrincipal = UserMapper.MAPPER.toUserPrinciple(user);
     String token = jwtService.createJwt(userPrincipal);
@@ -48,7 +49,8 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public UserTokenResponse login(LoginRequest loginRequest) {
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+    UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(
             loginRequest.getUsername(), loginRequest.getPassword());
     Authentication authentication = authenticationManager.authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -59,5 +61,4 @@ public class AuthServiceImpl implements AuthService {
 
     return new UserTokenResponse(userPrincipal, token, refreshToken);
   }
-
 }

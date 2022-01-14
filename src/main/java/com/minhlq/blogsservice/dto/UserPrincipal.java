@@ -1,14 +1,13 @@
 package com.minhlq.blogsservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.io.Serializable;
-import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -21,8 +20,7 @@ public class UserPrincipal implements UserDetails, Serializable {
 
   private String username;
 
-  @JsonIgnore
-  private String password;
+  @JsonIgnore private String password;
 
   private String email;
 
@@ -66,5 +64,4 @@ public class UserPrincipal implements UserDetails, Serializable {
   public boolean isEnabled() {
     return true;
   }
-
 }

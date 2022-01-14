@@ -25,25 +25,27 @@ public class ProfileController {
 
   @Operation(summary = "Get profile", description = "Get profile by username")
   @GetMapping
-  public ProfileResponse getProfile(@PathVariable("username") String username,
-                                    @AuthenticationPrincipal UserPrincipal currentUser) {
+  public ProfileResponse getProfile(
+      @PathVariable("username") String username,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     return profileService.findByUsername(username, currentUser);
   }
 
   @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Follow", description = "Following user by username")
   @PostMapping(path = "/follow")
-  public ProfileResponse follow(@PathVariable("username") String username,
-                                @AuthenticationPrincipal UserPrincipal currentUser) {
-    return profileService.follow(username, currentUser);
+  public ProfileResponse follow(
+      @PathVariable("username") String username,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
+    return profileService.followByUsername(username, currentUser);
   }
 
   @SecurityRequirement(name = "app_auth")
   @Operation(summary = "UnFollow", description = "UnFollowing user by username")
   @DeleteMapping(path = "/follow")
-  public ProfileResponse unFollow(@PathVariable("username") String username,
-                                  @AuthenticationPrincipal UserPrincipal currentUser) {
-    return profileService.unFollow(username, currentUser);
+  public ProfileResponse unFollow(
+      @PathVariable("username") String username,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
+    return profileService.unFollowByUsername(username, currentUser);
   }
-
 }

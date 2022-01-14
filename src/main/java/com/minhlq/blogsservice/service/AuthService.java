@@ -9,5 +9,4 @@ public interface AuthService {
   UserTokenResponse createUser(RegisterRequest registerRequest);
 
   UserTokenResponse login(LoginRequest loginRequest);
-
 }

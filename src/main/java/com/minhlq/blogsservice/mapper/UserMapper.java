@@ -16,5 +16,4 @@ public interface UserMapper {
   UserPrincipal toUserPrinciple(User user);
 
   ProfileResponse toProfileResponse(User user, boolean following);
-
 }

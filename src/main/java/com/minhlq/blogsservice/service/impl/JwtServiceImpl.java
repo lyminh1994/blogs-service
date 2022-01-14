@@ -1,5 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -10,17 +12,14 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import java.time.Instant;
+import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.util.Date;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Component
@@ -35,7 +34,8 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String createJwt(UserPrincipal user) {
-    JwtBuilder builder = Jwts.builder()
+    JwtBuilder builder =
+        Jwts.builder()
             .setSubject(user.getUsername())
             .setExpiration(Date.from(Instant.now().plusMillis(sessionTime)))
             .signWith(SignatureAlgorithm.HS512, secret);
@@ -50,10 +50,7 @@ public class JwtServiceImpl implements JwtService {
 
   private Claims parseJwt(String jwt) {
     try {
-      return Jwts.parser()
-              .setSigningKey(secret)
-              .parseClaimsJws(jwt)
-              .getBody();
+      return Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
     } catch (ExpiredJwtException ex) {
       throw new SecurityException("JWT expired", ex);
     } catch (UnsupportedJwtException ex) {
@@ -76,5 +73,4 @@ public class JwtServiceImpl implements JwtService {
 
     return null;
   }
-
 }

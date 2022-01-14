@@ -19,7 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AbstractModel implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 
   private static final long serialVersionUID = 6060681001671723425L;
 
@@ -29,18 +29,13 @@ public abstract class AbstractModel implements Serializable {
   @Column(name = "id", nullable = false)
   private Long id;
 
-  /**
-   * The date the resource was created, as GMT.
-   */
+  /** The date the resource was created, as GMT. */
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
 
-  /**
-   * The date the resource was last modified, as GMT.
-   */
+  /** The date the resource was last modified, as GMT. */
   @LastModifiedDate
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt;
-
 }

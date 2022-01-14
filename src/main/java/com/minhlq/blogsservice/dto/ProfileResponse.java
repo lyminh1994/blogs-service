@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProfileResponse {
 
-  @JsonIgnore
-  private Long id;
+  @JsonIgnore private Long id;
 
   private String username;
 
@@ -20,5 +19,4 @@ public class ProfileResponse {
   private String image;
 
   private boolean following;
-
 }

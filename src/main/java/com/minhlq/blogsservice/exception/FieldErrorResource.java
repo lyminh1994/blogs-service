@@ -16,5 +16,4 @@ public class FieldErrorResource {
   private final String code;
 
   private final String message;
-
 }

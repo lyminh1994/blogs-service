@@ -24,20 +24,32 @@ public class OpenApiConfig {
   @Value("${springdoc.description}")
   private String description;
 
-  @Bean
-  public OpenAPI customOpenAPI() {
-    return new OpenAPI()
-            .components(new Components()
-                    .addSecuritySchemes(APP_AUTH, new SecurityScheme()
-                            .type(SecurityScheme.Type.HTTP)
-                            .scheme(BEARER)
-                            .bearerFormat(JWT)))
-            .info(new Info()
-                    .title("Blogs API")
-                    .version(version)
-                    .description(description)
-                    .termsOfService("http://swagger.io/terms/")
-                    .license(new License().name("Apache 2.0").url("http://springdoc.org")));
-  }
+  @Value("${springdoc.terms-of-service}")
+  private String termsOfService;
 
+  @Value("${springdoc.license-name}")
+  private String licenseName;
+
+  @Value("${springdoc.license-url}")
+  private String licenseUrl;
+
+  @Bean
+  public OpenAPI customOpenApi() {
+    return new OpenAPI()
+        .components(
+            new Components()
+                .addSecuritySchemes(
+                    APP_AUTH,
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme(BEARER)
+                        .bearerFormat(JWT)))
+        .info(
+            new Info()
+                .title("Blogs API")
+                .version(version)
+                .description(description)
+                .termsOfService(termsOfService)
+                .license(new License().name(licenseName).url(licenseUrl)));
+  }
 }
