@@ -3,6 +3,7 @@ package com.minhlq.blogsservice.service.impl;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.minhlq.blogsservice.dto.UserPrincipal;
+import com.minhlq.blogsservice.property.JwtProperties;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -18,27 +19,24 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@EnableConfigurationProperties(JwtProperties.class)
 public class JwtServiceImpl implements JwtService {
 
-  @Value("${jwt.secret}")
-  private String secret;
-
-  @Value("${jwt.session-time}")
-  private long sessionTime;
+  private final JwtProperties jwtProperties;
 
   @Override
   public String createJwt(UserPrincipal user) {
     JwtBuilder builder =
         Jwts.builder()
             .setSubject(user.getUsername())
-            .setExpiration(Date.from(Instant.now().plusMillis(sessionTime)))
-            .signWith(SignatureAlgorithm.HS512, secret);
+            .setExpiration(Date.from(Instant.now().plusMillis(jwtProperties.getSessionTime())))
+            .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret());
 
     return builder.compact();
   }
@@ -50,7 +48,7 @@ public class JwtServiceImpl implements JwtService {
 
   private Claims parseJwt(String jwt) {
     try {
-      return Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
+      return Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(jwt).getBody();
     } catch (ExpiredJwtException ex) {
       throw new SecurityException("JWT expired", ex);
     } catch (UnsupportedJwtException ex) {

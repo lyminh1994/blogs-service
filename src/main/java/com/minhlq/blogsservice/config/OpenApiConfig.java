@@ -12,26 +12,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-  public static final String APP_AUTH = "app_auth";
-
-  public static final String BEARER = "bearer";
-
-  public static final String JWT = "JWT";
-
-  @Value("${springdoc.version}")
+  @Value("springdoc.version")
   private String version;
 
-  @Value("${springdoc.description}")
+  @Value("springdoc.description")
   private String description;
-
-  @Value("${springdoc.terms-of-service}")
-  private String termsOfService;
-
-  @Value("${springdoc.license-name}")
-  private String licenseName;
-
-  @Value("${springdoc.license-url}")
-  private String licenseUrl;
 
   @Bean
   public OpenAPI customOpenApi() {
@@ -39,17 +24,17 @@ public class OpenApiConfig {
         .components(
             new Components()
                 .addSecuritySchemes(
-                    APP_AUTH,
+                    "app_auth",
                     new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
-                        .scheme(BEARER)
-                        .bearerFormat(JWT)))
+                        .scheme("bearer")
+                        .bearerFormat("JWT")))
         .info(
             new Info()
-                .title("Blogs API")
+                .title("Blogs APIs")
                 .version(version)
                 .description(description)
-                .termsOfService(termsOfService)
-                .license(new License().name(licenseName).url(licenseUrl)));
+                .termsOfService("http://swagger.io/terms/")
+                .license(new License().name("Apache 2.0").url("http://springdoc.org")));
   }
 }

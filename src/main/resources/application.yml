@@ -36,10 +36,11 @@ jwt:
 springdoc:
   version: "@project.version@"
   description: "@project.description@"
-  terms-of-service: http://swagger.io/terms/
-  license-name: Apache 2.0
-  license-url: http://springdoc.org
+  swagger-ui:
+    display-request-duration: true
 logging:
+  pattern:
+    console: "%green(%d{${DATETIME_ISO8601}}) %highlight(%-5level) [%blue(%t)] [%red(%X{X-Request-ID})] %yellow(%C{1.}): %msg%n%throwable"
   level:
     com.minhlq.blogsservice: DEBUG
     org.springframework.web: ERROR
