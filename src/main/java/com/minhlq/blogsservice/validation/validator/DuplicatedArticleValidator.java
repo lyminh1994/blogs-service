@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.validation.validator;
 
 import com.minhlq.blogsservice.repository.ArticleRepository;
-import com.minhlq.blogsservice.util.ArticleUtils;
+import com.minhlq.blogsservice.utils.ArticleUtils;
 import com.minhlq.blogsservice.validation.DuplicatedArticleConstraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exception;
+package com.minhlq.blogsservice.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRootName;

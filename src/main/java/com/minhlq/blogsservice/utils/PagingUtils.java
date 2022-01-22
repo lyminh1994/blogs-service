@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.util;
+package com.minhlq.blogsservice.utils;
 
 import com.querydsl.core.util.ArrayUtils;
 import java.util.ArrayList;

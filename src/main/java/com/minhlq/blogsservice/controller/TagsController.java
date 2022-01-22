@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.dto.PagingResponse;
 import com.minhlq.blogsservice.service.TagService;
-import com.minhlq.blogsservice.util.PagingUtils;
+import com.minhlq.blogsservice.utils.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class TagsController {
 
   @Operation(summary = "Get tags", description = "Get all tags")
   @GetMapping
-  public PagingResponse<String> getTags(
+  public PagingResponse<com.minhlq.blogsservice.model.Tag> getTags(
       @RequestParam(name = "pageNumber", required = false, defaultValue = "0") int pageNumber,
       @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize,
       @RequestParam(name = "sort", required = false) String[] sort) {

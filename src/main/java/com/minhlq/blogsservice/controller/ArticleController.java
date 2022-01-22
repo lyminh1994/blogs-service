@@ -9,7 +9,7 @@ import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.service.ArticleService;
 import com.minhlq.blogsservice.service.CommentService;
-import com.minhlq.blogsservice.util.PagingUtils;
+import com.minhlq.blogsservice.utils.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

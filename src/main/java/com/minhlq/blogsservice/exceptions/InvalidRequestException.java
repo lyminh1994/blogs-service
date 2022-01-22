@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exception;
+package com.minhlq.blogsservice.exceptions;
 
 import lombok.Getter;
 import org.springframework.validation.Errors;

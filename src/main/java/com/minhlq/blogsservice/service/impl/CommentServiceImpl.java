@@ -3,15 +3,14 @@ package com.minhlq.blogsservice.service.impl;
 import com.minhlq.blogsservice.dto.CommentResponse;
 import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
-import com.minhlq.blogsservice.exception.NoAuthorizationException;
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.exceptions.NoAuthorizationException;
+import com.minhlq.blogsservice.exceptions.ResourceNotFoundException;
 import com.minhlq.blogsservice.mapper.CommentMapper;
 import com.minhlq.blogsservice.mapper.UserMapper;
 import com.minhlq.blogsservice.model.Article;
 import com.minhlq.blogsservice.model.Comment;
 import com.minhlq.blogsservice.repository.ArticleRepository;
 import com.minhlq.blogsservice.repository.CommentRepository;
-import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.service.CommentService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +24,6 @@ public class CommentServiceImpl implements CommentService {
   private final ArticleRepository articleRepository;
 
   private final CommentRepository commentRepository;
-
-  private final FollowRepository followRepository;
 
   @Override
   public CommentResponse createComment(

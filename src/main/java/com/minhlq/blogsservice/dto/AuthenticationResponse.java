@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserTokenResponse {
+public class AuthenticationResponse {
 
   private final UserPrincipal user;
 
-  private final String token;
+  private final String accessToken;
 
   private final String refreshToken;
 }

@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileResponse {
-
-  @JsonIgnore private Long id;
 
   private String username;
 

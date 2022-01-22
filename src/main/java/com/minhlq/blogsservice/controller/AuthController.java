@@ -1,9 +1,9 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.dto.UserTokenResponse;
+import com.minhlq.blogsservice.dto.AuthenticationResponse;
 import com.minhlq.blogsservice.dto.request.LoginRequest;
 import com.minhlq.blogsservice.dto.request.RegisterRequest;
-import com.minhlq.blogsservice.service.AuthService;
+import com.minhlq.blogsservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService authService;
+  private final UserService userService;
 
   @Operation(summary = "Register", description = "Register new account")
   @PostMapping("/register")
   @ResponseStatus(HttpStatus.CREATED)
-  public UserTokenResponse createUser(@Valid @RequestBody RegisterRequest registerRequest) {
-    return authService.createUser(registerRequest);
+  public AuthenticationResponse createUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    return userService.createUser(registerRequest);
   }
 
   @Operation(summary = "Login", description = "Login into system")
   @PostMapping("/login")
-  public UserTokenResponse login(@Valid @RequestBody LoginRequest loginRequest) {
-    return authService.login(loginRequest);
+  public AuthenticationResponse login(@Valid @RequestBody LoginRequest loginRequest) {
+    return userService.login(loginRequest);
   }
 }

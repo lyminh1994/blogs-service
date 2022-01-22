@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.util;
+package com.minhlq.blogsservice.utils;
 
 import lombok.experimental.UtilityClass;
 

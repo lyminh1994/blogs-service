@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.dto.ProfileResponse;
 import com.minhlq.blogsservice.dto.UserPrincipal;
-import com.minhlq.blogsservice.service.ProfileService;
+import com.minhlq.blogsservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProfileController {
 
-  private final ProfileService profileService;
+  private final UserService userService;
 
   @Operation(summary = "Get profile", description = "Get profile by username")
   @GetMapping
   public ProfileResponse getProfile(
       @PathVariable("username") String username,
       @AuthenticationPrincipal UserPrincipal currentUser) {
-    return profileService.findByUsername(username, currentUser);
+    return userService.findByUsername(username, currentUser);
   }
 
   @SecurityRequirement(name = "app_auth")
@@ -37,7 +37,7 @@ public class ProfileController {
   public ProfileResponse follow(
       @PathVariable("username") String username,
       @AuthenticationPrincipal UserPrincipal currentUser) {
-    return profileService.followByUsername(username, currentUser);
+    return userService.followByUsername(username, currentUser);
   }
 
   @SecurityRequirement(name = "app_auth")
@@ -46,6 +46,6 @@ public class ProfileController {
   public ProfileResponse unFollow(
       @PathVariable("username") String username,
       @AuthenticationPrincipal UserPrincipal currentUser) {
-    return profileService.unFollowByUsername(username, currentUser);
+    return userService.unFollowByUsername(username, currentUser);
   }
 }
