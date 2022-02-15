@@ -4,12 +4,12 @@ import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.service.UserService;
+import com.minhlq.blogsservice.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,15 +27,14 @@ public class UserController {
 
   @Operation(summary = "Current user", description = "Get current login user")
   @GetMapping
-  public UserPrincipal getCurrentUser(@AuthenticationPrincipal UserPrincipal currentUser) {
-    return currentUser;
+  public UserPrincipal getCurrentUser() {
+    return SecurityUtils.getCurrentUser();
   }
 
   @Operation(summary = "Update info", description = "Update current user information")
   @PutMapping
-  public UserPrincipal updateProfile(
-      @Valid @RequestBody UpdateUserRequest updateUserRequest,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
+  public UserPrincipal updateProfile(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
     return userService.updateProfile(new UpdateUserDto(currentUser, updateUserRequest));
   }
 }

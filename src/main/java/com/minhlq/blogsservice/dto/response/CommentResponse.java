@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.dto;
+package com.minhlq.blogsservice.dto.response;
 
 import java.time.Instant;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.mapper.UserMapper;
-import com.minhlq.blogsservice.model.User;
+import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Override
   @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user =
+    UserEntity user =
         userRepository
             .findByUsername(username)
             .orElseThrow(

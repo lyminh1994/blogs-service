@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.property;
+package com.minhlq.blogsservice.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

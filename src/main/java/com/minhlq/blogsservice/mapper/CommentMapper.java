@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.mapper;
 
-import com.minhlq.blogsservice.dto.CommentResponse;
-import com.minhlq.blogsservice.model.Comment;
+import com.minhlq.blogsservice.dto.response.CommentResponse;
+import com.minhlq.blogsservice.model.CommentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -10,5 +10,5 @@ public interface CommentMapper {
 
   CommentMapper MAPPER = Mappers.getMapper(CommentMapper.class);
 
-  CommentResponse toCommentResponse(Comment comment);
+  CommentResponse toCommentResponse(CommentEntity comment);
 }

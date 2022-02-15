@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class ArticleFavoriteId implements Serializable {
+public class ArticleTagKey implements Serializable {
 
-  private static final long serialVersionUID = -8855550399306606235L;
+  private static final long serialVersionUID = 3549434090139835218L;
 
   @Column(name = "article_id", nullable = false)
   private Long articleId;
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @Column(name = "tag_id", nullable = false)
+  private Long tagId;
 }

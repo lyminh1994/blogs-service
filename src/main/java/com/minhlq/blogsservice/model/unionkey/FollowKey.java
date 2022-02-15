@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class FollowId implements Serializable {
+public class FollowKey implements Serializable {
 
   private static final long serialVersionUID = 6245344112897279223L;
 
   @Column(name = "user_id", nullable = false)
   private Long userId;
 
-  @Column(name = "target_id", nullable = false)
-  private Long targetId;
+  @Column(name = "follow_id", nullable = false)
+  private Long followId;
 }

@@ -1,13 +1,14 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.model.User;
+import com.minhlq.blogsservice.model.UserEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User> {
+public interface UserRepository
+    extends JpaRepository<UserEntity, Long>, QuerydslPredicateExecutor<UserEntity> {
 
-  Optional<User> findByUsername(String username);
+  Optional<UserEntity> findByUsername(String username);
 
-  Optional<User> findByEmail(String email);
+  Optional<UserEntity> findByEmail(String email);
 }

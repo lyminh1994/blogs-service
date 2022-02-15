@@ -18,17 +18,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "comments")
-public class Comment extends AbstractEntity {
-
-  @Column(name = "body")
-  private String body;
-
-  @ManyToOne
-  @JoinColumn(name = "article_id", referencedColumnName = "id")
-  private Article article;
+@Table(name = "articles")
+public class ArticleEntity extends AbstractEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private User user;
+  private UserEntity author;
+
+  @Column(name = "slug", unique = true)
+  private String slug;
+
+  @Column(name = "title")
+  private String title;
+
+  @Column(name = "description")
+  private String description;
+
+  @Column(name = "body")
+  private String body;
 }

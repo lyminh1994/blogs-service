@@ -1,5 +1,6 @@
-package com.minhlq.blogsservice.dto;
+package com.minhlq.blogsservice.dto.response;
 
+import com.minhlq.blogsservice.dto.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

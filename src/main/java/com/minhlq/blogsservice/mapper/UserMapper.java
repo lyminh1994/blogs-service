@@ -1,8 +1,8 @@
 package com.minhlq.blogsservice.mapper;
 
-import com.minhlq.blogsservice.dto.ProfileResponse;
 import com.minhlq.blogsservice.dto.UserPrincipal;
-import com.minhlq.blogsservice.model.User;
+import com.minhlq.blogsservice.dto.response.ProfileResponse;
+import com.minhlq.blogsservice.model.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -11,9 +11,9 @@ public interface UserMapper {
 
   UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
-  User toUser(UserPrincipal userPrinciple);
+  UserEntity toUser(UserPrincipal userPrinciple);
 
-  UserPrincipal toUserPrinciple(User user);
+  UserPrincipal toUserPrinciple(UserEntity user);
 
-  ProfileResponse toProfileResponse(User user, boolean following);
+  ProfileResponse toProfileResponse(UserEntity user, boolean following);
 }

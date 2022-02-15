@@ -1,8 +1,8 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.dto.AuthenticationResponse;
 import com.minhlq.blogsservice.dto.request.LoginRequest;
 import com.minhlq.blogsservice.dto.request.RegisterRequest;
+import com.minhlq.blogsservice.dto.response.AuthenticationResponse;
 import com.minhlq.blogsservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

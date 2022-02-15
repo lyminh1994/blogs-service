@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.dto.PagingResponse;
+import com.minhlq.blogsservice.dto.response.PagingResponse;
 import com.minhlq.blogsservice.service.TagService;
 import com.minhlq.blogsservice.utils.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,9 +21,9 @@ public class TagsController {
 
   @Operation(summary = "Get tags", description = "Get all tags")
   @GetMapping
-  public PagingResponse<com.minhlq.blogsservice.model.Tag> getTags(
-      @RequestParam(name = "pageNumber", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize,
+  public PagingResponse<String> getTags(
+      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
+      @RequestParam(name = "page-size", required = false, defaultValue = "20") int pageSize,
       @RequestParam(name = "sort", required = false) String[] sort) {
     return tagService.getTags(PagingUtils.toPageRequest(pageNumber, pageSize, sort));
   }

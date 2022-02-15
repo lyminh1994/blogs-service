@@ -1,16 +1,11 @@
 package com.minhlq.blogsservice.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +20,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
   private static final long serialVersionUID = 8109816171293709396L;
 
@@ -48,20 +43,4 @@ public class User implements Serializable {
 
   @Column(name = "image", length = 511)
   private String image;
-
-  @ManyToMany
-  @JoinTable(
-      name = "follows",
-      joinColumns = @JoinColumn(name = "target_id", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-  private Collection<User> follows;
-
-  @OneToMany(mappedBy = "author")
-  private Collection<Article> articles;
-
-  @ManyToMany(mappedBy = "favorites")
-  private Collection<Article> articlesFavorites;
-
-  @OneToMany(mappedBy = "user")
-  private Collection<Comment> comments;
 }

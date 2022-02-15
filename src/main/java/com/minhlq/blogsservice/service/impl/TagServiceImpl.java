@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.dto.PagingResponse;
-import com.minhlq.blogsservice.model.Tag;
+import com.minhlq.blogsservice.dto.response.PagingResponse;
 import com.minhlq.blogsservice.repository.TagRepository;
 import com.minhlq.blogsservice.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,8 @@ public class TagServiceImpl implements TagService {
   private final TagRepository tagRepository;
 
   @Override
-  public PagingResponse<Tag> getTags(PageRequest pageRequest) {
-    Page<Tag> tags = tagRepository.findAll(pageRequest);
-    return new PagingResponse<>(tags.getContent(), tags.getTotalElements());
+  public PagingResponse<String> getTags(PageRequest pageRequest) {
+    Page<String> tagNames = tagRepository.findNames(pageRequest);
+    return new PagingResponse<>(tagNames.getContent(), tagNames.getTotalElements());
   }
 }

@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.service.impl;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.minhlq.blogsservice.dto.UserPrincipal;
-import com.minhlq.blogsservice.property.JwtProperties;
+import com.minhlq.blogsservice.properties.JwtProperties;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

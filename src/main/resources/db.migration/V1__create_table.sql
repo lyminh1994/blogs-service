@@ -42,10 +42,10 @@ CREATE TABLE comments
 CREATE TABLE follows
 (
     user_id   INT NOT NULL,
-    target_id INT NOT NULL,
-    PRIMARY KEY (user_id, target_id),
+    follow_id INT NOT NULL,
+    PRIMARY KEY (user_id, follow_id),
     FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (target_id) REFERENCES users (id)
+    FOREIGN KEY (follow_id) REFERENCES users (id)
 );
 
 CREATE TABLE article_favorites

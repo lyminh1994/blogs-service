@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tags")
-public class Tag implements Serializable {
+public class TagEntity implements Serializable {
 
   private static final long serialVersionUID = 8913248819352319927L;
 
@@ -30,7 +30,7 @@ public class Tag implements Serializable {
   @Column(name = "name", nullable = false)
   private String name;
 
-  public Tag(String name) {
+  public TagEntity(String name) {
     this.name = name;
   }
 }

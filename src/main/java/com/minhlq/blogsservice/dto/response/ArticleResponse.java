@@ -1,7 +1,7 @@
-package com.minhlq.blogsservice.dto;
+package com.minhlq.blogsservice.dto.response;
 
-import com.minhlq.blogsservice.model.Tag;
-import java.time.Instant;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,13 +24,13 @@ public class ArticleResponse {
 
   private String body;
 
-  private Instant createdAt;
+  private Date createdAt;
 
-  private Instant updatedAt;
+  private Date updatedAt;
 
   private boolean favorite;
 
-  private int favoritesCount;
+  private long favoritesCount;
 
-  private List<Tag> tags;
+  private List<String> tagNames;
 }

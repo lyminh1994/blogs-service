@@ -1,21 +1,22 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.dto.AuthenticationResponse;
-import com.minhlq.blogsservice.dto.ProfileResponse;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.dto.request.LoginRequest;
 import com.minhlq.blogsservice.dto.request.RegisterRequest;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
+import com.minhlq.blogsservice.dto.response.AuthenticationResponse;
+import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.exceptions.ResourceNotFoundException;
 import com.minhlq.blogsservice.mapper.UserMapper;
-import com.minhlq.blogsservice.model.Follow;
-import com.minhlq.blogsservice.model.User;
-import com.minhlq.blogsservice.model.unionkey.FollowId;
+import com.minhlq.blogsservice.model.FollowEntity;
+import com.minhlq.blogsservice.model.UserEntity;
+import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.service.UserService;
+import com.minhlq.blogsservice.utils.SecurityUtils;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -42,9 +43,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public AuthenticationResponse createUser(RegisterRequest registerRequest) {
-    User user =
+    UserEntity user =
         userRepository.save(
-            User.builder()
+            UserEntity.builder()
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserPrincipal updateProfile(UpdateUserDto updateUserDto) {
-    User user =
+    UserEntity user =
         userRepository
             .findById(updateUserDto.getTargetUser().getId())
             .map(
@@ -95,29 +96,32 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse findByUsername(String username, UserPrincipal currentUser) {
+  public ProfileResponse findByUsername(String username) {
+    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
     return userRepository
         .findByUsername(username)
         .map(
             targetUser -> {
               boolean following =
                   currentUser != null
-                      && targetUser.getFollows().stream()
-                          .anyMatch(follow -> follow.getId().equals(currentUser.getId()));
+                      && followRepository
+                          .findById(new FollowKey(currentUser.getId(), targetUser.getId()))
+                          .isPresent();
               return UserMapper.MAPPER.toProfileResponse(targetUser, following);
             })
         .orElseThrow(ResourceNotFoundException::new);
   }
 
   @Override
-  public ProfileResponse followByUsername(String username, UserPrincipal currentUser) {
+  public ProfileResponse followByUsername(String username) {
+    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
     return userRepository
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowId followId = new FollowId(currentUser.getId(), targetUser.getId());
-              if (followRepository.findById(followId).isEmpty()) {
-                followRepository.save(new Follow(followId));
+              FollowKey followKey = new FollowKey(currentUser.getId(), targetUser.getId());
+              if (!followRepository.existsById(followKey)) {
+                followRepository.save(new FollowEntity(followKey));
               }
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, true);
@@ -126,13 +130,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse unFollowByUsername(String username, UserPrincipal currentUser) {
+  public ProfileResponse unFollowByUsername(String username) {
+    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
     return userRepository
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowId followId = new FollowId(currentUser.getId(), targetUser.getId());
-              followRepository.findById(followId).ifPresent(followRepository::delete);
+              FollowKey followKey = new FollowKey(currentUser.getId(), targetUser.getId());
+              followRepository.findById(followKey).ifPresent(followRepository::delete);
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);
             })
