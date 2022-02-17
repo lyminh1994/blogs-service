@@ -63,6 +63,7 @@ public class CommentServiceImpl implements CommentService {
                         followRepository.existsById(
                             new FollowKey(currentUser.getId(), comment.getUser().getId())));
               }
+
               return response;
             })
         .collect(Collectors.toList());
@@ -81,6 +82,7 @@ public class CommentServiceImpl implements CommentService {
         || !currentUser.getId().equals(comment.getUser().getId())) {
       throw new NoAuthorizationException();
     }
+
     commentRepository.delete(comment);
   }
 }

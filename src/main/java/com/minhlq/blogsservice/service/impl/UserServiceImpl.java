@@ -75,24 +75,24 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserPrincipal updateProfile(UpdateUserDto updateUserDto) {
-    UserEntity user =
+    UserEntity newUser =
         userRepository
             .findById(updateUserDto.getTargetUser().getId())
             .map(
-                current -> {
+                oldUser -> {
                   UpdateUserRequest params = updateUserDto.getParams();
                   if (StringUtils.isNotBlank(params.getPassword())) {
-                    current.setPassword(passwordEncoder.encode(params.getPassword()));
+                    oldUser.setPassword(passwordEncoder.encode(params.getPassword()));
                   }
-                  current.setEmail(params.getEmail());
-                  current.setBio(params.getBio());
-                  current.setImage(params.getImage());
+                  oldUser.setEmail(params.getEmail());
+                  oldUser.setBio(params.getBio());
+                  oldUser.setImage(params.getImage());
 
-                  return userRepository.save(current);
+                  return userRepository.save(oldUser);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
-    return UserMapper.MAPPER.toUserPrinciple(user);
+    return UserMapper.MAPPER.toUserPrinciple(newUser);
   }
 
   @Override
@@ -107,6 +107,7 @@ public class UserServiceImpl implements UserService {
                       && followRepository
                           .findById(new FollowKey(currentUser.getId(), targetUser.getId()))
                           .isPresent();
+
               return UserMapper.MAPPER.toProfileResponse(targetUser, following);
             })
         .orElseThrow(ResourceNotFoundException::new);

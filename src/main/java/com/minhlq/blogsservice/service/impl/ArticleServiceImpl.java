@@ -170,24 +170,25 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest) {
     UserPrincipal currentUser = SecurityUtils.getCurrentUser();
-    ArticleEntity article =
+    ArticleEntity newArticle =
         articleRepository
             .findBySlug(slug)
             .map(
-                mapper -> {
-                  if (!currentUser.getId().equals(mapper.getAuthor().getId())) {
+                oldArticle -> {
+                  if (!currentUser.getId().equals(oldArticle.getAuthor().getId())) {
                     throw new NoAuthorizationException();
                   }
 
-                  mapper.setSlug(ArticleUtils.toSlug(updateRequest.getTitle()));
-                  mapper.setTitle(updateRequest.getTitle());
-                  mapper.setDescription(updateRequest.getDescription());
-                  mapper.setBody(updateRequest.getBody());
-                  return articleRepository.save(mapper);
+                  oldArticle.setSlug(ArticleUtils.toSlug(updateRequest.getTitle()));
+                  oldArticle.setTitle(updateRequest.getTitle());
+                  oldArticle.setDescription(updateRequest.getDescription());
+                  oldArticle.setBody(updateRequest.getBody());
+
+                  return articleRepository.save(oldArticle);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
-    return getArticleResponse(currentUser, article);
+    return getArticleResponse(currentUser, newArticle);
   }
 
   @Override
