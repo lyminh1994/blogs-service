@@ -4,7 +4,7 @@ import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
-import com.minhlq.blogsservice.dto.response.PagingResponse;
+import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.exceptions.NoAuthorizationException;
 import com.minhlq.blogsservice.exceptions.ResourceNotFoundException;
 import com.minhlq.blogsservice.mapper.ArticleMapper;
@@ -100,22 +100,22 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public PagingResponse<ArticleResponse> findUserFeed(PageRequest pageRequest) {
+  public PageResponse<ArticleResponse> findUserFeed(PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getCurrentUser();
     Set<Long> followedUsers = followRepository.findFollowedUsers(currentUser.getId());
     if (followedUsers.isEmpty()) {
-      return new PagingResponse<>(Collections.emptyList(), 0);
+      return new PageResponse<>(Collections.emptyList(), 0);
     }
 
     Page<ArticleEntity> articles =
         articleRepository.findByFollowedUsers(followedUsers, pageRequest);
     List<ArticleResponse> responses = getArticleResponses(articles.getContent());
 
-    return new PagingResponse<>(responses, articles.getTotalElements());
+    return new PageResponse<>(responses, articles.getTotalElements());
   }
 
   @Override
-  public PagingResponse<ArticleResponse> findRecentArticles(
+  public PageResponse<ArticleResponse> findRecentArticles(
       String tagName, String favoriteBy, String author, PageRequest pageRequest) {
     BooleanBuilder conditions = new BooleanBuilder();
     if (StringUtils.isNotBlank(tagName)) {
@@ -156,7 +156,7 @@ public class ArticleServiceImpl implements ArticleService {
             .fetch();
     List<ArticleResponse> responses = getArticleResponses(articles);
 
-    return new PagingResponse<>(responses, totalElements);
+    return new PageResponse<>(responses, totalElements);
   }
 
   @Override

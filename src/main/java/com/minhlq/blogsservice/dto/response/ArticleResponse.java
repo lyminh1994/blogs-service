@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;

@@ -13,7 +13,9 @@ public interface ArticleFavoriteRepository
         QuerydslPredicateExecutor<ArticleFavoriteEntity> {
 
   @Query(
-      "select count(af.id.articleId) from ArticleFavoriteEntity af where af.id.articleId = :articleId")
+      "select count(af.id.articleId) "
+          + "from ArticleFavoriteEntity af "
+          + "where af.id.articleId = :articleId")
   long countArticleFavoritesByArticleId(Long articleId);
 
   List<ArticleFavoriteEntity> findByArticle(ArticleEntity article);

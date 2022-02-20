@@ -1,18 +1,13 @@
 package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
-import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
-import com.minhlq.blogsservice.dto.response.CommentResponse;
-import com.minhlq.blogsservice.dto.response.PagingResponse;
+import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.service.ArticleService;
-import com.minhlq.blogsservice.service.CommentService;
-import com.minhlq.blogsservice.utils.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -36,8 +31,6 @@ public class ArticleController {
 
   private final ArticleService articleService;
 
-  private final CommentService commentService;
-
   @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Create article", description = "Create article")
   @PostMapping
@@ -49,15 +42,15 @@ public class ArticleController {
   @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Get feed", description = "Get current user articles feed")
   @GetMapping("/feed")
-  public PagingResponse<ArticleResponse> getFeed(
+  public PageResponse<ArticleResponse> getFeed(
       @RequestParam(value = "page-number", defaultValue = "0") int pageNumber,
       @RequestParam(value = "page-size", defaultValue = "20") int pageSize) {
-    return articleService.findUserFeed(PagingUtils.toPageRequest(pageNumber, pageSize));
+    return articleService.findUserFeed(PageRequest.of(pageNumber, pageSize));
   }
 
   @Operation(summary = "Get articles", description = "Get all articles")
   @GetMapping
-  public PagingResponse<ArticleResponse> getArticles(
+  public PageResponse<ArticleResponse> getArticles(
       @RequestParam(value = "tag", required = false) String tagName,
       @RequestParam(value = "favorite-by", required = false) String favoriteBy,
       @RequestParam(value = "author", required = false) String author,
@@ -102,28 +95,5 @@ public class ArticleController {
   @DeleteMapping("/{slug}/favorite")
   public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {
     return articleService.unFavoriteArticle(slug);
-  }
-
-  @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Create comment", description = "Create comment for article")
-  @PostMapping("/{slug}/comments")
-  @ResponseStatus(HttpStatus.CREATED)
-  public CommentResponse createComment(
-      @PathVariable("slug") String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
-    return commentService.createComment(slug, newCommentRequest);
-  }
-
-  @Operation(summary = "Get comments", description = "Get all comments of article")
-  @GetMapping("/{slug}/comments")
-  public List<CommentResponse> getComments(@PathVariable("slug") String slug) {
-    return commentService.findArticleComments(slug);
-  }
-
-  @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Delete comment", description = "Delete comment of article")
-  @DeleteMapping(value = "/{slug}/comments/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
-    commentService.deleteComment(slug, commentId);
   }
 }

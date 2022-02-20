@@ -1,11 +1,12 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.dto.response.PagingResponse;
+import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.service.TagService;
 import com.minhlq.blogsservice.utils.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,10 +22,12 @@ public class TagsController {
 
   @Operation(summary = "Get tags", description = "Get all tags")
   @GetMapping
-  public PagingResponse<String> getTags(
+  public PageResponse<String> getTags(
       @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
       @RequestParam(name = "page-size", required = false, defaultValue = "20") int pageSize,
       @RequestParam(name = "sort", required = false) String[] sort) {
-    return tagService.getTags(PagingUtils.toPageRequest(pageNumber, pageSize, sort));
+
+    PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);
+    return tagService.getTags(pageRequest);
   }
 }

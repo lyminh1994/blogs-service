@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Value;
 
 @Value
-public class PagingResponse<T> {
+public class PageResponse<T> {
 
   List<T> contents;
 
