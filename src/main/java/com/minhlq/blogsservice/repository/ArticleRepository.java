@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.model.ArticleEntity;
+import com.minhlq.blogsservice.entity.ArticleEntity;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;

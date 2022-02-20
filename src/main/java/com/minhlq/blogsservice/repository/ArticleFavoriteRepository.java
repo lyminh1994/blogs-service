@@ -1,8 +1,7 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.model.ArticleEntity;
-import com.minhlq.blogsservice.model.ArticleFavoriteEntity;
-import com.minhlq.blogsservice.model.unionkey.ArticleFavoriteKey;
+import com.minhlq.blogsservice.entity.ArticleFavoriteEntity;
+import com.minhlq.blogsservice.entity.unionkey.ArticleFavoriteKey;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +17,6 @@ public interface ArticleFavoriteRepository
           + "where af.id.articleId = :articleId")
   long countArticleFavoritesByArticleId(Long articleId);
 
-  List<ArticleFavoriteEntity> findByArticle(ArticleEntity article);
+  @Query("from ArticleFavoriteEntity AF where AF.id.articleId = :articleId")
+  List<ArticleFavoriteEntity> findByArticleId(Long articleId);
 }

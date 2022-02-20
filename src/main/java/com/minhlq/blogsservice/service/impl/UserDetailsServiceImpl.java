@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
+import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.mapper.UserMapper;
-import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.model;
+package com.minhlq.blogsservice.entity;
 
-import com.minhlq.blogsservice.model.base.AbstractEntity;
+import com.minhlq.blogsservice.entity.base.AbstractEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

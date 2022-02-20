@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.model.base;
+package com.minhlq.blogsservice.entity.base;
 
 import static javax.persistence.GenerationType.IDENTITY;
 

@@ -5,24 +5,24 @@ import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.entity.ArticleEntity;
+import com.minhlq.blogsservice.entity.ArticleFavoriteEntity;
+import com.minhlq.blogsservice.entity.ArticleTagEntity;
+import com.minhlq.blogsservice.entity.CommentEntity;
+import com.minhlq.blogsservice.entity.QArticleEntity;
+import com.minhlq.blogsservice.entity.QArticleFavoriteEntity;
+import com.minhlq.blogsservice.entity.QArticleTagEntity;
+import com.minhlq.blogsservice.entity.QTagEntity;
+import com.minhlq.blogsservice.entity.QUserEntity;
+import com.minhlq.blogsservice.entity.TagEntity;
+import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.unionkey.ArticleFavoriteKey;
+import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
+import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import com.minhlq.blogsservice.exceptions.NoAuthorizationException;
 import com.minhlq.blogsservice.exceptions.ResourceNotFoundException;
 import com.minhlq.blogsservice.mapper.ArticleMapper;
 import com.minhlq.blogsservice.mapper.UserMapper;
-import com.minhlq.blogsservice.model.ArticleEntity;
-import com.minhlq.blogsservice.model.ArticleFavoriteEntity;
-import com.minhlq.blogsservice.model.ArticleTagEntity;
-import com.minhlq.blogsservice.model.CommentEntity;
-import com.minhlq.blogsservice.model.QArticleEntity;
-import com.minhlq.blogsservice.model.QArticleFavoriteEntity;
-import com.minhlq.blogsservice.model.QArticleTagEntity;
-import com.minhlq.blogsservice.model.QTagEntity;
-import com.minhlq.blogsservice.model.QUserEntity;
-import com.minhlq.blogsservice.model.TagEntity;
-import com.minhlq.blogsservice.model.UserEntity;
-import com.minhlq.blogsservice.model.unionkey.ArticleFavoriteKey;
-import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
-import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import com.minhlq.blogsservice.repository.ArticleFavoriteRepository;
 import com.minhlq.blogsservice.repository.ArticleRepository;
 import com.minhlq.blogsservice.repository.ArticleTagRepository;
@@ -200,10 +200,11 @@ public class ArticleServiceImpl implements ArticleService {
       throw new NoAuthorizationException();
     }
 
-    List<ArticleTagEntity> articleTags = articleTagRepository.findByArticle(article);
+    List<ArticleTagEntity> articleTags = articleTagRepository.findByArticleId(article.getId());
     articleTagRepository.deleteAll(articleTags);
 
-    List<ArticleFavoriteEntity> articleFavorites = articleFavoriteRepository.findByArticle(article);
+    List<ArticleFavoriteEntity> articleFavorites =
+        articleFavoriteRepository.findByArticleId(article.getId());
     articleFavoriteRepository.deleteAll(articleFavorites);
 
     List<CommentEntity> comments = commentRepository.findByArticle(article);

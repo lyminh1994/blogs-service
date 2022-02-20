@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.model.ArticleEntity;
-import com.minhlq.blogsservice.model.CommentEntity;
+import com.minhlq.blogsservice.entity.ArticleEntity;
+import com.minhlq.blogsservice.entity.CommentEntity;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

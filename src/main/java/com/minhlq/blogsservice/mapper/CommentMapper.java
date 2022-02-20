@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.mapper;
 
 import com.minhlq.blogsservice.dto.response.CommentResponse;
-import com.minhlq.blogsservice.model.CommentEntity;
+import com.minhlq.blogsservice.entity.CommentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

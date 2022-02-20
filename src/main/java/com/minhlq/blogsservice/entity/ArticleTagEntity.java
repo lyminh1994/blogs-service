@@ -1,10 +1,8 @@
-package com.minhlq.blogsservice.model;
+package com.minhlq.blogsservice.entity;
 
-import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
+import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,12 +20,4 @@ import lombok.Setter;
 public class ArticleTagEntity {
 
   @EmbeddedId private ArticleTagKey id;
-
-  @ManyToOne
-  @JoinColumn(name = "article_id", referencedColumnName = "id")
-  private ArticleEntity article;
-
-  @ManyToOne
-  @JoinColumn(name = "tag_id", referencedColumnName = "id")
-  private TagEntity tag;
 }

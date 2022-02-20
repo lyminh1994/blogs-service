@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.mapper;
 
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
-import com.minhlq.blogsservice.model.ArticleEntity;
+import com.minhlq.blogsservice.entity.ArticleEntity;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
