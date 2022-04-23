@@ -1,5 +1,8 @@
 package com.minhlq.blogsservice.controller;
 
+import static com.minhlq.blogsservice.utils.AppConstants.DEFAULT_PAGE_NUMBER;
+import static com.minhlq.blogsservice.utils.AppConstants.DEFAULT_PAGE_SIZE;
+
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
@@ -43,8 +46,10 @@ public class ArticleController {
   @Operation(summary = "Get feeds", description = "Get current user articles feeds")
   @GetMapping("/feeds")
   public PageResponse<ArticleResponse> getFeeds(
-      @RequestParam(value = "page-number", defaultValue = "0") int pageNumber,
-      @RequestParam(value = "page-size", defaultValue = "20") int pageSize) {
+      @RequestParam(value = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)
+          int pageNumber,
+      @RequestParam(value = "page-size", required = false, defaultValue = DEFAULT_PAGE_SIZE)
+          int pageSize) {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
@@ -54,8 +59,10 @@ public class ArticleController {
       @RequestParam(value = "tag", required = false) String tagName,
       @RequestParam(value = "favorite-by", required = false) String favoriteBy,
       @RequestParam(value = "author", required = false) String author,
-      @RequestParam(value = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize) {
+      @RequestParam(value = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)
+          int pageNumber,
+      @RequestParam(value = "page-size", required = false, defaultValue = DEFAULT_PAGE_SIZE)
+          int pageSize) {
     return articleService.findRecentArticles(
         tagName, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
   }
@@ -67,7 +74,7 @@ public class ArticleController {
   }
 
   @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Update article", description = "Update article")
+  @Operation(summary = "Update article", description = "Update article by slug")
   @PutMapping("/{slug}")
   public ArticleResponse updateArticle(
       @PathVariable("slug") String slug,
@@ -76,7 +83,7 @@ public class ArticleController {
   }
 
   @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Delete article", description = "Delete article")
+  @Operation(summary = "Delete article", description = "Delete article by slug")
   @DeleteMapping("/{slug}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteArticle(@PathVariable("slug") String slug) {
@@ -84,14 +91,14 @@ public class ArticleController {
   }
 
   @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Favorite article", description = "Favorite article")
+  @Operation(summary = "Favorite article", description = "Favorite article by slug")
   @PostMapping("/favorite/{slug}")
   public ArticleResponse favoriteArticle(@PathVariable("slug") String slug) {
     return articleService.favoriteArticle(slug);
   }
 
   @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "UnFavorite article", description = "UnFavorite article")
+  @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
   @DeleteMapping("/favorite/{slug}")
   public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {
     return articleService.unFavoriteArticle(slug);

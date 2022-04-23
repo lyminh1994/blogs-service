@@ -3,6 +3,7 @@ package com.minhlq.blogsservice.service.impl;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.minhlq.blogsservice.dto.UserPrincipal;
+import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.properties.JwtProperties;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -17,12 +18,12 @@ import java.time.Instant;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+@Log4j2
 @Component
 @RequiredArgsConstructor
 @EnableConfigurationProperties(JwtProperties.class)

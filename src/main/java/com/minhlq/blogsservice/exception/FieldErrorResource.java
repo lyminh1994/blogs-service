@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exceptions;
+package com.minhlq.blogsservice.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

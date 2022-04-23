@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name = "Current User", description = "Login user information APIs")
+@Tag(name = "User", description = "User Information APIs")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -36,7 +36,7 @@ public class UserController {
   }
 
   @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Update info", description = "Update current user information")
+  @Operation(summary = "Update user info", description = "Update current user information")
   @PutMapping
   public UserPrincipal updateProfile(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
     UserPrincipal currentUser = SecurityUtils.getCurrentUser();

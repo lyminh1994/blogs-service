@@ -40,7 +40,7 @@ springdoc:
     display-request-duration: true
 logging:
   pattern:
-    console: "%green(%d{${DATETIME_ISO8601}}) %highlight(%-5level) [%blue(%t)] [%red(%X{X-Request-ID})] %yellow(%C{1.}): %msg%n%throwable"
+    console: "%green(%d{${DATETIME_ISO8601}}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
   level:
     com.minhlq.blogsservice: DEBUG
     org.springframework.web: ERROR

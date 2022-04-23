@@ -1,5 +1,8 @@
 package com.minhlq.blogsservice.controller;
 
+import static com.minhlq.blogsservice.utils.AppConstants.DEFAULT_PAGE_NUMBER;
+import static com.minhlq.blogsservice.utils.AppConstants.DEFAULT_PAGE_SIZE;
+
 import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.service.TagService;
 import com.minhlq.blogsservice.utils.PagingUtils;
@@ -23,8 +26,10 @@ public class TagsController {
   @Operation(summary = "Get tags", description = "Get all tags")
   @GetMapping
   public PageResponse<String> getTags(
-      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(name = "page-size", required = false, defaultValue = "20") int pageSize,
+      @RequestParam(name = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)
+          int pageNumber,
+      @RequestParam(name = "page-size", required = false, defaultValue = DEFAULT_PAGE_SIZE)
+          int pageSize,
       @RequestParam(name = "sort", required = false) String[] sort) {
 
     PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);

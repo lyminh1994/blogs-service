@@ -10,7 +10,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicatedUsernameConstraint {
 
-  String message() default "duplicated username";
+  String message() default "username has existed";
 
   Class<?>[] groups() default {};
 

@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exceptions;
+package com.minhlq.blogsservice.exception;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

@@ -1,8 +1,5 @@
-package com.minhlq.blogsservice.exceptions.handler;
+package com.minhlq.blogsservice.exception;
 
-import com.minhlq.blogsservice.exceptions.ErrorResource;
-import com.minhlq.blogsservice.exceptions.FieldErrorResource;
-import com.minhlq.blogsservice.exceptions.InvalidRequestException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

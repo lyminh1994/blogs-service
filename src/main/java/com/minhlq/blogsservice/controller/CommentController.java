@@ -36,7 +36,7 @@ public class CommentController {
     return commentService.createComment(slug, newCommentRequest);
   }
 
-  @Operation(summary = "Get comments", description = "Get all comments of article")
+  @Operation(summary = "Get comments", description = "Get all comments by article slug")
   @GetMapping
   public List<CommentResponse> getComments(@PathVariable("slug") String slug) {
     return commentService.findArticleComments(slug);

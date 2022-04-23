@@ -10,7 +10,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicatedEmailConstraint {
 
-  String message() default "duplicated email";
+  String message() default "email has existed";
 
   Class<?>[] groups() default {};
 

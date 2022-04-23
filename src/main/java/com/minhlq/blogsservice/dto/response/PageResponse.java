@@ -8,5 +8,5 @@ public class PageResponse<T> {
 
   List<T> contents;
 
-  long total;
+  long totalElements;
 }

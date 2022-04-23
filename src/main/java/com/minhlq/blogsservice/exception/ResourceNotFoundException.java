@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exceptions;
+package com.minhlq.blogsservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
