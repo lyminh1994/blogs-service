@@ -10,7 +10,7 @@ public interface ArticleService {
 
   ArticleResponse createArticle(NewArticleRequest createRequest);
 
-  PageResponse<ArticleResponse> findUserFeed(PageRequest pageRequest);
+  PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest);
 
   PageResponse<ArticleResponse> findRecentArticles(
       String tagName, String favoriteBy, String author, PageRequest pageRequest);

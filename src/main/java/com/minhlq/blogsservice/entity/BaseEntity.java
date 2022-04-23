@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity.base;
+package com.minhlq.blogsservice.entity;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -19,7 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AbstractEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
 
   private static final long serialVersionUID = 6060681001671723425L;
 

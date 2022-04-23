@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.entity;
 
-import com.minhlq.blogsservice.entity.base.AbstractEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,7 +18,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "articles")
-public class ArticleEntity extends AbstractEntity {
+public class ArticleEntity extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")

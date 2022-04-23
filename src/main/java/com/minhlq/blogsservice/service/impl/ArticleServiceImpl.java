@@ -100,7 +100,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public PageResponse<ArticleResponse> findUserFeed(PageRequest pageRequest) {
+  public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getCurrentUser();
     Set<Long> followedUsers = followRepository.findFollowedUsers(currentUser.getId());
     if (followedUsers.isEmpty()) {

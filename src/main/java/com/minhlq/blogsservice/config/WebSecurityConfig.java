@@ -55,11 +55,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/articles/feed")
+        .antMatchers(HttpMethod.GET, "/articles/feeds")
         .authenticated()
         .antMatchers(HttpMethod.POST, "/auth/**")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/articles/**", "/profiles/**", "/tags")
+        .antMatchers(HttpMethod.GET, "/articles/**", "/user/{username}", "/tags")
         .permitAll()
         .anyRequest()
         .authenticated();

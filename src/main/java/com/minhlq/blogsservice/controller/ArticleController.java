@@ -40,12 +40,12 @@ public class ArticleController {
   }
 
   @SecurityRequirement(name = "app_auth")
-  @Operation(summary = "Get feed", description = "Get current user articles feed")
-  @GetMapping("/feed")
-  public PageResponse<ArticleResponse> getFeed(
+  @Operation(summary = "Get feeds", description = "Get current user articles feeds")
+  @GetMapping("/feeds")
+  public PageResponse<ArticleResponse> getFeeds(
       @RequestParam(value = "page-number", defaultValue = "0") int pageNumber,
       @RequestParam(value = "page-size", defaultValue = "20") int pageSize) {
-    return articleService.findUserFeed(PageRequest.of(pageNumber, pageSize));
+    return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
   @Operation(summary = "Get articles", description = "Get all articles")
@@ -85,14 +85,14 @@ public class ArticleController {
 
   @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Favorite article", description = "Favorite article")
-  @PostMapping("/{slug}/favorite")
+  @PostMapping("/favorite/{slug}")
   public ArticleResponse favoriteArticle(@PathVariable("slug") String slug) {
     return articleService.favoriteArticle(slug);
   }
 
   @SecurityRequirement(name = "app_auth")
   @Operation(summary = "UnFavorite article", description = "UnFavorite article")
-  @DeleteMapping("/{slug}/favorite")
+  @DeleteMapping("/favorite/{slug}")
   public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {
     return articleService.unFavoriteArticle(slug);
   }

@@ -13,6 +13,6 @@ public interface TagRepository
 
   Optional<TagEntity> findByName(String name);
 
-  @Query("SELECT t.name from TagEntity t")
+  @Query("SELECT T.name from TagEntity T")
   Page<String> findNames(Pageable pageable);
 }
