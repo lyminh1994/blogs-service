@@ -28,16 +28,38 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  redis:
+    host: localhost
+    port: 6379
+    password: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    timeout: 10000ms
+    database: 3
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+  cache:
+    type: redis
   jackson:
     property-naming-strategy: SNAKE_CASE
+
+# JWT config
 jwt:
   secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
   session-time: 3600000
+
+# OpenApi config
 springdoc:
   version: "@project.version@"
   description: "@project.description@"
   swagger-ui:
     display-request-duration: true
+  show-actuator: true
+
+# Logging config
 logging:
   pattern:
     console: "%green(%d{${DATETIME_ISO8601}}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
@@ -46,3 +68,16 @@ logging:
     org.springframework.web: ERROR
     org.hibernate.SQL: INFO
     org.hibernate.type: TRACE
+
+# Actuator config
+management:
+  server:
+    port: 8090
+    base-path: /sys
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'

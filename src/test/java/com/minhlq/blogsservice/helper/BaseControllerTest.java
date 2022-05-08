@@ -10,13 +10,10 @@ import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.JwtService;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import(WebSecurityConfig.class)
 public abstract class BaseControllerTest {
   @MockBean UserRepository userRepository;

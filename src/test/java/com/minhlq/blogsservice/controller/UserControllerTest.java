@@ -1,22 +1,38 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.helper.BaseControllerTest;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
+import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(UserController.class)
-class UserControllerTest extends BaseControllerTest {
+class UserControllerTest {
   @Autowired MockMvc mockMvc;
   @MockBean UserService userService;
+  @MockBean JwtService jwtService;
+  @MockBean UserDetailsService userDetailsService;
 
+  @WithUserDetails
   @Test
   @DisplayName("Should Get Current User With Token GET request to endpoint - /user")
-  void shouldGetCurrentUserWithToken() {}
+  void shouldGetCurrentUserWithToken() throws Exception {
+    // given - precondition or setup
+    // when - action or behaviour that we are going test
+    ResultActions response = mockMvc.perform(get("/user"));
+
+    // then - verify the result or output using assert statements
+    response.andDo(print());
+  }
 
   @Test
   @DisplayName("Should Get 401 Without Token GET request to endpoint - /user")

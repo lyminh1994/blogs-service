@@ -6,6 +6,7 @@ import com.minhlq.blogsservice.dto.request.LoginRequest;
 import com.minhlq.blogsservice.dto.request.RegisterRequest;
 import com.minhlq.blogsservice.dto.response.AuthenticationResponse;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
+import com.minhlq.blogsservice.entity.UserEntity;
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,4 +24,10 @@ public interface UserService {
   ProfileResponse followByUsername(String username);
 
   ProfileResponse unFollowByUsername(String username);
+
+  UserEntity saveOrUpdate(UserEntity user);
+
+  UserEntity get(Long id);
+
+  void delete(Long id);
 }

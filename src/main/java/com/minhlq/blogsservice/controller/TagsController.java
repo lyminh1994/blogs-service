@@ -35,4 +35,5 @@ public class TagsController {
     PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);
     return tagService.getTags(pageRequest);
   }
+
 }

@@ -19,7 +19,11 @@ import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.utils.SecurityUtils;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -143,5 +148,23 @@ public class UserServiceImpl implements UserService {
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);
             })
         .orElseThrow(ResourceNotFoundException::new);
+  }
+
+  @Override
+  @CachePut(value = "user", key = "#user.id")
+  public UserEntity saveOrUpdate(UserEntity user) {
+    return user;
+  }
+
+  @Override
+  @Cacheable(value = "user", key = "#id")
+  public UserEntity get(Long id) {
+    return userRepository.findById(id).orElse(null);
+  }
+
+  @Override
+  @CacheEvict(value = "user", key = "#id")
+  public void delete(Long id) {
+    log.info("Delete catch user: {}", id);
   }
 }
