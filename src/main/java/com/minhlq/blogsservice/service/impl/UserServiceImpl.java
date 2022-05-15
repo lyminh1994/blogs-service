@@ -150,20 +150,20 @@ public class UserServiceImpl implements UserService {
         .orElseThrow(ResourceNotFoundException::new);
   }
 
-  @Override
   @CachePut(value = "user", key = "#user.id")
+  @Override
   public UserEntity saveOrUpdate(UserEntity user) {
     return user;
   }
 
-  @Override
   @Cacheable(value = "user", key = "#id")
+  @Override
   public UserEntity get(Long id) {
     return userRepository.findById(id).orElse(null);
   }
 
-  @Override
   @CacheEvict(value = "user", key = "#id")
+  @Override
   public void delete(Long id) {
     log.info("Delete catch user: {}", id);
   }
