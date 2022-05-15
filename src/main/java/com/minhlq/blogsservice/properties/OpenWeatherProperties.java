@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "security.jwt")
-public class JwtProperties {
+@ConfigurationProperties(prefix = "app.open-weather")
+public class OpenWeatherProperties {
 
-  private String secret;
+  private String baseUrl;
 
-  private long sessionTime;
+  private String apiKey;
 }

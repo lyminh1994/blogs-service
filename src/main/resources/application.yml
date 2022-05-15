@@ -47,9 +47,18 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
 # JWT config
-jwt:
-  secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
-  session-time: 3600000
+security:
+  jwt:
+    secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
+    session-time: 3600000
+
+# Application config
+app:
+  static-resource-location: /tmp/media/
+  static-resource-url: /media/**
+  open-weather:
+    base-url: https://api.openweathermap.org
+    api-key: 878816e6df18cd321379ad9329799e1d
 
 # OpenApi config
 springdoc:
@@ -61,19 +70,15 @@ springdoc:
 
 # Logging config
 logging:
-  pattern:
-    console: "%green(%d{${DATETIME_ISO8601}}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
   level:
     com.minhlq.blogsservice: DEBUG
-    org.springframework.web: ERROR
+    org.springframework.web: DEBUG
     org.hibernate.SQL: INFO
     org.hibernate.type: TRACE
+    org.apache.http: DEBUG
 
 # Actuator config
 management:
-  server:
-    port: 8090
-    base-path: /sys
   endpoint:
     health:
       show-details: always

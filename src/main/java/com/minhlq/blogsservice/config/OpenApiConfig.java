@@ -12,10 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
+  @Value("${springdoc.version}")
+  private String version;
+
+  @Value("${springdoc.description}")
+  private String description;
+
   @Bean
-  public OpenAPI customOpenApi(
-      @Value("springdoc.version") String version,
-      @Value("springdoc.description") String description) {
+  public OpenAPI customOpenApi() {
     return new OpenAPI()
         .components(
             new Components()

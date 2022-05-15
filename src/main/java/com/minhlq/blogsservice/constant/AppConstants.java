@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.utils;
+package com.minhlq.blogsservice.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

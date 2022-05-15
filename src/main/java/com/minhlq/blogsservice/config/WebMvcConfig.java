@@ -4,16 +4,24 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
 @EnableWebMvc
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
   private static final long MAX_AGE_SECS = 3600L;
+
+  @Value("${app.static-resource-location}")
+  private String staticResourceLocation;
+
+  @Value("${app.static-resource-url}")
+  private String staticResourceUrl;
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
@@ -29,5 +37,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // will fail with 403 Invalid CORS request
         .allowedHeaders(AUTHORIZATION, CACHE_CONTROL, CONTENT_TYPE)
         .maxAge(MAX_AGE_SECS);
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry
+        .addResourceHandler(staticResourceLocation)
+        .addResourceLocations(staticResourceUrl, "classpath:/static/**", "classpath:/templates/**");
+    registry
+        .addResourceHandler("/swagger-ui.html")
+        .addResourceLocations("classpath:/META-INF/resources/");
+    registry
+        .addResourceHandler("/webjars/**")
+        .addResourceLocations("classpath:/META-INF/resources/webjars/");
   }
 }

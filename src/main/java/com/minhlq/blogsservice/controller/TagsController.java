@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.controller;
 
-import static com.minhlq.blogsservice.utils.AppConstants.DEFAULT_PAGE_NUMBER;
-import static com.minhlq.blogsservice.utils.AppConstants.DEFAULT_PAGE_SIZE;
+import static com.minhlq.blogsservice.constant.AppConstants.DEFAULT_PAGE_NUMBER;
+import static com.minhlq.blogsservice.constant.AppConstants.DEFAULT_PAGE_SIZE;
 
 import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.service.TagService;
