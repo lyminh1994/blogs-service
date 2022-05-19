@@ -21,7 +21,7 @@ public class SecurityUtils {
   /**
    * Get current login user information
    *
-   * @return The information of the current login user, null when login anonymous
+   * @return The information of the current login user, null when doesn't login
    */
   public UserPrincipal getCurrentUser() {
     if (getAuthentication() != null) {

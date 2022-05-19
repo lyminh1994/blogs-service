@@ -7,13 +7,16 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.lang.NonNull;
 
 @Log4j2
-public class LoggingInterceptor implements ClientHttpRequestInterceptor {
+public class HttpLoggingInterceptor implements ClientHttpRequestInterceptor {
 
+  @NonNull
   @Override
   public ClientHttpResponse intercept(
-      HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+      @NonNull HttpRequest request, @NonNull byte[] body, ClientHttpRequestExecution execution)
+      throws IOException {
     // Logging the http request
     log.debug("URI: {}", request.getURI());
     log.debug("HTTP Method: {}", request.getMethodValue());

@@ -27,8 +27,12 @@ public class HttpEntityUtils {
   public HttpEntity<Object> entity(String auth, Object body, Map<String, String> contentTypes) {
     final HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(auth);
-    contentTypes.keySet().forEach(k -> headers.set(k, contentTypes.get(k)));
+    headers.setAll(contentTypes);
 
     return new HttpEntity<>(body, headers);
+  }
+
+  public HttpEntity<Object> entity(String auth) {
+    return entity(auth, null);
   }
 }

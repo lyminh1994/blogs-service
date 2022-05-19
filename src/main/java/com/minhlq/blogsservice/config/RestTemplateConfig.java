@@ -41,7 +41,7 @@ public class RestTemplateConfig {
     return new RestTemplateBuilder()
         .requestFactory(this::clientHttpRequestFactory)
         .errorHandler(new HttpErrorHandler())
-        .interceptors(new HttpHeadersInterceptor(), new LoggingInterceptor())
+        .interceptors(new HttpHeadersInterceptor(), new HttpLoggingInterceptor())
         .build();
   }
 }
