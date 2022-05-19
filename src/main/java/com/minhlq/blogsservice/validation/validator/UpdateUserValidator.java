@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.validation.validator;
 
 import com.minhlq.blogsservice.dto.UpdateUserDto;
-import com.minhlq.blogsservice.dto.UserPrincipal;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.validation.UpdateUserConstraint;
 import java.util.Objects;

@@ -16,14 +16,21 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * This class holds Redis database configurations for this application.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Configuration
 @EnableCaching
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 public class RedisConfig {
 
   /**
-   * By default, the template can only support RedisTemplate<String, String>, that is, it can only
-   * store strings, so it supports serialization
+   * By default, the template can only support {@code RedisTemplate<String, String>}. That is, it
+   * can only store strings, so it supports serialization.
    */
   @Bean
   public RedisTemplate<String, Serializable> redisCacheTemplate(
@@ -37,7 +44,7 @@ public class RedisConfig {
 
   /**
    * When configuring the cache configuration using annotations, the default is the form of
-   * serialization and deserialization, and this configuration is in the form of json
+   * serialization and deserialization, and this configuration is in the form of json.
    */
   @Bean
   public CacheManager cacheManager(RedisConnectionFactory factory) {

@@ -3,9 +3,9 @@ package com.minhlq.blogsservice.helper;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogsservice.config.WebSecurityConfig;
-import com.minhlq.blogsservice.dto.UserPrincipal;
+import com.minhlq.blogsservice.config.security.SecurityConfig;
 import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.JwtService;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-@Import(WebSecurityConfig.class)
+@Import(SecurityConfig.class)
 public abstract class BaseControllerTest {
   @MockBean UserRepository userRepository;
   @MockBean JwtService jwtService;
@@ -22,7 +22,7 @@ public abstract class BaseControllerTest {
 
   ObjectMapper mapper;
   UserEntity user;
-  UserPrincipal userPrincipal;
+  UserPrincipal userDetails;
 
   @BeforeEach
   void setUp() {
@@ -41,12 +41,12 @@ public abstract class BaseControllerTest {
             .bio(bio)
             .image(image)
             .build();
-    userPrincipal = new UserPrincipal(1L, username, password, email, bio, image, null);
+    userDetails = UserPrincipal.buildUserDetails(user);
 
     when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
     when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
     when(jwtService.getUsernameFromJwt("token")).thenReturn(username);
-    when(userDetailsService.loadUserByUsername(username)).thenReturn(userPrincipal);
+    when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
   }
 }

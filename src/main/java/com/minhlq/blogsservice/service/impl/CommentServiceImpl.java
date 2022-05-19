@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.dto.UserPrincipal;
+import com.minhlq.blogsservice.dto.mapper.CommentMapper;
+import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.entity.ArticleEntity;
@@ -8,13 +9,12 @@ import com.minhlq.blogsservice.entity.CommentEntity;
 import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.NoAuthorizationException;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
-import com.minhlq.blogsservice.mapper.CommentMapper;
-import com.minhlq.blogsservice.mapper.UserMapper;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.ArticleRepository;
 import com.minhlq.blogsservice.repository.CommentRepository;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.service.CommentService;
-import com.minhlq.blogsservice.utils.SecurityUtils;
+import com.minhlq.blogsservice.util.SecurityUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public CommentResponse createComment(String slug, NewCommentRequest newCommentRequest) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     CommentEntity comment =
@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public List<CommentResponse> findArticleComments(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
@@ -71,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public void deleteComment(String slug, Long commentId) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     CommentEntity comment =

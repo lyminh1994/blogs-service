@@ -9,7 +9,7 @@ import com.minhlq.blogsservice.dto.response.ArticleResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +26,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Articles", description = "Article APIs")
 @RestController
 @RequestMapping("/articles")
-@Tag(name = "Articles", description = "Article APIs")
 @RequiredArgsConstructor
 public class ArticleController {
 
   private final ArticleService articleService;
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Create article", description = "Create article")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
@@ -42,7 +41,6 @@ public class ArticleController {
     return articleService.createArticle(articleRequest);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Get feeds", description = "Get current user articles feeds")
   @GetMapping("/feeds")
   public PageResponse<ArticleResponse> getFeeds(
@@ -53,6 +51,7 @@ public class ArticleController {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
+  @SecurityRequirements
   @Operation(summary = "Get articles", description = "Get all articles")
   @GetMapping
   public PageResponse<ArticleResponse> getArticles(
@@ -67,13 +66,13 @@ public class ArticleController {
         tagName, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
   }
 
+  @SecurityRequirements
   @Operation(summary = "Get article", description = "Get article by slug")
   @GetMapping("/{slug}")
   public ArticleResponse getArticle(@PathVariable("slug") String slug) {
     return articleService.findBySlug(slug);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Update article", description = "Update article by slug")
   @PutMapping("/{slug}")
   public ArticleResponse updateArticle(
@@ -82,7 +81,6 @@ public class ArticleController {
     return articleService.updateArticle(slug, updateArticleRequest);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Delete article", description = "Delete article by slug")
   @DeleteMapping("/{slug}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -90,14 +88,12 @@ public class ArticleController {
     articleService.deleteArticle(slug);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
   @PostMapping("/favorite/{slug}")
   public ArticleResponse favoriteArticle(@PathVariable("slug") String slug) {
     return articleService.favoriteArticle(slug);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
   @DeleteMapping("/favorite/{slug}")
   public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {

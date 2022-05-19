@@ -1,13 +1,13 @@
 package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.dto.UpdateUserDto;
-import com.minhlq.blogsservice.dto.UserPrincipal;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.service.UserService;
-import com.minhlq.blogsservice.utils.SecurityUtils;
+import com.minhlq.blogsservice.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,43 +20,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "User", description = "User Information APIs")
 @RestController
 @RequestMapping("/user")
-@Tag(name = "User", description = "User Information APIs")
 @RequiredArgsConstructor
 public class UserController {
 
   private final UserService userService;
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Current user", description = "Get current user")
   @GetMapping
   public UserPrincipal getCurrentUser() {
-    return SecurityUtils.getCurrentUser();
+    return SecurityUtils.getAuthenticatedUserDetails();
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Update user info", description = "Update current user information")
   @PutMapping
-  public UserPrincipal updateProfile(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
-    return userService.updateProfile(new UpdateUserDto(currentUser, updateUserRequest));
+  public UserPrincipal updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+    return userService.updateUser(new UpdateUserDto(currentUser, updateUserRequest));
   }
 
-  @Operation(summary = "Get profile", description = "Get profile by username")
+  @SecurityRequirements
+  @Operation(summary = "Get profile", description = "Get user profile by username")
   @GetMapping("/{username}")
   public ProfileResponse getProfile(@PathVariable("username") String username) {
     return userService.findByUsername(username);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Following", description = "Following user by username")
   @PostMapping(path = "/following/{target}")
   public ProfileResponse following(@PathVariable("target") String username) {
     return userService.followByUsername(username);
   }
 
-  @SecurityRequirement(name = "app_auth")
   @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
   @DeleteMapping(path = "/following/{target}")
   public ProfileResponse unFollowing(@PathVariable("target") String username) {

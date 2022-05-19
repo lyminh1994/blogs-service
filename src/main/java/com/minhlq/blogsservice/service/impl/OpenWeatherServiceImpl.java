@@ -5,13 +5,13 @@ import static com.minhlq.blogsservice.constant.OpenWeatherConstants.CURRENT_WEAT
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogsservice.dto.OpenWeatherDto;
-import com.minhlq.blogsservice.enumdef.WeatherMeasurementUnitsEnum;
-import com.minhlq.blogsservice.properties.OpenWeatherProperties;
+import com.minhlq.blogsservice.enumdef.WeatherMeasurementUnits;
 import com.minhlq.blogsservice.service.OpenWeatherService;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class OpenWeatherServiceImpl implements OpenWeatherService {
 
-  private final OpenWeatherProperties openWeatherProperties;
+  @Value("${app.open-weather.base-url}")
+  private String baseUrl;
+
+  @Value("${app.open-weather.api-key}")
+  private String apiKey;
 
   private final RestTemplate restTemplate;
 
@@ -34,16 +38,16 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
   @Cacheable(cacheNames = "current-weather-cache")
   @Override
   public OpenWeatherDto getCurrentWeather(
-      String latitude, String longitude, WeatherMeasurementUnitsEnum units, String language)
+      String latitude, String longitude, WeatherMeasurementUnits units, String language)
       throws JsonProcessingException {
-    String url = openWeatherProperties.getBaseUrl() + CURRENT_WEATHER_DATA;
+    String url = baseUrl + CURRENT_WEATHER_DATA;
     UriComponentsBuilder builder =
         UriComponentsBuilder.fromUriString(url)
             .queryParam("lat", latitude)
             .queryParam("lon", longitude)
             .queryParamIfPresent("units", Optional.of(units.getCode()))
             .queryParamIfPresent("lang", Optional.of(language))
-            .queryParam("appid", openWeatherProperties.getApiKey());
+            .queryParam("appid", apiKey);
 
     OpenWeatherDto response =
         restTemplate.getForObject(builder.toUriString(), OpenWeatherDto.class);

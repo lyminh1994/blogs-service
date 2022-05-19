@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 @Getter
 public class InvalidRequestException extends RuntimeException {
 
-  private final transient Errors errors;
+  private final Errors errors;
 
   public InvalidRequestException(Errors errors) {
     super("");

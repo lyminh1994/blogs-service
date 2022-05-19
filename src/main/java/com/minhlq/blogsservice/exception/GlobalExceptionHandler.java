@@ -1,11 +1,10 @@
 package com.minhlq.blogsservice.exception;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,9 +18,37 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * A global exception handler for REST API.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
+@Log4j2
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+  /**
+   * Handles IllegalArgumentException and IllegalStateException thrown by the REST API.
+   *
+   * @param ex The exception thrown by the REST API.
+   * @param request The request object.
+   * @return A ResponseEntity object.
+   */
+  @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
+  protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
+    String message = ex.getMessage();
+    return handleExceptionInternal(ex, message, new HttpHeaders(), HttpStatus.CONFLICT, request);
+  }
+
+  /**
+   * Handles InvalidRequestException thrown by the REST API.
+   *
+   * @param ex The exception thrown by the REST API.
+   * @param request The request object.
+   * @return A ResponseEntity object.
+   */
   @ExceptionHandler({InvalidRequestException.class})
   public ResponseEntity<Object> handleInvalidRequest(RuntimeException ex, WebRequest request) {
     InvalidRequestException invalidRequestException = (InvalidRequestException) ex;
@@ -42,15 +69,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
   }
 
+  /**
+   * Handles BadCredentialsException thrown by the AuthenticationManager.
+   *
+   * @param ex The exception thrown by the REST API.
+   * @return A ErrorMessage.
+   */
   @ExceptionHandler(BadCredentialsException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  public Map<String, String> handleInvalidAuthentication(BadCredentialsException ex) {
-    Map<String, String> body = new HashMap<>();
-    body.put("message", "invalid username or password!");
-
-    return body;
+  public String handleInvalidAuthentication(BadCredentialsException ex) {
+    log.error("Invalid authentication:", ex);
+    return "Invalid username or password";
   }
 
+  /**
+   * Override the response for MethodArgumentNotValidException.
+   *
+   * <p>This method delegates to {@link #handleExceptionInternal}.
+   *
+   * @param ex the exception
+   * @param headers the headers to be written to the response
+   * @param status the selected response status
+   * @param request the current request
+   * @return a {@code ResponseEntity} instance
+   */
   @Override
   @NonNull
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -72,6 +114,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.badRequest().body(new ErrorResource(errorResources));
   }
 
+  /**
+   * Handles ConstraintViolationException thrown by the ConstraintValidator.
+   *
+   * @param ex The exception thrown by the REST API.
+   * @return A ErrorMessage.
+   */
   @ExceptionHandler({ConstraintViolationException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResource handleConstraintViolation(ConstraintViolationException ex) {
@@ -97,8 +145,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     String[] splits = s.split("\\.");
     if (splits.length == 1) {
       return s;
-    } else {
-      return String.join(".", Arrays.copyOfRange(splits, 2, splits.length));
     }
+
+    return String.join(".", Arrays.copyOfRange(splits, 2, splits.length));
   }
 }

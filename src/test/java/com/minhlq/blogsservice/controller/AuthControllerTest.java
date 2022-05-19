@@ -10,11 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogsservice.dto.request.LoginRequest;
-import com.minhlq.blogsservice.dto.request.RegisterRequest;
-import com.minhlq.blogsservice.dto.response.AuthenticationResponse;
 import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.payload.request.LoginRequest;
+import com.minhlq.blogsservice.payload.request.RegisterRequest;
+import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
 import com.minhlq.blogsservice.repository.UserRepository;
+import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.service.UserService;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class AuthControllerTest {
   @Autowired MockMvc mockMvc;
   @MockBean UserService userService;
+  @MockBean AuthService authService;
   @MockBean JwtService jwtService;
   @MockBean UserDetailsService userDetailsService;
   @MockBean UserRepository userRepository;
@@ -49,13 +51,15 @@ class AuthControllerTest {
   @Test
   @DisplayName("Should Create User Success POST request to endpoint - /auth/register")
   void shouldCreateUserSuccess() throws Exception {
-    RegisterRequest registerRequest =
-        new RegisterRequest("jonathan99@gmail.com", "jonathan99", "123");
+    RegisterRequest registerRequest = new RegisterRequest();
+    registerRequest.setEmail("user01@example.com");
+    registerRequest.setUsername("user01");
+    registerRequest.setPassword("pass");
     String accessToken = "accessToken";
     String refreshToken = "refreshToken";
 
-    when(userService.createUser(any(RegisterRequest.class)))
-        .thenReturn(new AuthenticationResponse(null, accessToken, refreshToken));
+    when(authService.createUser(any(RegisterRequest.class), any()))
+        .thenReturn(AuthenticationResponse.buildJwtResponse(accessToken));
 
     mockMvc
         .perform(
@@ -73,7 +77,10 @@ class AuthControllerTest {
   @DisplayName(
       "Should Show Error Message For Blank Username POST request to endpoint - /auth/register")
   void shouldShowErrorMessageForBlankUsername() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest("jonathan99@gmail.com", null, "123");
+    RegisterRequest registerRequest = new RegisterRequest();
+    registerRequest.setEmail("user01@example.com");
+    registerRequest.setUsername(null);
+    registerRequest.setPassword("pass");
 
     mockMvc
         .perform(
@@ -89,8 +96,10 @@ class AuthControllerTest {
   @DisplayName(
       "Should Show Error Message For Invalid Email POST request to endpoint - /auth/register")
   void shouldShowErrorMessageForInvalidEmail() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest("jonathan99.com", "jonathan99", "123");
-
+    RegisterRequest registerRequest = new RegisterRequest();
+    registerRequest.setEmail("jonathan99.com");
+    registerRequest.setUsername("user01");
+    registerRequest.setPassword("pass");
     mockMvc
         .perform(
             post("/auth/register")
@@ -105,8 +114,10 @@ class AuthControllerTest {
   @DisplayName(
       "Should Show Error For Duplicated Username POST request to endpoint - /auth/register")
   void shouldShowErrorForDuplicatedUsername() throws Exception {
-    RegisterRequest registerRequest =
-        new RegisterRequest("jonathan99@gmail.com", "jonathan99", "123");
+    RegisterRequest registerRequest = new RegisterRequest();
+    registerRequest.setEmail("user01@example.com");
+    registerRequest.setUsername("user01");
+    registerRequest.setPassword("pass");
     UserEntity user =
         new UserEntity(1L, "jonathan99", "123", "jonathan99@gmail.com", "bio", "image");
     when(userRepository.findByUsername("jonathan99")).thenReturn(Optional.of(user));
@@ -124,8 +135,10 @@ class AuthControllerTest {
   @Test
   @DisplayName("Should Show Error For Duplicated Email POST request to endpoint - /auth/register")
   void shouldShowErrorForDuplicatedEmail() throws Exception {
-    RegisterRequest registerRequest =
-        new RegisterRequest("jonathan99@gmail.com", "jonathan99", "123");
+    RegisterRequest registerRequest = new RegisterRequest();
+    registerRequest.setEmail("user01@example.com");
+    registerRequest.setUsername("user01");
+    registerRequest.setPassword("pass");
     UserEntity user =
         new UserEntity(1L, "jonathan99", "123", "jonathan99@gmail.com", "bio", "image");
     when(userRepository.findByEmail("jonathan99@gmail.com")).thenReturn(Optional.of(user));
@@ -147,8 +160,8 @@ class AuthControllerTest {
     String accessToken = "accessToken";
     String refreshToken = "refreshToken";
 
-    when(userService.login(any(LoginRequest.class)))
-        .thenReturn(new AuthenticationResponse(null, accessToken, refreshToken));
+    when(authService.login(any(), any(), any()))
+        .thenReturn(AuthenticationResponse.buildJwtResponse(accessToken));
 
     mockMvc
         .perform(
@@ -167,7 +180,7 @@ class AuthControllerTest {
   void shouldFailLoginWithWrongPassword() throws Exception {
     LoginRequest loginRequest = new LoginRequest("jonathan99", "456");
 
-    when(userService.login(any(LoginRequest.class))).thenThrow(BadCredentialsException.class);
+    when(authService.login(any(), any(), any())).thenThrow(BadCredentialsException.class);
 
     mockMvc
         .perform(

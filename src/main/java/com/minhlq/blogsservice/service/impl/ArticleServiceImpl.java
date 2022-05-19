@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.dto.UserPrincipal;
+import com.minhlq.blogsservice.dto.mapper.ArticleMapper;
+import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
@@ -21,8 +22,7 @@ import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
 import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.NoAuthorizationException;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
-import com.minhlq.blogsservice.mapper.ArticleMapper;
-import com.minhlq.blogsservice.mapper.UserMapper;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.ArticleFavoriteRepository;
 import com.minhlq.blogsservice.repository.ArticleRepository;
 import com.minhlq.blogsservice.repository.ArticleTagRepository;
@@ -30,8 +30,8 @@ import com.minhlq.blogsservice.repository.CommentRepository;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.TagRepository;
 import com.minhlq.blogsservice.service.ArticleService;
-import com.minhlq.blogsservice.utils.ArticleUtils;
-import com.minhlq.blogsservice.utils.SecurityUtils;
+import com.minhlq.blogsservice.util.ArticleUtils;
+import com.minhlq.blogsservice.util.SecurityUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -65,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleResponse createArticle(NewArticleRequest createRequest) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     UserEntity author = UserMapper.MAPPER.toUser(currentUser);
     ArticleEntity article =
         articleRepository.saveAndFlush(
@@ -101,7 +101,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     Set<Long> followedUsers = followRepository.findFollowedUsers(currentUser.getId());
     if (followedUsers.isEmpty()) {
       return new PageResponse<>(Collections.emptyList(), 0);
@@ -161,7 +161,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleResponse findBySlug(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     return getArticleResponse(currentUser, article);
@@ -169,7 +169,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity newArticle =
         articleRepository
             .findBySlug(slug)
@@ -193,7 +193,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public void deleteArticle(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     if (!currentUser.getId().equals(article.getAuthor().getId())) {
@@ -215,7 +215,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleResponse favoriteArticle(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavoriteKey =
@@ -229,7 +229,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleResponse unFavoriteArticle(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     articleFavoriteRepository
@@ -272,7 +272,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   private List<ArticleResponse> getArticleResponses(List<ArticleEntity> articles) {
-    UserPrincipal currentUser = SecurityUtils.getCurrentUser();
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     return articles.stream()
         .map(article -> getArticleResponse(currentUser, article))
         .collect(Collectors.toList());

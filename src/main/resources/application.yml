@@ -3,6 +3,8 @@ server:
   servlet:
     context-path: /
 spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   application:
     name: blogs_service
   datasource:
@@ -43,25 +45,37 @@ spring:
         min-idle: 0
   cache:
     type: redis
-  jackson:
-    property-naming-strategy: SNAKE_CASE
 
-# JWT config
-security:
-  jwt:
-    secret:
-    session-time: 3600000
+# Crypto and Token secrets
+crypto:
+  secret:
+    password: ${ENCRYPTION_SECRET_PASSWORD:password}
+    salt: ${ENCRYPTION_SECRET_SALT:salt}
+jwt:
+  config:
+    secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
+    ttl: 3600000
 
-# Application config
+# CORS Configuration
+cors:
+  max-age: ${CORS_MAX_AGE:3600}
+  allowed-methods: ${CORS_ALLOWED_METHODS:}
+  allowed-headers: ${CORS_ALLOWED_HEADERS:}
+  exposed-headers: ${CORS_EXPOSED_HEADERS:}
+  allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000/, http://localhost:4200/}
+
+# Application configuration
 app:
   static-resource-location: /tmp/media/
   static-resource-url: /media/**
   open-weather:
     base-url: https://api.openweathermap.org
-    api-key:
+    api-key: 878816e6df18cd321379ad9329799e1d
 
-# OpenApi config
+# Open API 3
 springdoc:
+  name: "@project.name@"
   version: "@project.version@"
   description: "@project.description@"
   swagger-ui:
@@ -75,13 +89,20 @@ logging:
     org.springframework.web: DEBUG
     org.hibernate.SQL: INFO
     org.hibernate.type: TRACE
-    org.apache.http: DEBUG
+    # org.apache.http: DEBUG
+  file:
+    path: ${LOGGING_FILE_PATH:logs}
+    name: ${LOGGING_FILE_NAME:logs/application.log}
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      max-history: 10
 
 # Actuator config
 management:
   endpoint:
-    health:
-      show-details: always
+    shutdown:
+      enabled: true
   endpoints:
     web:
       exposure:
