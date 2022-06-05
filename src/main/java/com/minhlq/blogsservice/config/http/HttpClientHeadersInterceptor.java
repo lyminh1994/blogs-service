@@ -12,6 +12,13 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.HttpRequestWrapper;
 import org.springframework.lang.NonNull;
 
+/**
+ * This class allows the execution of additional code in http request.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Log4j2
 public class HttpClientHeadersInterceptor implements ClientHttpRequestInterceptor {
 

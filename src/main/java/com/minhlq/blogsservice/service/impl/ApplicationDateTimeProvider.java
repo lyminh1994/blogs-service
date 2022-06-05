@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * DateTimeProvider simply creating new clocked LocalDateTime instances for each method call. This
  * will make it easier to create users with specified createdAt and updatedAt dates.
  *
- * @author Eric Opoku
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

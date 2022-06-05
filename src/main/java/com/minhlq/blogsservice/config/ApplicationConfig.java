@@ -10,7 +10,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 /**
  * This class holds application configuration settings for this application.
  *
- * @author Matthew Puentes
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Responsible for user not found exception specifically.
  *
- * @author Eric Opoku
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

@@ -1,8 +1,10 @@
 package com.minhlq.blogsservice.annotation;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -10,10 +12,11 @@ import java.lang.annotation.Target;
  * aspect will run around that method execution and log the entry-exit and time taken by that
  * method.
  *
- * @author Eric Opoku
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Target({METHOD})
+@Retention(RUNTIME)
 public @interface Loggable {}

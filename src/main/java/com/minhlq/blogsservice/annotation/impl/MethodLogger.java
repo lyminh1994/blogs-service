@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * Ensures that method calls can be logged with entry-exit logs in console or log file.
  *
- * @author Eric Opoku
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

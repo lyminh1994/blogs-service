@@ -12,12 +12,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * This class holds rest template configuration settings for this application.
+ *
+ * @author Matthew Puentes
+ * @version 1.0
+ * @since 1.0
+ */
 @Configuration
 @RequiredArgsConstructor
 public class RestTemplateConfig {
 
   private final CloseableHttpClient httpClient;
 
+  /**
+   * Configuration object mapper bean.
+   *
+   * @return the objectMapper
+   */
   @Bean
   public ObjectMapper jsonMapper() {
     return new ObjectMapper()
@@ -26,6 +38,11 @@ public class RestTemplateConfig {
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
   }
 
+  /**
+   * A http client bean.
+   *
+   * @return the httpClient
+   */
   @Bean
   public HttpComponentsClientHttpRequestFactory clientHttpRequestFactory() {
     HttpComponentsClientHttpRequestFactory clientHttpRequestFactory =
@@ -34,6 +51,11 @@ public class RestTemplateConfig {
     return clientHttpRequestFactory;
   }
 
+  /**
+   * A RestTemplate bean.
+   *
+   * @return the restTemplate
+   */
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplateBuilder()

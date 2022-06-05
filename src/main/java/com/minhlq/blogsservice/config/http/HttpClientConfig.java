@@ -44,11 +44,23 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+/**
+ * This class holds http client configuration settings for this application.
+ *
+ * @author Matthew Puentes
+ * @version 1.0
+ * @since 1.0
+ */
 @Log4j2
 @Configuration
 @EnableScheduling
 public class HttpClientConfig {
 
+  /**
+   * A bean to config connection pool ensures that already opened connections are reused.
+   *
+   * @return the poolingHttpClientConnectionManager
+   */
   @Bean
   public PoolingHttpClientConnectionManager poolingConnectionManager() {
     PoolingHttpClientConnectionManager poolingConnectionManager = null;
@@ -76,6 +88,11 @@ public class HttpClientConfig {
     return poolingConnectionManager;
   }
 
+  /**
+   * A bean determines how long a connection may remain unused in the pool until it is closed.
+   *
+   * @return the connectionKeepAliveStrategy
+   */
   @Bean
   public ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
     return (httpResponse, httpContext) -> {
@@ -95,6 +112,12 @@ public class HttpClientConfig {
     };
   }
 
+  /**
+   * A bean to configure a monitor that runs every 20 seconds to close outdated connections.
+   *
+   * @param pool the poolingHttpClientConnectionManager
+   * @return the runnable
+   */
   @Bean
   public Runnable idleConnectionMonitor(PoolingHttpClientConnectionManager pool) {
     return new Runnable() {
@@ -112,6 +135,11 @@ public class HttpClientConfig {
     };
   }
 
+  /**
+   * Thread pool to schedule and execute tasks automatically.
+   *
+   * @return the threadPoolTaskScheduler
+   */
   @Bean
   public TaskScheduler taskScheduler() {
     ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -120,6 +148,11 @@ public class HttpClientConfig {
     return scheduler;
   }
 
+  /**
+   * The HttpClient bean.
+   *
+   * @return the httpClient
+   */
   @Bean
   public CloseableHttpClient httpClient() {
     RequestConfig requestConfig =

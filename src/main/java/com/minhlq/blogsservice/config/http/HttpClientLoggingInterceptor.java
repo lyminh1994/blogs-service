@@ -9,6 +9,13 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.NonNull;
 
+/**
+ * This class use to logging http request params.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Log4j2
 public class HttpClientLoggingInterceptor implements ClientHttpRequestInterceptor {
 

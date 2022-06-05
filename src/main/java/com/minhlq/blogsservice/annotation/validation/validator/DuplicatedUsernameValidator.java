@@ -7,6 +7,13 @@ import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * The implement for DuplicatedUsernameConstraint annotation.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 public class DuplicatedUsernameValidator
     implements ConstraintValidator<DuplicatedUsernameConstraint, String> {

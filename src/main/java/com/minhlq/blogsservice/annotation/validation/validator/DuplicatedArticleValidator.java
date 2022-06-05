@@ -7,6 +7,13 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * The implement for DuplicatedArticleConstraint annotation.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 public class DuplicatedArticleValidator
     implements ConstraintValidator<DuplicatedArticleConstraint, String> {

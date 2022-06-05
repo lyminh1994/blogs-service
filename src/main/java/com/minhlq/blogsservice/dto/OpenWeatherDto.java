@@ -4,6 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 
+/**
+ * This class models the format of the open weather api response produced.
+ *
+ * @author Eric Opoku
+ * @version 1.0
+ * @since 1.0
+ */
 @Data
 public class OpenWeatherDto implements Serializable {
 
