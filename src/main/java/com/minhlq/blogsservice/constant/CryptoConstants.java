@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CryptoConstants {
+public final class CryptoConstants {
 
   public static final String ERROR_ENCRYPTING_DATA = "Error encrypting data";
   public static final String ERROR_DECRYPTING_DATA = "Error decrypting data";
@@ -21,6 +21,7 @@ public class CryptoConstants {
 
   public static final int GCM_TAG_LENGTH = 12; // bits
   public static final int GCM_IV_LENGTH = 12;
+
   // The password-based key derivation function
   public static final int ITERATION_COUNT = 65536;
   public static final int KEY_LENGTH = 256;

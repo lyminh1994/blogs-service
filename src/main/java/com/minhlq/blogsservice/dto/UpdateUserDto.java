@@ -1,8 +1,8 @@
 package com.minhlq.blogsservice.dto;
 
+import com.minhlq.blogsservice.annotation.validation.UpdateUserConstraint;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.payload.UserPrincipal;
-import com.minhlq.blogsservice.validation.UpdateUserConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

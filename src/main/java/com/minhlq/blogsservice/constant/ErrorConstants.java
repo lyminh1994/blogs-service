@@ -1,5 +1,8 @@
 package com.minhlq.blogsservice.constant;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * This class holds all the error messages used in the application.
  *
@@ -7,6 +10,7 @@ package com.minhlq.blogsservice.constant;
  * @version 1.0
  * @since 1.0
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ErrorConstants {
 
   /** This class is not meant to be instantiated. */
@@ -22,8 +26,4 @@ public final class ErrorConstants {
 
   /** Null elements not allowed. */
   public static final String NULL_ELEMENTS_NOT_ALLOWED = "Null elements not allowed!";
-
-  private ErrorConstants() {
-    throw new AssertionError(NOT_INSTANTIABLE);
-  }
 }

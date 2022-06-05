@@ -15,11 +15,9 @@ import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
-
-  private final PasswordEncoder passwordEncoder;
 
   private final FollowRepository followRepository;
 
@@ -47,9 +43,6 @@ public class UserServiceImpl implements UserService {
             .map(
                 currentUser -> {
                   UpdateUserRequest params = updateUserDto.getParams();
-                  if (StringUtils.isNotBlank(params.getPassword())) {
-                    currentUser.setPassword(passwordEncoder.encode(params.getPassword()));
-                  }
                   currentUser.setEmail(params.getEmail());
                   currentUser.setBio(params.getBio());
                   currentUser.setImage(params.getImage());

@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class HttpHelper {
+public class HttpClientHelper {
 
   private final RestTemplate restTemplate;
 

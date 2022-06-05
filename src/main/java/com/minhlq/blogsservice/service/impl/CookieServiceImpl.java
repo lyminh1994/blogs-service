@@ -30,13 +30,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CookieServiceImpl implements CookieService {
 
-  /** The token type cannot be null. */
-  public static final String THE_TOKEN_TYPE_CANNOT_BE_NULL = "The tokenType cannot be null";
-
-  /** The token cannot be null or empty. */
-  public static final String THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY =
-      "The token cannot be null or empty";
-
   private final Environment environment;
 
   private final Duration duration = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
@@ -89,7 +82,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie createTokenCookie(String token, TokenType tokenType) {
-    Validate.notBlank(token, THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
 
     return createTokenCookie(token, tokenType, duration);
   }
@@ -104,8 +97,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie createTokenCookie(String token, TokenType tokenType, Duration duration) {
-    Validate.notBlank(token, THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
-    Validate.notNull(tokenType, THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
 
     return createCookie(tokenType.getName(), token, duration);
   }
@@ -118,7 +111,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie deleteTokenCookie(TokenType tokenType) {
-    Validate.notNull(tokenType, THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
 
     return createCookie(tokenType.getName(), StringUtils.EMPTY, Duration.ZERO);
   }
@@ -131,7 +124,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addDeletedCookieToHeaders(TokenType tokenType) {
-    Validate.notNull(tokenType, THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
 
     HttpCookie httpCookie = deleteTokenCookie(tokenType);
     HttpHeaders httpHeaders = new HttpHeaders();
@@ -148,8 +141,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addCookieToHeaders(TokenType tokenType, String token) {
-    Validate.notNull(tokenType, THE_TOKEN_TYPE_CANNOT_BE_NULL);
-    Validate.notBlank(token, THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
 
     return addCookieToHeaders(tokenType, token, duration);
   }
@@ -164,8 +157,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addCookieToHeaders(TokenType tokenType, String token, Duration duration) {
-    Validate.notNull(tokenType, THE_TOKEN_TYPE_CANNOT_BE_NULL);
-    Validate.notBlank(token, THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
 
     HttpHeaders httpHeaders = new HttpHeaders();
     addCookieToHeaders(
@@ -185,7 +178,7 @@ public class CookieServiceImpl implements CookieService {
   @Override
   public void addCookieToHeaders(
       HttpHeaders httpHeaders, TokenType tokenType, String token, Duration duration) {
-    Validate.notNull(tokenType, THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
 
     httpHeaders.add(
         HttpHeaders.SET_COOKIE, createTokenCookie(token, tokenType, duration).toString());

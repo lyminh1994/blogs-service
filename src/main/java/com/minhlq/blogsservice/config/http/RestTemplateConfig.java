@@ -38,8 +38,8 @@ public class RestTemplateConfig {
   public RestTemplate restTemplate() {
     return new RestTemplateBuilder()
         .requestFactory(this::clientHttpRequestFactory)
-        .errorHandler(new HttpErrorHandler())
-        .interceptors(new HttpHeadersInterceptor(), new HttpLoggingInterceptor())
+        .errorHandler(new HttpClientErrorHandler())
+        .interceptors(new HttpClientHeadersInterceptor(), new HttpClientLoggingInterceptor())
         .build();
   }
 }

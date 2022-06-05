@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class AuthenticationResponse implements Serializable {
+public final class AuthenticationResponse implements Serializable {
 
   private static final long serialVersionUID = -818779525319891506L;
 
@@ -28,21 +28,21 @@ public class AuthenticationResponse implements Serializable {
   private final String accessToken;
 
   /**
-   * Builds jwtResponseBuilder object from the specified userDetails.
+   * Builds authenticationResponse object from the specified userDetails.
    *
    * @param jwtToken the jwtToken
-   * @return the jwtResponse
+   * @return the authenticationResponse.
    */
   public static AuthenticationResponse buildJwtResponse(final String jwtToken) {
     return buildJwtResponse(jwtToken, null);
   }
 
   /**
-   * Build jwtResponse object from the specified userDetails.
+   * Build authenticationResponse object from the specified userDetails.
    *
    * @param jwToken the jwToken.
    * @param userDetails the userDetails.
-   * @return the jwtResponse object.
+   * @return the authenticationResponse.
    */
   public static AuthenticationResponse buildJwtResponse(String jwToken, UserPrincipal userDetails) {
     UserPrincipal localUserDetails = userDetails;

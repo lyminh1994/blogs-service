@@ -19,32 +19,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Comments", description = "Article Comments APIs")
 @RestController
-@RequestMapping("/articles/{slug}/comments")
 @RequiredArgsConstructor
+@RequestMapping("/articles/{slug}/comments")
+@Tag(name = "Comments", description = "Article Comments APIs")
 public class CommentController {
 
   private final CommentService commentService;
 
-  @Operation(summary = "Create comment", description = "Create comment for article")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
       @PathVariable("slug") String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
     return commentService.createComment(slug, newCommentRequest);
   }
 
+  @GetMapping
   @SecurityRequirements
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
-  @GetMapping
   public List<CommentResponse> getComments(@PathVariable("slug") String slug) {
     return commentService.findArticleComments(slug);
   }
 
-  @Operation(summary = "Delete comment", description = "Delete comment of article")
   @DeleteMapping(value = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @Operation(summary = "Delete comment", description = "Delete comment of article")
   public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
     commentService.deleteComment(slug, commentId);
   }

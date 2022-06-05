@@ -13,7 +13,7 @@ import org.springframework.http.client.support.HttpRequestWrapper;
 import org.springframework.lang.NonNull;
 
 @Log4j2
-public class HttpHeadersInterceptor implements ClientHttpRequestInterceptor {
+public class HttpClientHeadersInterceptor implements ClientHttpRequestInterceptor {
 
   @NonNull
   @Override

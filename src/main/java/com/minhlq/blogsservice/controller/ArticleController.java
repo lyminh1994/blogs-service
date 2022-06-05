@@ -26,23 +26,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Articles", description = "Article APIs")
 @RestController
-@RequestMapping("/articles")
 @RequiredArgsConstructor
+@RequestMapping("/articles")
+@Tag(name = "Articles", description = "Article APIs")
 public class ArticleController {
 
   private final ArticleService articleService;
 
-  @Operation(summary = "Create article", description = "Create article")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @Operation(summary = "Create article", description = "Create article")
   public ArticleResponse createArticle(@Valid @RequestBody NewArticleRequest articleRequest) {
     return articleService.createArticle(articleRequest);
   }
 
-  @Operation(summary = "Get feeds", description = "Get current user articles feeds")
   @GetMapping("/feeds")
+  @Operation(summary = "Get feeds", description = "Get current user articles feeds")
   public PageResponse<ArticleResponse> getFeeds(
       @RequestParam(value = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)
           int pageNumber,
@@ -51,9 +51,9 @@ public class ArticleController {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
+  @GetMapping
   @SecurityRequirements
   @Operation(summary = "Get articles", description = "Get all articles")
-  @GetMapping
   public PageResponse<ArticleResponse> getArticles(
       @RequestParam(value = "tag", required = false) String tagName,
       @RequestParam(value = "favorite-by", required = false) String favoriteBy,
@@ -67,35 +67,35 @@ public class ArticleController {
   }
 
   @SecurityRequirements
-  @Operation(summary = "Get article", description = "Get article by slug")
   @GetMapping("/{slug}")
+  @Operation(summary = "Get article", description = "Get article by slug")
   public ArticleResponse getArticle(@PathVariable("slug") String slug) {
     return articleService.findBySlug(slug);
   }
 
-  @Operation(summary = "Update article", description = "Update article by slug")
   @PutMapping("/{slug}")
+  @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
       @PathVariable("slug") String slug,
       @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
     return articleService.updateArticle(slug, updateArticleRequest);
   }
 
-  @Operation(summary = "Delete article", description = "Delete article by slug")
   @DeleteMapping("/{slug}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @Operation(summary = "Delete article", description = "Delete article by slug")
   public void deleteArticle(@PathVariable("slug") String slug) {
     articleService.deleteArticle(slug);
   }
 
+  @PutMapping("/{slug}/favorite")
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
-  @PostMapping("/favorite/{slug}")
   public ArticleResponse favoriteArticle(@PathVariable("slug") String slug) {
     return articleService.favoriteArticle(slug);
   }
 
+  @DeleteMapping("/{slug}/favorite")
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
-  @DeleteMapping("/favorite/{slug}")
   public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {
     return articleService.unFavoriteArticle(slug);
   }

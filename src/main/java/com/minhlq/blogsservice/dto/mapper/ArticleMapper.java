@@ -6,6 +6,14 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+/**
+ * The ArticleMapper class outlines the supported conversions between Article entity and other data
+ * transfer objects.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Mapper
 public interface ArticleMapper {
 

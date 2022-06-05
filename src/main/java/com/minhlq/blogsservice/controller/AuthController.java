@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
+import com.minhlq.blogsservice.annotation.Loggable;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.enumdef.TokenType;
 import com.minhlq.blogsservice.payload.request.LoginRequest;
@@ -33,19 +34,26 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @since 1.0
  */
-@SecurityRequirements
-@Tag(name = "Authentication", description = "Authentication APIs")
 @RestController
-@RequestMapping(SecurityConstants.AUTH_ROOT_URL)
+@SecurityRequirements
 @RequiredArgsConstructor
+@RequestMapping(SecurityConstants.AUTH_ROOT_URL)
+@Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
   private final AuthService authService;
 
   private final CookieService cookieService;
 
-  @Operation(summary = "Register", description = "Register new account")
+  /**
+   * Creates a new user and return JWT token.
+   *
+   * @param registerRequest the register
+   * @return the jwt token details
+   */
+  @Loggable
   @PostMapping(SecurityConstants.REGISTER)
+  @Operation(summary = "Register", description = "Register new account")
   public ResponseEntity<AuthenticationResponse> createUser(
       @Valid @RequestBody RegisterRequest registerRequest) {
     HttpHeaders responseHeaders = new HttpHeaders();
@@ -62,12 +70,13 @@ public class AuthController {
    *
    * <p>A refresh token is generated and returned as a cookie.
    *
-   * @param refreshToken The refresh token
+   * @param refreshToken the refresh token
    * @param loginRequest the login request
    * @return the jwt token details
    */
-  @Operation(summary = "Login", description = "Authentication user and return access token")
+  @Loggable
   @PostMapping(SecurityConstants.LOGIN)
+  @Operation(summary = "Login", description = "Authentication user and return access token")
   public ResponseEntity<AuthenticationResponse> login(
       @CookieValue(required = false) String refreshToken,
       @Valid @RequestBody LoginRequest loginRequest) {
@@ -85,14 +94,13 @@ public class AuthController {
    * @param request The request
    * @return the jwt token details
    */
-  @Operation(summary = "Refresh token", description = "Create and return new access token")
+  @Loggable
   @GetMapping(SecurityConstants.REFRESH_TOKEN)
+  @Operation(summary = "Refresh token", description = "Create and return new access token")
   public ResponseEntity<AuthenticationResponse> refreshToken(
       @CookieValue String refreshToken, HttpServletRequest request) {
-    HttpHeaders responseHeaders = new HttpHeaders();
-    AuthenticationResponse authenticationResponse =
-        authService.refreshToken(refreshToken, request, responseHeaders);
-    return ResponseEntity.ok().headers(responseHeaders).body(authenticationResponse);
+    AuthenticationResponse authenticationResponse = authService.refreshToken(refreshToken, request);
+    return ResponseEntity.ok().body(authenticationResponse);
   }
 
   /**
@@ -101,8 +109,9 @@ public class AuthController {
    * @param request the request
    * @param response the response
    */
-  @Operation(summary = "Logout", description = "Logout")
+  @Loggable
   @DeleteMapping(SecurityConstants.LOGOUT)
+  @Operation(summary = "Logout", description = "Logout")
   public ResponseEntity<Void> logOut(HttpServletRequest request, HttpServletResponse response) {
     authService.logout(request, response);
     HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);

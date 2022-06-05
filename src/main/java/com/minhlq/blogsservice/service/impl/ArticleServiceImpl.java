@@ -174,17 +174,17 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository
             .findBySlug(slug)
             .map(
-                oldArticle -> {
-                  if (!currentUser.getId().equals(oldArticle.getAuthor().getId())) {
+                currentArticle -> {
+                  if (!currentUser.getId().equals(currentArticle.getAuthor().getId())) {
                     throw new NoAuthorizationException();
                   }
 
-                  oldArticle.setSlug(ArticleUtils.toSlug(updateRequest.getTitle()));
-                  oldArticle.setTitle(updateRequest.getTitle());
-                  oldArticle.setDescription(updateRequest.getDescription());
-                  oldArticle.setBody(updateRequest.getBody());
+                  currentArticle.setSlug(ArticleUtils.toSlug(updateRequest.getTitle()));
+                  currentArticle.setTitle(updateRequest.getTitle());
+                  currentArticle.setDescription(updateRequest.getDescription());
+                  currentArticle.setBody(updateRequest.getBody());
 
-                  return articleRepository.save(oldArticle);
+                  return articleRepository.save(currentArticle);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 

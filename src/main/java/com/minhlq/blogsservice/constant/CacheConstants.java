@@ -13,9 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CacheConstants {
 
+  // User cache
   public static final String USERS = "users";
-
   public static final String USER_DETAILS = "userDetails";
 
-  public static final String JWT_PREFIX = "security:jwt:";
+  // Weather API cache
+  public static final String CURRENT_WEATHER = "currentWeather";
 }

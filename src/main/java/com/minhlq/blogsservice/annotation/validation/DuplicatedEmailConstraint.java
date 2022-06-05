@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.validation;
+package com.minhlq.blogsservice.annotation.validation;
 
-import com.minhlq.blogsservice.validation.validator.DuplicatedEmailValidator;
+import com.minhlq.blogsservice.annotation.validation.validator.DuplicatedEmailValidator;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import javax.validation.Constraint;
@@ -10,7 +10,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicatedEmailConstraint {
 
-  String message() default "email has existed";
+  String message() default "Email has existed";
 
   Class<?>[] groups() default {};
 

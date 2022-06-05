@@ -10,7 +10,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.NonNull;
 
 @Log4j2
-public class HttpLoggingInterceptor implements ClientHttpRequestInterceptor {
+public class HttpClientLoggingInterceptor implements ClientHttpRequestInterceptor {
 
   @NonNull
   @Override

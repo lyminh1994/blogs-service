@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This controller handles all requests relating to tag.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Tag(name = "Tags", description = "Tags APIs")
 @RestController
 @RequestMapping("/tags")
@@ -24,8 +31,16 @@ public class TagsController {
 
   private final TagService tagService;
 
+  /**
+   * Get all tags name.
+   *
+   * @param pageNumber the page number
+   * @param pageSize the page size
+   * @param sort the sort fields
+   * @return paged tags name
+   */
   @SecurityRequirements
-  @Operation(summary = "Get tags", description = "Get all tags")
+  @Operation(summary = "Get tags", description = "Get all tags name")
   @GetMapping
   public PageResponse<String> getTags(
       @RequestParam(name = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)

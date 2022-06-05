@@ -16,13 +16,18 @@ import org.springframework.http.HttpHeaders;
  */
 public interface AuthService {
 
+  /**
+   * Create the user with the register request instance given.
+   *
+   * @param registerRequest the register information
+   * @return the authentication response
+   */
   AuthenticationResponse createUser(RegisterRequest registerRequest, HttpHeaders responseHeaders);
 
   AuthenticationResponse login(
       String refreshToken, LoginRequest loginRequest, HttpHeaders responseHeaders);
 
-  AuthenticationResponse refreshToken(
-      String refreshToken, HttpServletRequest request, HttpHeaders responseHeaders);
+  AuthenticationResponse refreshToken(String refreshToken, HttpServletRequest request);
 
   void logout(HttpServletRequest request, HttpServletResponse response);
 }

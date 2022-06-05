@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
+import com.minhlq.blogsservice.annotation.Loggable;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
@@ -11,52 +12,86 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "User", description = "User Information APIs")
+/**
+ * This controller handles all requests relating to user.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
+@RequestMapping("/user")
+@Tag(name = "User", description = "User Information APIs")
 public class UserController {
 
   private final UserService userService;
 
-  @Operation(summary = "Current user", description = "Get current user")
-  @GetMapping
-  public UserPrincipal getCurrentUser() {
-    return SecurityUtils.getAuthenticatedUserDetails();
-  }
-
-  @Operation(summary = "Update user info", description = "Update current user information")
+  /**
+   * Updates the user profile with the details provided.
+   *
+   * @param updateUserRequest the user
+   * @return new user details.
+   */
+  @Loggable
   @PutMapping
+  @PreAuthorize("isFullyAuthenticated()")
+  @Operation(summary = "Update user info", description = "Update current user information")
   public UserPrincipal updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    return userService.updateUser(new UpdateUserDto(currentUser, updateUserRequest));
+
+    UpdateUserDto updateUser = new UpdateUserDto(currentUser, updateUserRequest);
+    UserPrincipal userDetails = userService.updateUser(updateUser);
+
+    // Authenticate user with the updated profile.
+    SecurityUtils.authenticateUser(userDetails);
+
+    return userDetails;
   }
 
+  /**
+   * Get user profile by username.
+   *
+   * @param username the username
+   * @return user profile.
+   */
   @SecurityRequirements
-  @Operation(summary = "Get profile", description = "Get user profile by username")
   @GetMapping("/{username}")
+  @Operation(summary = "Get profile", description = "Get user profile by username")
   public ProfileResponse getProfile(@PathVariable("username") String username) {
     return userService.findByUsername(username);
   }
 
+  /**
+   * Following user by username.
+   *
+   * @param username the username following
+   * @return user profile.
+   */
+  @PutMapping(path = "/{target-username}/following")
   @Operation(summary = "Following", description = "Following user by username")
-  @PostMapping(path = "/following/{target}")
-  public ProfileResponse following(@PathVariable("target") String username) {
+  public ProfileResponse following(@PathVariable("target-username") String username) {
     return userService.followByUsername(username);
   }
 
+  /**
+   * Unfollowing user by username.
+   *
+   * @param username the username un-following
+   * @return user profile.
+   */
+  @DeleteMapping(path = "/{target-username}/following")
   @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
-  @DeleteMapping(path = "/following/{target}")
-  public ProfileResponse unFollowing(@PathVariable("target") String username) {
+  public ProfileResponse unFollowing(@PathVariable("target-username") String username) {
     return userService.unFollowByUsername(username);
   }
 }

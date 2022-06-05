@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id       SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE,
@@ -8,7 +8,7 @@ CREATE TABLE users
     image    VARCHAR(511)
 );
 
-CREATE TABLE articles
+CREATE TABLE IF NOT EXISTS articles
 (
     id          SERIAL PRIMARY KEY,
     user_id     INT,
@@ -21,13 +21,13 @@ CREATE TABLE articles
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE tags
+CREATE TABLE IF NOT EXISTS tags
 (
     id   SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE comments
+CREATE TABLE IF NOT EXISTS comments
 (
     id         SERIAL PRIMARY KEY,
     body       TEXT,
@@ -39,7 +39,7 @@ CREATE TABLE comments
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE follows
+CREATE TABLE IF NOT EXISTS follows
 (
     user_id   INT NOT NULL,
     follow_id INT NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE follows
     FOREIGN KEY (follow_id) REFERENCES users (id)
 );
 
-CREATE TABLE article_favorites
+CREATE TABLE IF NOT EXISTS article_favorites
 (
     article_id INT NOT NULL,
     user_id    INT NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE article_favorites
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE article_tags
+CREATE TABLE IF NOT EXISTS article_tags
 (
     article_id INT NOT NULL,
     tag_id     INT NOT NULL,

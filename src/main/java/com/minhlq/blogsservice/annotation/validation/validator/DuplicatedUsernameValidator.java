@@ -1,7 +1,7 @@
-package com.minhlq.blogsservice.validation.validator;
+package com.minhlq.blogsservice.annotation.validation.validator;
 
+import com.minhlq.blogsservice.annotation.validation.DuplicatedUsernameConstraint;
 import com.minhlq.blogsservice.repository.UserRepository;
-import com.minhlq.blogsservice.validation.DuplicatedUsernameConstraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;

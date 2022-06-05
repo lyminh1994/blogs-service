@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.validation;
+package com.minhlq.blogsservice.annotation.validation;
 
-import com.minhlq.blogsservice.validation.validator.DuplicatedArticleValidator;
+import com.minhlq.blogsservice.annotation.validation.validator.DuplicatedArticleValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicatedArticleConstraint {
 
-  String message() default "article name has exists";
+  String message() default "Article name already existed";
 
   Class<?>[] groups() default {};
 

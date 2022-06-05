@@ -10,10 +10,7 @@ import lombok.Getter;
 public class FieldErrorResource {
 
   private final String resource;
-
   private final String field;
-
   private final String code;
-
   private final String message;
 }

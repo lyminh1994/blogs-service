@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.dto.request;
 
-import com.minhlq.blogsservice.validation.DuplicatedArticleConstraint;
+import com.minhlq.blogsservice.annotation.validation.DuplicatedArticleConstraint;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

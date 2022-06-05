@@ -26,6 +26,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * This is implement for the authentication service operations.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -85,8 +92,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public AuthenticationResponse refreshToken(
-      String refreshToken, HttpServletRequest request, HttpHeaders responseHeaders) {
+  public AuthenticationResponse refreshToken(String refreshToken, HttpServletRequest request) {
     String decryptedRefreshToken = cryptoService.decrypt(refreshToken);
     boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
@@ -96,13 +102,13 @@ public class AuthServiceImpl implements AuthService {
     String username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+    SecurityUtils.clearAuthentication();
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
-    String accessToken = updateCookies(username, false, responseHeaders);
+    String accessToken = jwtService.createJwt(username);
     String encryptedAccessToken = cryptoService.encrypt(accessToken);
 
-    SecurityUtils.clearAuthentication();
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken);
   }
 

@@ -49,8 +49,8 @@ spring:
 # Crypto and Token secrets
 crypto:
   secret:
-    password: ${ENCRYPTION_SECRET_PASSWORD:password}
-    salt: ${ENCRYPTION_SECRET_SALT:salt}
+    password: ${CRYPTO_SECRET_PASSWORD:password}
+    salt: ${CRYPTO_SECRET_SALT:salt}
 jwt:
   config:
     secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA

@@ -6,7 +6,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
 @Log4j2
-public class HttpErrorHandler implements ResponseErrorHandler {
+public class HttpClientErrorHandler implements ResponseErrorHandler {
 
   @Override
   public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {

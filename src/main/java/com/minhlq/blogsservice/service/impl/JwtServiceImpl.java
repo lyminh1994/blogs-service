@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.enumdef.TokenType;
-import com.minhlq.blogsservice.exception.JwtException;
+import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -67,19 +67,19 @@ public class JwtServiceImpl implements JwtService {
       return Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
     } catch (ExpiredJwtException ex) {
       log.error("JWT is expired: {}", ex.getMessage());
-      throw new JwtException("JWT is expired!");
+      throw new SecurityException("JWT is expired!");
     } catch (UnsupportedJwtException ex) {
       log.error("JWT is unsupported: {}", ex.getMessage());
-      throw new JwtException("JWT is unsupported!");
+      throw new SecurityException("JWT is unsupported!");
     } catch (MalformedJwtException ex) {
       log.error("Invalid JWT: {}", ex.getMessage());
-      throw new JwtException("Invalid JWT!");
+      throw new SecurityException("Invalid JWT!");
     } catch (SignatureException ex) {
       log.error("Invalid JWT signature: {}", ex.getMessage());
-      throw new JwtException("Invalid JWT signature!");
+      throw new SecurityException("Invalid JWT signature!");
     } catch (IllegalArgumentException ex) {
       log.error("JWT claims string is empty: {}", ex.getMessage());
-      throw new JwtException("JWT claims string is empty!");
+      throw new SecurityException("JWT claims string is empty!");
     }
   }
 

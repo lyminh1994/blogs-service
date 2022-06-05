@@ -47,7 +47,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Log4j2
 @Configuration
 @EnableScheduling
-public class HttpConfig {
+public class HttpClientConfig {
 
   @Bean
   public PoolingHttpClientConnectionManager poolingConnectionManager() {

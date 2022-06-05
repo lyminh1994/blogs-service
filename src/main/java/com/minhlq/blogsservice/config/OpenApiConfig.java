@@ -39,10 +39,10 @@ public class OpenApiConfig {
    */
   @Bean
   public OpenAPI customOpenApi() {
-    final String securitySchemeName = "bearerAuth";
     final String apiTitle = String.format("%s API", StringUtils.capitalize(name));
+    final String securitySchemeName = "bearerAuth";
+    final License license = new License().name("Apache 2.0").url("http://springdoc.org");
 
-    License license = new License().name("Apache 2.0").url("http://springdoc.org");
     Info info =
         new Info()
             .title(apiTitle)

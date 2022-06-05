@@ -2,9 +2,11 @@ package com.minhlq.blogsservice.payload;
 
 import com.minhlq.blogsservice.entity.UserEntity;
 import java.util.Collection;
+import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,17 +23,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class UserPrincipal implements UserDetails {
 
-  private static final long serialVersionUID = 1944621574430603211L;
+  private static final long serialVersionUID = -6788482996276890023L;
 
   private Long id;
 
-  private String username;
+  @EqualsAndHashCode.Include private String username;
+
+  @EqualsAndHashCode.Include private String email;
 
   private String password;
-
-  private String email;
 
   private String bio;
 
@@ -60,14 +63,15 @@ public final class UserPrincipal implements UserDetails {
     return UserPrincipal.builder()
         .id(user.getId())
         .username(user.getUsername())
-        .password(user.getPassword())
         .email(user.getEmail())
+        .password(user.getPassword())
         .bio(user.getBio())
         .image(user.getImage())
         .enabled(true)
         .accountNonExpired(true)
         .accountNonLocked(true)
         .credentialsNonExpired(true)
+        .authorities(Collections.emptyList())
         .build();
   }
 }

@@ -35,6 +35,13 @@ public final class SecurityConstants {
   public static final int DEFAULT_TOKEN_DURATION = 7;
   public static final int SECURITY_STRENGTH = 12;
 
+  /** The token type cannot be null. */
+  public static final String THE_TOKEN_TYPE_CANNOT_BE_NULL = "The tokenType cannot be null";
+
+  /** The token cannot be null or empty. */
+  public static final String THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY =
+      "The token cannot be null or empty";
+
   private static final String[] PUBLIC_MATCHERS = {
     "/resources/**",
     "/static/**",
