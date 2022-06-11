@@ -47,7 +47,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 /**
  * This class holds http client configuration settings for this application.
  *
- * @author Matthew Puentes
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

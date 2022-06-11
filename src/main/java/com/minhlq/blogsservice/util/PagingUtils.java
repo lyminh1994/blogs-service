@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort.Order;
 public final class PagingUtils {
 
   /**
-   * Get {@link PageRequest}
+   * Get {@link PageRequest}.
    *
    * @param pageNumber number of page
    * @param pageSize total element of page
@@ -24,7 +24,7 @@ public final class PagingUtils {
   }
 
   /**
-   * Get {@link Sort} from array string
+   * Get {@link Sort} from array string.
    *
    * @param sort array string with format ["field1,direction1", "field2,direction2"] or ["field",
    *     "direction"]
@@ -53,7 +53,7 @@ public final class PagingUtils {
   }
 
   /**
-   * Get {@link Sort.Direction} from direction string
+   * Get {@link Sort.Direction} from direction string.
    *
    * @param direction asc, desc or another string
    * @return {@link Sort.Direction}

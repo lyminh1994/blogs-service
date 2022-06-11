@@ -141,6 +141,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ErrorResource(errors);
   }
 
+  /**
+   * Get error params.
+   *
+   * @param s input
+   * @return params
+   */
   private String getParam(String s) {
     String[] splits = s.split("\\.");
     if (splits.length == 1) {

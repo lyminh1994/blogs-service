@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * This class holds rest template configuration settings for this application.
  *
- * @author Matthew Puentes
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

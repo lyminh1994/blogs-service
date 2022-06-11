@@ -26,6 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This controller handles all requests relating to articles.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/articles")
@@ -34,6 +41,12 @@ public class ArticleController {
 
   private final ArticleService articleService;
 
+  /**
+   * Create article with article information provided.
+   *
+   * @param articleRequest new article request
+   * @return the article
+   */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create article", description = "Create article")
@@ -41,6 +54,13 @@ public class ArticleController {
     return articleService.createArticle(articleRequest);
   }
 
+  /**
+   * Get current user feeds.
+   *
+   * @param pageNumber page number
+   * @param pageSize page size
+   * @return paging articles
+   */
   @GetMapping("/feeds")
   @Operation(summary = "Get feeds", description = "Get current user articles feeds")
   public PageResponse<ArticleResponse> getFeeds(
@@ -51,6 +71,16 @@ public class ArticleController {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
+  /**
+   * Get all articles by filter params provided.
+   *
+   * @param tagName tag name
+   * @param favoriteBy username favorite
+   * @param author article author
+   * @param pageNumber page number
+   * @param pageSize page size
+   * @return paging articles
+   */
   @GetMapping
   @SecurityRequirements
   @Operation(summary = "Get articles", description = "Get all articles")
@@ -66,6 +96,12 @@ public class ArticleController {
         tagName, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
   }
 
+  /**
+   * Get article by slug.
+   *
+   * @param slug slug
+   * @return article
+   */
   @SecurityRequirements
   @GetMapping("/{slug}")
   @Operation(summary = "Get article", description = "Get article by slug")
@@ -73,6 +109,13 @@ public class ArticleController {
     return articleService.findBySlug(slug);
   }
 
+  /**
+   * Update article with slug and details provided.
+   *
+   * @param slug slug
+   * @param updateArticleRequest update article details
+   * @return updated article
+   */
   @PutMapping("/{slug}")
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
@@ -81,6 +124,11 @@ public class ArticleController {
     return articleService.updateArticle(slug, updateArticleRequest);
   }
 
+  /**
+   * Delete article bu slug.
+   *
+   * @param slug slug
+   */
   @DeleteMapping("/{slug}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
@@ -88,12 +136,24 @@ public class ArticleController {
     articleService.deleteArticle(slug);
   }
 
+  /**
+   * Set favorite article by slug.
+   *
+   * @param slug slug
+   * @return article
+   */
   @PutMapping("/{slug}/favorite")
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
   public ArticleResponse favoriteArticle(@PathVariable("slug") String slug) {
     return articleService.favoriteArticle(slug);
   }
 
+  /**
+   * Delete favorite article by slug.
+   *
+   * @param slug slug
+   * @return article
+   */
   @DeleteMapping("/{slug}/favorite")
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
   public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {

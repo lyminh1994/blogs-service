@@ -19,6 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This controller handles all requests relating to article comments.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/articles/{slug}/comments")
@@ -27,6 +34,13 @@ public class CommentController {
 
   private final CommentService commentService;
 
+  /**
+   * Add comment to article by slug.
+   *
+   * @param slug slug
+   * @param newCommentRequest comment details
+   * @return comment
+   */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
@@ -35,6 +49,12 @@ public class CommentController {
     return commentService.createComment(slug, newCommentRequest);
   }
 
+  /**
+   * Get all comments of article by slug.
+   *
+   * @param slug slug
+   * @return comments
+   */
   @GetMapping
   @SecurityRequirements
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
@@ -42,6 +62,12 @@ public class CommentController {
     return commentService.findArticleComments(slug);
   }
 
+  /**
+   * Delete comment of article.
+   *
+   * @param slug slug
+   * @param commentId id
+   */
   @DeleteMapping(value = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 /**
- * This class holds OpenApi 3 configurations for this application.
+ * This class holds Open Api 3 configurations for this application.
  *
  * @author Minh Lys
  * @version 1.0

@@ -8,6 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository for the Article favorite.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Repository
 public interface ArticleFavoriteRepository
     extends JpaRepository<ArticleFavoriteEntity, ArticleFavoriteKey>,

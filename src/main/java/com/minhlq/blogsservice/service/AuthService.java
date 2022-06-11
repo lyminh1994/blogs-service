@@ -24,10 +24,32 @@ public interface AuthService {
    */
   AuthenticationResponse createUser(RegisterRequest registerRequest, HttpHeaders responseHeaders);
 
+  /**
+   * Attempts to authenticate with the provided credentials. If successful, a JWT token is returned
+   * with some user details.
+   *
+   * @param refreshToken current refresh token
+   * @param loginRequest login params
+   * @param responseHeaders the response headers
+   * @return the authentication response
+   */
   AuthenticationResponse login(
       String refreshToken, LoginRequest loginRequest, HttpHeaders responseHeaders);
 
+  /**
+   * Refreshes the current access token and refresh token accordingly.
+   *
+   * @param refreshToken current refresh token
+   * @param request the request
+   * @return the authentication response
+   */
   AuthenticationResponse refreshToken(String refreshToken, HttpServletRequest request);
 
+  /**
+   * Logout the user from the system and clear all cookies from request and response.
+   *
+   * @param request the request
+   * @param response the response
+   */
   void logout(HttpServletRequest request, HttpServletResponse response);
 }

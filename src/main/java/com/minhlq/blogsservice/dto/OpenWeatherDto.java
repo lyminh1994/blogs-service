@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * This class models the format of the open weather api response produced.
  *
- * @author Eric Opoku
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

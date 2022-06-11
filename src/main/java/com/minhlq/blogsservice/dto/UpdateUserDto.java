@@ -9,7 +9,7 @@ import lombok.Getter;
 /**
  * The UpdateUserDto transfers user details from outside into the application.
  *
- * @author Eric Opoku
+ * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */

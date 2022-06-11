@@ -8,6 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+/**
+ * This is implement for the tag service operations.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {

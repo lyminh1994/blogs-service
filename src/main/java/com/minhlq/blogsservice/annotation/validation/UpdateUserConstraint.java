@@ -1,14 +1,10 @@
 package com.minhlq.blogsservice.annotation.validation;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import com.minhlq.blogsservice.annotation.validation.validator.UpdateUserValidator;
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -21,10 +17,8 @@ import javax.validation.Payload;
  * @since 1.0
  */
 @Documented
-@Target({
-  TYPE, FIELD, METHOD, PARAMETER,
-})
-@Retention(RUNTIME)
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UpdateUserValidator.class)
 public @interface UpdateUserConstraint {
 

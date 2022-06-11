@@ -17,7 +17,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
- * This class holds Redis database configurations for this application.
+ * This class holds Redis database and caching configurations for this application.
  *
  * @author Minh Lys
  * @version 1.0

@@ -7,6 +7,13 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Handles common error response for the application.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Getter
 @AllArgsConstructor
 @JsonRootName("errors")

@@ -9,6 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Configuration serializer for {@link ErrorResource}.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 public class ErrorResourceSerializer extends JsonSerializer<ErrorResource> {
 
   @Override

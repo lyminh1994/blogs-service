@@ -45,6 +45,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+/**
+ * The article service implementation.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
@@ -239,6 +246,13 @@ public class ArticleServiceImpl implements ArticleService {
     return getArticleResponse(currentUser, article);
   }
 
+  /**
+   * Add user details and tag name to article.
+   *
+   * @param currentUser the user
+   * @param article the article
+   * @return article
+   */
   private ArticleResponse getArticleResponse(UserPrincipal currentUser, ArticleEntity article) {
     ArticleResponse articleResponse = ArticleMapper.MAPPER.toArticleResponse(article);
     if (currentUser != null) {
@@ -271,6 +285,12 @@ public class ArticleServiceImpl implements ArticleService {
     return articleResponse;
   }
 
+  /**
+   * Mapping article with addition user details.
+   *
+   * @param articles the articles
+   * @return articles
+   */
   private List<ArticleResponse> getArticleResponses(List<ArticleEntity> articles) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     return articles.stream()

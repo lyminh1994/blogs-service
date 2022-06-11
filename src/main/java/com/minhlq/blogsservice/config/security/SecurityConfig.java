@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * This class holds security configuration settings from this application.
+ * This class holds security configuration settings for this application.
  *
  * @author Minh Lys
  * @version 1.0
