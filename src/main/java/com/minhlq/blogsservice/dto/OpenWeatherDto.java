@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.dto;
 
-import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 
@@ -12,7 +11,7 @@ import lombok.Data;
  * @since 1.0
  */
 @Data
-public class OpenWeatherDto implements Serializable {
+public class OpenWeatherDto {
 
   private int cod;
   private String name;

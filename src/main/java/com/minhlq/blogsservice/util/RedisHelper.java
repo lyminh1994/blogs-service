@@ -27,7 +27,7 @@ public class RedisHelper {
   private final ObjectMapper objectMapper;
 
   /**
-   * Check key existed in redis
+   * Check key existed in redis.
    *
    * @param key the key
    * @return is existed
@@ -113,7 +113,7 @@ public class RedisHelper {
   }
 
   /**
-   * Delete redis with provide key
+   * Delete redis with provide key.
    *
    * @param key the key
    */

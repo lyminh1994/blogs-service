@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Utility class handle call for rest api
+ * Utility class handle call for rest api.
  *
  * @author Minh Lys
  * @version 1.0
@@ -23,7 +23,7 @@ public class HttpClientHelper {
   private final RestTemplate restTemplate;
 
   /**
-   * Execute rest api request with empty body
+   * Execute rest api request with empty body.
    *
    * @param url the url
    * @param method the http method
@@ -39,7 +39,7 @@ public class HttpClientHelper {
   }
 
   /**
-   * Execute rest api request with body
+   * Execute rest api request with body.
    *
    * @param url the url
    * @param method the http method
@@ -58,7 +58,7 @@ public class HttpClientHelper {
   }
 
   /**
-   * Execute rest api POST method with request body
+   * Execute rest api POST method with request body.
    *
    * @param url the url
    * @param body the request body

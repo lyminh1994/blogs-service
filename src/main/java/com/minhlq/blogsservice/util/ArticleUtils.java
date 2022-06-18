@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.util;
 import lombok.experimental.UtilityClass;
 
 /**
- * Utilities class handle operation for article
+ * Utilities class handle operation for article.
  *
  * @author Minh Lys
  * @version 1.0
@@ -15,7 +15,7 @@ public class ArticleUtils {
   private static final String REGEX_SPECIAL_CHARACTERS = "[&\\uFE30-\\uFFA0’”\\s?,.]+";
 
   /**
-   * Replace special characters and transfer to lowercase
+   * Replace special characters and transfer to lowercase.
    *
    * @param title the article slug
    * @return formatted slug
