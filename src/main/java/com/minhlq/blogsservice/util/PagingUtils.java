@@ -5,9 +5,17 @@ import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
+/**
+ * Handle convent paging request to JPA {@link Pageable}.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @UtilityClass
 public final class PagingUtils {
 

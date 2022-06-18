@@ -1,9 +1,7 @@
 package com.minhlq.blogsservice.dto.response;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * This class models the format of the comment response produced.
@@ -13,8 +11,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CommentResponse {
 
   private String id;

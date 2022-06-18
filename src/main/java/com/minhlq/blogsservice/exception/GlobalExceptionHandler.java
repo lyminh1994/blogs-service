@@ -36,10 +36,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @param request The request object.
    * @return A ResponseEntity object.
    */
-  @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
+  @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
   protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
     String message = ex.getMessage();
-    return handleExceptionInternal(ex, message, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    return handleExceptionInternal(
+        ex, message, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 
   /**

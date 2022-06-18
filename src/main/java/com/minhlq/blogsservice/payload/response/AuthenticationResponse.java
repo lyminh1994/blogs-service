@@ -3,7 +3,6 @@ package com.minhlq.blogsservice.payload.response;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.util.SecurityUtils;
-import java.io.Serializable;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
@@ -17,11 +16,9 @@ import lombok.Data;
  */
 @Data
 @Builder
-public final class AuthenticationResponse implements Serializable {
+public final class AuthenticationResponse {
 
-  private static final long serialVersionUID = -818779525319891506L;
-
-  private final UserPrincipal user;
+  private final UserResponse user;
 
   private final String type;
 
@@ -51,8 +48,17 @@ public final class AuthenticationResponse implements Serializable {
     }
 
     if (Objects.nonNull(localUserDetails)) {
+      UserResponse user =
+          UserResponse.builder()
+              .id(localUserDetails.getId())
+              .username(localUserDetails.getUsername())
+              .email(localUserDetails.getEmail())
+              .bio(localUserDetails.getBio())
+              .image(localUserDetails.getImage())
+              .build();
+
       return AuthenticationResponse.builder()
-          .user(localUserDetails)
+          .user(user)
           .accessToken(jwToken)
           .type(SecurityConstants.BEARER)
           .build();
