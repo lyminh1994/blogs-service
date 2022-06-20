@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.CryptoConstants;
 import com.minhlq.blogsservice.exception.CryptoException;
-import com.minhlq.blogsservice.service.CryptoService;
+import com.minhlq.blogsservice.service.EncryptionService;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
  */
 @Log4j2
 @Service
-public class CryptoServiceImpl implements CryptoService {
+public class EncryptionServiceImpl implements EncryptionService {
 
   @Value("${crypto.secret.password}")
   private String password;

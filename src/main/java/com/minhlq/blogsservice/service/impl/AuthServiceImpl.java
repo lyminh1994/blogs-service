@@ -11,7 +11,7 @@ import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
-import com.minhlq.blogsservice.service.CryptoService;
+import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import java.time.Duration;
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
 
   private final CookieService cookieService;
 
-  private final CryptoService cryptoService;
+  private final EncryptionService encryptionService;
 
   private final JwtService jwtService;
 
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.authenticateUser(userDetails);
 
     String accessToken = updateCookies(user.getUsername(), false, responseHeaders);
-    String encryptedAccessToken = cryptoService.encrypt(accessToken);
+    String encryptedAccessToken = encryptionService.encrypt(accessToken);
 
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken, userDetails);
   }
@@ -81,19 +81,19 @@ public class AuthServiceImpl implements AuthService {
     // Authentication will fail if the credentials are invalid and throw exception.
     SecurityUtils.authenticateUser(authenticationManager, username, loginRequest.getPassword());
 
-    String decryptedRefreshToken = cryptoService.decrypt(refreshToken);
+    String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
     boolean isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     // If the refresh token is valid, then we will not generate a new refresh token.
     String accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
-    String encryptedAccessToken = cryptoService.encrypt(accessToken);
+    String encryptedAccessToken = encryptionService.encrypt(accessToken);
 
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken);
   }
 
   @Override
   public AuthenticationResponse refreshToken(String refreshToken, HttpServletRequest request) {
-    String decryptedRefreshToken = cryptoService.decrypt(refreshToken);
+    String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
     boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     if (!refreshTokenValid) {
@@ -107,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.authenticateUser(request, userDetails);
 
     String accessToken = jwtService.createJwt(username);
-    String encryptedAccessToken = cryptoService.encrypt(accessToken);
+    String encryptedAccessToken = encryptionService.encrypt(accessToken);
 
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken);
   }
@@ -130,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
       String refreshToken = jwtService.createJwt(username);
       Duration refreshTokenDuration = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
 
-      String encryptedRefreshToken = cryptoService.encrypt(refreshToken);
+      String encryptedRefreshToken = encryptionService.encrypt(refreshToken);
       cookieService.addCookieToHeaders(
           headers, TokenType.REFRESH, encryptedRefreshToken, refreshTokenDuration);
     }
