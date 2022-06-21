@@ -227,7 +227,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavoriteKey =
         new ArticleFavoriteKey(article.getId(), currentUser.getId());
-    if (articleFavoriteRepository.findById(articleFavoriteKey).isEmpty()) {
+    if (!articleFavoriteRepository.findById(articleFavoriteKey).isPresent()) {
       articleFavoriteRepository.save(new ArticleFavoriteEntity(articleFavoriteKey));
     }
 

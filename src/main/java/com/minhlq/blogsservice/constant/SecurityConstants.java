@@ -1,13 +1,14 @@
 package com.minhlq.blogsservice.constant;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class holds all security-related URL mappings constants.
@@ -53,16 +54,19 @@ public final class SecurityConstants {
   };
 
   public static final List<String> ALLOWED_HTTP_METHODS =
-      List.of(
-          HttpMethod.GET.name(),
-          HttpMethod.POST.name(),
-          HttpMethod.PUT.name(),
-          HttpMethod.DELETE.name(),
-          HttpMethod.PATCH.name(),
-          HttpMethod.OPTIONS.name());
+      Collections.unmodifiableList(
+          Arrays.asList(
+              HttpMethod.GET.name(),
+              HttpMethod.POST.name(),
+              HttpMethod.PUT.name(),
+              HttpMethod.DELETE.name(),
+              HttpMethod.PATCH.name(),
+              HttpMethod.OPTIONS.name()));
 
   public static final List<String> ALLOWED_HTTP_HEADERS =
-      List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE);
+      Collections.unmodifiableList(
+          Arrays.asList(
+              HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE));
 
   /**
    * Public matchers to allow access to the application.

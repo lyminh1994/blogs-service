@@ -22,6 +22,6 @@ public class DuplicatedArticleValidator
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    return articleRepository.findBySlug(ArticleUtils.toSlug(value)).isEmpty();
+    return !articleRepository.findBySlug(ArticleUtils.toSlug(value)).isPresent();
   }
 }

@@ -22,6 +22,6 @@ public class DuplicatedEmailValidator
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    return StringUtils.isBlank(value) || userRepository.findByEmail(value).isEmpty();
+    return StringUtils.isBlank(value) || !userRepository.findByEmail(value).isPresent();
   }
 }

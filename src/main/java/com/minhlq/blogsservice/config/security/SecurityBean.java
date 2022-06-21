@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.config.security;
 
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import java.time.Duration;
-import java.util.List;
+import java.util.Arrays;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -86,7 +86,7 @@ public class SecurityBean {
    */
   private void setExposedHeaders(CorsConfigProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getExposedHeaders())) {
-      corsConfig.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE));
+      corsConfig.setExposedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE));
     } else {
       corsConfig.setExposedHeaders(props.getExposedHeaders());
     }
