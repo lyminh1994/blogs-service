@@ -7,6 +7,11 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   application:
     name: blogs_service
+  flyway:
+    # The production environment must be closed
+    clean-disabled: true
+    # When the table structure already exists at the beginning and the flyway_schema_history table does not exist, it needs to be set to true
+    baseline-on-migrate: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -90,12 +95,11 @@ springdoc:
 logging:
   level:
     root: info
-    web: debug
     com.minhlq.blogsservice: debug
     org.springframework.web: debug
     org.hibernate.SQL: info
     org.hibernate.type: trace
-    # org.apache.http: DEBUG
+    org.apache.http: debug
   file:
     path: ${LOGGING_FILE_PATH:logs}
     name: ${LOGGING_FILE_NAME:logs/application.log}
@@ -109,6 +113,8 @@ management:
   endpoint:
     shutdown:
       enabled: true
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
