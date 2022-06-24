@@ -1,16 +1,20 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.enumdef.TokenType;
+import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
@@ -36,10 +40,10 @@ import org.springframework.stereotype.Service;
 public class JwtServiceImpl implements JwtService {
 
   @Value("${jwt.config.secret}")
-  private String secret = "secret";
+  private String secret;
 
   @Value("${jwt.config.ttl}")
-  private Long ttl = 600000L;
+  private Long ttl;
 
   @Override
   public String createJwt(String username) {
@@ -48,11 +52,13 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String createJwt(String username, Date expiration) {
+    byte[] keyBytes = Decoders.BASE64.decode(secret);
+    Key key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .setSubject(username)
         .setIssuedAt(new Date())
         .setExpiration(expiration)
-        .signWith(SignatureAlgorithm.HS512, secret)
+        .signWith(key, SignatureAlgorithm.HS512)
         .compact();
   }
 
@@ -64,7 +70,14 @@ public class JwtServiceImpl implements JwtService {
    */
   private Claims parseJwt(String jwt) {
     try {
-      return Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
+      byte[] keyBytes = Decoders.BASE64.decode(secret);
+      Key key = Keys.hmacShaKeyFor(keyBytes);
+      JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+
+      return jwtParser.parseClaimsJws(jwt).getBody();
+    } catch (SignatureException e) {
+      log.error("Invalid JWT signature: {}", e.getMessage());
+      throw new SecurityException("Invalid JWT signature!");
     } catch (ExpiredJwtException ex) {
       log.error("JWT is expired: {}", ex.getMessage());
       throw new SecurityException("JWT is expired!");
@@ -74,9 +87,6 @@ public class JwtServiceImpl implements JwtService {
     } catch (MalformedJwtException ex) {
       log.error("Invalid JWT: {}", ex.getMessage());
       throw new SecurityException("Invalid JWT!");
-    } catch (SignatureException ex) {
-      log.error("Invalid JWT signature: {}", ex.getMessage());
-      throw new SecurityException("Invalid JWT signature!");
     } catch (IllegalArgumentException ex) {
       log.error("JWT claims string is empty: {}", ex.getMessage());
       throw new SecurityException("JWT claims string is empty!");
@@ -86,7 +96,11 @@ public class JwtServiceImpl implements JwtService {
   @Override
   public boolean isValidJwtToken(String jwt) {
     try {
-      Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt);
+      byte[] keyBytes = Decoders.BASE64.decode(secret);
+      Key key = Keys.hmacShaKeyFor(keyBytes);
+      JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+
+      jwtParser.parseClaimsJws(jwt);
       return true;
     } catch (SignatureException e) {
       log.error("Invalid JWT signature: {}", e.getMessage());

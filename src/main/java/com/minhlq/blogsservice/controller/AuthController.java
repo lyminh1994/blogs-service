@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.annotation.Loggable;
 import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.enumdef.TokenType;
+import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.request.LoginRequest;
 import com.minhlq.blogsservice.payload.request.RegisterRequest;
 import com.minhlq.blogsservice.payload.response.AuthenticationResponse;

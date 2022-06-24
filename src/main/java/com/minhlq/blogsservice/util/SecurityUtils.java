@@ -1,17 +1,13 @@
 package com.minhlq.blogsservice.util;
 
 import com.minhlq.blogsservice.constant.ErrorConstants;
-import com.minhlq.blogsservice.constant.ProfileTypeConstants;
 import com.minhlq.blogsservice.payload.UserPrincipal;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +15,6 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,22 +34,6 @@ import org.springframework.security.web.authentication.rememberme.AbstractRememb
 @Log4j2
 @UtilityClass
 public class SecurityUtils {
-
-  /**
-   * If we are running with dev profile, disable csrf and frame options to enable h2 to work.
-   *
-   * @param http the http request
-   * @param environment the environment
-   * @throws Exception if there is an error
-   */
-  public static void configureDevEnvironmentAccess(HttpSecurity http, Environment environment)
-      throws Exception {
-    List<String> profiles = Arrays.asList(environment.getActiveProfiles());
-
-    if (profiles.contains(ProfileTypeConstants.DEV)) {
-      http.headers().frameOptions().sameOrigin().and().csrf().disable().cors();
-    }
-  }
 
   /**
    * Returns true if the user is authenticated.
@@ -96,7 +75,7 @@ public class SecurityUtils {
   }
 
   /** Clears the securityContextHolder. */
-  public static void clearAuthentication() {
+  public void clearAuthentication() {
     SecurityContextHolder.getContext().setAuthentication(null);
   }
 
@@ -123,7 +102,7 @@ public class SecurityUtils {
    * @param request the httpServletRequest
    * @param userDetails the userDetails
    */
-  public static void authenticateUser(HttpServletRequest request, UserDetails userDetails) {
+  public void authenticateUser(HttpServletRequest request, UserDetails userDetails) {
     if (Objects.nonNull(request) && Objects.nonNull(userDetails)) {
       Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
       UsernamePasswordAuthenticationToken authentication =
@@ -142,7 +121,7 @@ public class SecurityUtils {
    * @param username the username
    * @param password the password
    */
-  public static void authenticateUser(
+  public void authenticateUser(
       AuthenticationManager authenticationManager, String username, String password) {
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(username, password);
@@ -158,10 +137,10 @@ public class SecurityUtils {
    */
   public UserPrincipal getAuthenticatedUserDetails() {
     if (isAuthenticated()) {
-      log.warn(ErrorConstants.UNAUTHORIZED_ACCESS);
       return (UserPrincipal) getAuthentication().getPrincipal();
     }
 
+    log.warn(ErrorConstants.UNAUTHORIZED_ACCESS);
     return null;
   }
 
@@ -171,7 +150,7 @@ public class SecurityUtils {
    * @param request the request
    * @param response the response
    */
-  public static void logout(HttpServletRequest request, HttpServletResponse response) {
+  public void logout(HttpServletRequest request, HttpServletResponse response) {
     String rememberMeCookieKey = AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
     CookieClearingLogoutHandler logoutHandler =
         new CookieClearingLogoutHandler(rememberMeCookieKey);
@@ -186,7 +165,7 @@ public class SecurityUtils {
    *
    * @param userDetails the user details
    */
-  public static void validateUserDetailsStatus(UserDetails userDetails) {
+  public void validateUserDetailsStatus(UserDetails userDetails) {
     log.debug("User details {}", userDetails);
 
     if (!userDetails.isEnabled()) {

@@ -7,6 +7,8 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   application:
     name: blogs_service
+  devtools:
+    add-properties: false
   flyway:
     # The production environment must be closed
     clean-disabled: true
@@ -55,15 +57,15 @@ spring:
       repositories:
         enabled: false
 
-# Crypto and Token secrets
+# Crypto and JWT config
 crypto:
   secret:
     password: ${CRYPTO_SECRET_PASSWORD:password}
     salt: ${CRYPTO_SECRET_SALT:salt}
 jwt:
   config:
-    secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
-    ttl: 3600000
+    secret: VbRSsaYcfTcIdox2DrmJ6nxJCcweiudkn/ik8aXg3g5KtF6U6sKyrvpILdwzMn7ZwxmyOSnK2qatONcQpunYBGSQyvk6xtYVqBy92vs4IWEZhseKRug6C9TftNvmAp0Cs1Jsq0J7yhunN1yPk1IrHk4OJfAU0harnPWDJ/7JtzAuzdNcVYcCfStg7fdtah/5ycQ+OuW1pW6zMKptQC8yPe4hxgQqSQ8D52GVQg==
+    ttl: 60000
 
 # CORS Configuration
 cors:
@@ -95,11 +97,9 @@ springdoc:
 logging:
   level:
     root: info
+    web: debug
     com.minhlq.blogsservice: debug
-    org.springframework.web: debug
     org.hibernate.SQL: info
-    org.hibernate.type: trace
-    org.apache.http: debug
   file:
     path: ${LOGGING_FILE_PATH:logs}
     name: ${LOGGING_FILE_NAME:logs/application.log}

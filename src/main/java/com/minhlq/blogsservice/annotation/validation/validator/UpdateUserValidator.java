@@ -25,6 +25,7 @@ public class UpdateUserValidator
   @Override
   public boolean isValid(UpdateUserDto value, ConstraintValidatorContext context) {
     final String inputEmail = value.getParams().getEmail();
+    final String inputPhone = value.getParams().getPhone();
     final UserPrincipal targetUser = value.getTargetUser();
 
     boolean isEmailValid =
@@ -40,6 +41,19 @@ public class UpdateUserValidator
           .addConstraintViolation();
     }
 
-    return isEmailValid;
+    boolean isPhoneValid =
+        userRepository
+            .findByPhone(inputPhone)
+            .map(user -> Objects.equals(user.getId(), targetUser.getId()))
+            .orElse(true);
+    if (!isPhoneValid) {
+      context.disableDefaultConstraintViolation();
+      context
+          .buildConstraintViolationWithTemplate("phone number already using by another user")
+          .addPropertyNode("phone")
+          .addConstraintViolation();
+    }
+
+    return isEmailValid || isPhoneValid;
   }
 }

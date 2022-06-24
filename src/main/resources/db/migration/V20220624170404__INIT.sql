@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS follows
     FOREIGN KEY (follow_id) REFERENCES users (id)
 );
 
-CREATE TABLE IF NOT EXISTS article_favorites
+CREATE TABLE IF NOT EXISTS articles_favorites
 (
     article_id INT NOT NULL,
     user_id    INT NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS article_favorites
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE IF NOT EXISTS article_tags
+CREATE TABLE IF NOT EXISTS articles_tags
 (
     article_id INT NOT NULL,
     tag_id     INT NOT NULL,

@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.dto.OpenWeatherDto;
-import com.minhlq.blogsservice.enumdef.WeatherMeasurementUnits;
+import com.minhlq.blogsservice.enums.WeatherMeasurementUnits;
 import com.minhlq.blogsservice.service.OpenWeatherService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;

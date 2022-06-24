@@ -1,27 +1,31 @@
 package com.minhlq.blogsservice.config.security;
 
+import static org.mockito.BDDMockito.given;
+
 import com.minhlq.blogsservice.constant.SecurityConstants;
+import com.minhlq.blogsservice.entity.RoleEntity;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
-import com.minhlq.blogsservice.service.EncryptionService;
+import com.minhlq.blogsservice.service.CryptoService;
 import com.minhlq.blogsservice.service.JwtService;
+import java.io.IOException;
+import java.util.Collections;
+import javax.servlet.ServletException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
-
-import static org.mockito.BDDMockito.given;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class JwtRequestFilterTest {
@@ -35,7 +39,7 @@ class JwtRequestFilterTest {
 
   @Mock private JwtService jwtService;
 
-  @Mock private EncryptionService encryptionService;
+  @Mock private CryptoService cryptoService;
 
   @Mock private UserDetailsService userDetailsService;
 
@@ -63,7 +67,7 @@ class JwtRequestFilterTest {
     request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
 
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
-    given(encryptionService.decrypt(ArgumentMatchers.anyString())).willReturn(validBearerToken);
+    given(cryptoService.decrypt(ArgumentMatchers.anyString())).willReturn(validBearerToken);
     given(jwtService.isValidJwtToken(ArgumentMatchers.anyString())).willReturn(true);
     given(jwtService.getUsernameFromJwt(ArgumentMatchers.anyString())).willReturn("user001");
     UserEntity user =
@@ -76,7 +80,9 @@ class JwtRequestFilterTest {
             .image("image.png")
             .build();
 
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
+    UserPrincipal userDetails =
+        UserPrincipal.buildUserDetails(
+            user, Collections.singleton(new RoleEntity("USER", "Role user")));
     given(userDetailsService.loadUserByUsername(ArgumentMatchers.anyString()))
         .willReturn(userDetails);
 
@@ -91,7 +97,7 @@ class JwtRequestFilterTest {
   void givenTokenInCookie_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
     // given - precondition or setup
     given(jwtService.getJwtToken(request, true)).willReturn(encryptedToken);
-    given(encryptionService.decrypt(ArgumentMatchers.anyString())).willReturn(validBearerToken);
+    given(cryptoService.decrypt(ArgumentMatchers.anyString())).willReturn(validBearerToken);
 
     // when - action or the behaviour that we are going test
     jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
@@ -106,7 +112,7 @@ class JwtRequestFilterTest {
     request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
 
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
-    given(encryptionService.decrypt(ArgumentMatchers.anyString())).willReturn(invalidBearerToken);
+    given(cryptoService.decrypt(ArgumentMatchers.anyString())).willReturn(invalidBearerToken);
     given(jwtService.isValidJwtToken(ArgumentMatchers.anyString())).willReturn(false);
 
     // when - action or the behaviour that we are going test
@@ -122,7 +128,7 @@ class JwtRequestFilterTest {
     request.addHeader(HttpHeaders.AUTHORIZATION, validBearerToken);
 
     given(jwtService.getJwtToken(request, false)).willReturn(validBearerToken);
-    given(encryptionService.decrypt(ArgumentMatchers.anyString())).willReturn(null);
+    given(cryptoService.decrypt(ArgumentMatchers.anyString())).willReturn(null);
 
     // when - action or the behaviour that we are going test
     jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);

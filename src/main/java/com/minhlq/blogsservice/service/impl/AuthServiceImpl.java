@@ -2,19 +2,25 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
+import com.minhlq.blogsservice.entity.RoleEntity;
 import com.minhlq.blogsservice.entity.UserEntity;
-import com.minhlq.blogsservice.enumdef.TokenType;
+import com.minhlq.blogsservice.entity.UserRoleEntity;
+import com.minhlq.blogsservice.entity.unionkey.UserRoleKey;
+import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.payload.request.LoginRequest;
 import com.minhlq.blogsservice.payload.request.RegisterRequest;
 import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
 import com.minhlq.blogsservice.repository.UserRepository;
+import com.minhlq.blogsservice.repository.UserRoleRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
-import com.minhlq.blogsservice.service.EncryptionService;
+import com.minhlq.blogsservice.service.CryptoService;
 import com.minhlq.blogsservice.service.JwtService;
+import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import java.time.Duration;
+import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +46,10 @@ public class AuthServiceImpl implements AuthService {
 
   private final UserRepository userRepository;
 
+  private final UserRoleRepository userRoleRepository;
+
+  private final RoleService roleService;
+
   private final PasswordEncoder passwordEncoder;
 
   private final AuthenticationManager authenticationManager;
@@ -48,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
 
   private final CookieService cookieService;
 
-  private final EncryptionService encryptionService;
+  private final CryptoService cryptoService;
 
   private final JwtService jwtService;
 
@@ -64,11 +74,14 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build());
 
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
+    RoleEntity role = roleService.findByName("USER");
+    userRoleRepository.save(new UserRoleEntity(new UserRoleKey(user.getId(), role.getId())));
+
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user, Collections.singleton(role));
     SecurityUtils.authenticateUser(userDetails);
 
     String accessToken = updateCookies(user.getUsername(), false, responseHeaders);
-    String encryptedAccessToken = encryptionService.encrypt(accessToken);
+    String encryptedAccessToken = cryptoService.encrypt(accessToken);
 
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken, userDetails);
   }
@@ -81,19 +94,19 @@ public class AuthServiceImpl implements AuthService {
     // Authentication will fail if the credentials are invalid and throw exception.
     SecurityUtils.authenticateUser(authenticationManager, username, loginRequest.getPassword());
 
-    String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
+    String decryptedRefreshToken = cryptoService.decrypt(refreshToken);
     boolean isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     // If the refresh token is valid, then we will not generate a new refresh token.
     String accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
-    String encryptedAccessToken = encryptionService.encrypt(accessToken);
+    String encryptedAccessToken = cryptoService.encrypt(accessToken);
 
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken);
   }
 
   @Override
   public AuthenticationResponse refreshToken(String refreshToken, HttpServletRequest request) {
-    String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
+    String decryptedRefreshToken = cryptoService.decrypt(refreshToken);
     boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     if (!refreshTokenValid) {
@@ -107,7 +120,7 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.authenticateUser(request, userDetails);
 
     String accessToken = jwtService.createJwt(username);
-    String encryptedAccessToken = encryptionService.encrypt(accessToken);
+    String encryptedAccessToken = cryptoService.encrypt(accessToken);
 
     return AuthenticationResponse.buildJwtResponse(encryptedAccessToken);
   }
@@ -130,7 +143,7 @@ public class AuthServiceImpl implements AuthService {
       String refreshToken = jwtService.createJwt(username);
       Duration refreshTokenDuration = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
 
-      String encryptedRefreshToken = encryptionService.encrypt(refreshToken);
+      String encryptedRefreshToken = cryptoService.encrypt(refreshToken);
       cookieService.addCookieToHeaders(
           headers, TokenType.REFRESH, encryptedRefreshToken, refreshTokenDuration);
     }

@@ -4,7 +4,7 @@ import static com.minhlq.blogsservice.constant.OpenWeatherConstants.CURRENT_WEAT
 
 import com.minhlq.blogsservice.constant.CacheConstants;
 import com.minhlq.blogsservice.dto.OpenWeatherDto;
-import com.minhlq.blogsservice.enumdef.WeatherMeasurementUnits;
+import com.minhlq.blogsservice.enums.WeatherMeasurementUnits;
 import com.minhlq.blogsservice.service.OpenWeatherService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.CryptoConstants;
 import com.minhlq.blogsservice.exception.CryptoException;
-import com.minhlq.blogsservice.service.EncryptionService;
+import com.minhlq.blogsservice.service.CryptoService;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
  */
 @Log4j2
 @Service
-public class EncryptionServiceImpl implements EncryptionService {
+public class CryptoServiceImpl implements CryptoService {
 
   @Value("${crypto.secret.password}")
   private String password;
@@ -119,6 +119,7 @@ public class EncryptionServiceImpl implements EncryptionService {
       if (StringUtils.isBlank(text)) {
         return null;
       }
+
       return URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {
       log.debug(CryptoConstants.ERROR_DECRYPTING_DATA, e);
@@ -132,6 +133,7 @@ public class EncryptionServiceImpl implements EncryptionService {
       if (StringUtils.isBlank(text)) {
         return null;
       }
+
       return URLDecoder.decode(text, StandardCharsets.UTF_8.toString()).replaceAll("\\s+", "+");
     } catch (UnsupportedEncodingException e) {
       log.debug(CryptoConstants.ERROR_DECRYPTING_DATA, e);

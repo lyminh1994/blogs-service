@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service;
 
-import com.minhlq.blogsservice.enumdef.TokenType;
+import com.minhlq.blogsservice.enums.TokenType;
 import java.time.Duration;
 import javax.servlet.http.Cookie;
 import org.springframework.http.HttpCookie;

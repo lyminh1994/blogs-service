@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
  * @since 1.0
  */
 @Configuration
-public class OpenApiConfig {
+public class OpenAPIConfig {
 
   @Value("${springdoc.name}")
   private String name;
@@ -39,7 +39,7 @@ public class OpenApiConfig {
    */
   @Bean
   public OpenAPI customOpenApi() {
-    final String apiTitle = String.format("%s API", StringUtils.capitalize(name));
+    final String apiTitle = String.format("%s APIs", StringUtils.capitalize(name));
     final String securitySchemeName = "bearerAuth";
     final License license = new License().name("Apache 2.0").url("http://springdoc.org");
 

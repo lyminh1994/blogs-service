@@ -1,9 +1,12 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.CacheConstants;
+import com.minhlq.blogsservice.entity.RoleEntity;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
+import com.minhlq.blogsservice.service.RoleService;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,6 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   private final UserRepository userRepository;
 
+  private final RoleService roleService;
+
   /**
    * Locates the user based on the usernameOrEmail. In the actual implementation, the search may be
    * case-sensitive, or case-insensitive depending on how the implementation instance is configured.
@@ -41,7 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
    *     GrantedAuthority
    */
   @Override
-  @Cacheable(key = "{ #root.methodName, #username }", value = CacheConstants.USER_DETAILS)
+  @Cacheable(value = CacheConstants.USER_DETAILS, key = "{ #root.methodName, #username }")
   public UserDetails loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
       throw new UsernameNotFoundException("Username is empty");
@@ -54,6 +59,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 () ->
                     new UsernameNotFoundException("User with username " + username + " not found"));
 
-    return UserPrincipal.buildUserDetails(user);
+    Set<RoleEntity> roles = roleService.findByUserId(user.getId());
+
+    return UserPrincipal.buildUserDetails(user, roles);
   }
 }

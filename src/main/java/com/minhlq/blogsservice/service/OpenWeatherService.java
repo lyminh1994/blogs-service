@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.dto.OpenWeatherDto;
-import com.minhlq.blogsservice.enumdef.WeatherMeasurementUnits;
+import com.minhlq.blogsservice.enums.WeatherMeasurementUnits;
 
 /**
  * The open weather service to provide for the request open weather apis operations.

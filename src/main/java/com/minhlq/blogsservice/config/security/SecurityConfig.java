@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.config.security;
 
 import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -76,8 +75,8 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-    // if we are running with dev profile, disable csrf and frame options to enable h2 to work.
-    SecurityUtils.configureDevEnvironmentAccess(http, environment);
+    http.cors().and().csrf().disable();
+    http.formLogin().disable().httpBasic().disable().logout().disable();
 
     http.authorizeRequests()
         .antMatchers(HttpMethod.OPTIONS)
@@ -93,11 +92,11 @@ public class SecurityConfig {
         .anyRequest()
         .authenticated();
 
-    http.exceptionHandling()
-        .authenticationEntryPoint(unauthorizedHandler)
+    http.sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        .exceptionHandling()
+        .authenticationEntryPoint(unauthorizedHandler);
 
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

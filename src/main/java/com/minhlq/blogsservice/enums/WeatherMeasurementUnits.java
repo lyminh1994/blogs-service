@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.enumdef;
+package com.minhlq.blogsservice.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -10,9 +10,9 @@ import lombok.experimental.UtilityClass;
  * @since 1.0
  */
 @UtilityClass
-public class ArticleUtils {
+public final class ArticleUtils {
 
-  private static final String REGEX_SPECIAL_CHARACTERS = "[&\\uFE30-\\uFFA0’”\\s?,.]+";
+  private final String REGEX_SPECIAL_CHARACTERS = "[&\\uFE30-\\uFFA0’”\\s?,.]+";
 
   /**
    * Replace special characters and transfer to lowercase.

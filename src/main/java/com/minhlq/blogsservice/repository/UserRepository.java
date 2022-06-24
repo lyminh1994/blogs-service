@@ -20,4 +20,6 @@ public interface UserRepository
   Optional<UserEntity> findByUsername(String username);
 
   Optional<UserEntity> findByEmail(String email);
+
+  Optional<UserEntity> findByPhone(String phone);
 }

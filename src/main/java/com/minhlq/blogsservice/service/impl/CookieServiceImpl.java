@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.ProfileTypeConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.enumdef.TokenType;
+import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.service.CookieService;
 import java.time.Duration;
 import java.util.Arrays;

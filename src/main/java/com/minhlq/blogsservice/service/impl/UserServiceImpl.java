@@ -6,14 +6,17 @@ import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.entity.FollowEntity;
+import com.minhlq.blogsservice.entity.RoleEntity;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.UserRepository;
+import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.util.SecurityUtils;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +40,8 @@ public class UserServiceImpl implements UserService {
 
   private final FollowRepository followRepository;
 
+  private final RoleService roleService;
+
   @Override
   @Transactional
   @Caching(
@@ -58,7 +63,9 @@ public class UserServiceImpl implements UserService {
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
-    return UserPrincipal.buildUserDetails(newUser);
+    Set<RoleEntity> roles = roleService.findByUserId(newUser.getId());
+
+    return UserPrincipal.buildUserDetails(newUser, roles);
   }
 
   @Override

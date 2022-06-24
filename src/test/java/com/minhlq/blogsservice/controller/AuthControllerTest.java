@@ -119,7 +119,14 @@ class AuthControllerTest {
     registerRequest.setUsername("user01");
     registerRequest.setPassword("pass");
     UserEntity user =
-        new UserEntity(1L, "jonathan99", "123", "jonathan99@gmail.com", "bio", "image");
+        UserEntity.builder()
+            .id(1L)
+            .username("jonathan99")
+            .password("123")
+            .email("jonathan99@gmail.com")
+            .bio("bio")
+            .image("image")
+            .build();
     when(userRepository.findByUsername("jonathan99")).thenReturn(Optional.of(user));
 
     mockMvc
@@ -140,7 +147,14 @@ class AuthControllerTest {
     registerRequest.setUsername("user01");
     registerRequest.setPassword("pass");
     UserEntity user =
-        new UserEntity(1L, "jonathan99", "123", "jonathan99@gmail.com", "bio", "image");
+        UserEntity.builder()
+            .id(1L)
+            .username("jonathan99")
+            .password("123")
+            .email("jonathan99@gmail.com")
+            .bio("bio")
+            .image("image")
+            .build();
     when(userRepository.findByEmail("jonathan99@gmail.com")).thenReturn(Optional.of(user));
 
     mockMvc
