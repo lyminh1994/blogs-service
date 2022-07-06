@@ -1,8 +1,6 @@
 package com.minhlq.blogsservice.exception.handler;
 
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
@@ -14,10 +12,4 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Log4j2
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-
-  @ExceptionHandler({ResourceNotFoundException.class})
-  public String handlerResourceNotFound(ResourceNotFoundException ex) {
-    return ex.getMessage();
-  }
-}
+public class GlobalExceptionHandler {}

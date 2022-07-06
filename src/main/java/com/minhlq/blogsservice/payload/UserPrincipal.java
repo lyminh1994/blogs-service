@@ -1,17 +1,15 @@
 package com.minhlq.blogsservice.payload;
 
-import com.minhlq.blogsservice.entity.RoleEntity;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.enums.Gender;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,12 +24,12 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class UserPrincipal implements UserDetails {
 
   private Long id;
+
+  @EqualsAndHashCode.Include private String publicId;
 
   @EqualsAndHashCode.Include private String username;
 
@@ -43,15 +41,17 @@ public final class UserPrincipal implements UserDetails {
 
   private String lastName;
 
-  private String phone;
+  @EqualsAndHashCode.Include private String phone;
 
-  private Instant birthday;
+  private LocalDate birthday;
 
   private Gender gender;
 
-  private String bio;
+  private String profileImage;
 
-  private String image;
+  private int failedLoginAttempts;
+
+  private LocalDateTime lastSuccessfulLogin;
 
   private boolean enabled;
 
@@ -70,17 +70,18 @@ public final class UserPrincipal implements UserDetails {
    * @return the userDetails
    * @throws NullPointerException if the user is null
    */
-  public static UserPrincipal buildUserDetails(UserEntity user, Set<RoleEntity> roles) {
+  public static UserPrincipal buildUserDetails(final UserEntity user) {
     Validate.notNull(user, "User must not be null");
 
     // Build the authorities from the user's roles
     Set<GrantedAuthority> authorities =
-        roles.stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName()))
+        user.getUserRoles().stream()
+            .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
             .collect(Collectors.toSet());
 
     return UserPrincipal.builder()
         .id(user.getId())
+        .publicId(user.getPublicId())
         .username(user.getUsername())
         .email(user.getEmail())
         .password(user.getPassword())
@@ -89,9 +90,10 @@ public final class UserPrincipal implements UserDetails {
         .phone(user.getPhone())
         .birthday(user.getBirthday())
         .gender(user.getGender())
-        .bio(user.getBio())
-        .image(user.getImage())
-        .enabled(user.isStatus())
+        .profileImage(user.getProfileImage())
+        .failedLoginAttempts(user.getFailedLoginAttempts())
+        .lastSuccessfulLogin(user.getLastSuccessfulLogin())
+        .enabled(user.isEnabled())
         .accountNonExpired(true)
         .accountNonLocked(true)
         .credentialsNonExpired(true)

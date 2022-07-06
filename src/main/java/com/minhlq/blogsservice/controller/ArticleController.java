@@ -1,8 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
-import static com.minhlq.blogsservice.constant.AppConstants.DEFAULT_PAGE_NUMBER;
-import static com.minhlq.blogsservice.constant.AppConstants.DEFAULT_PAGE_SIZE;
-
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
@@ -50,7 +48,7 @@ public class ArticleController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create article", description = "Create article")
-  public ArticleResponse createArticle(@Valid @RequestBody NewArticleRequest articleRequest) {
+  public ArticleResponse createArticle(@RequestBody @Valid NewArticleRequest articleRequest) {
     return articleService.createArticle(articleRequest);
   }
 
@@ -64,9 +62,15 @@ public class ArticleController {
   @GetMapping("/feeds")
   @Operation(summary = "Get feeds", description = "Get current user articles feeds")
   public PageResponse<ArticleResponse> getFeeds(
-      @RequestParam(value = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)
+      @RequestParam(
+              value = "page-number",
+              required = false,
+              defaultValue = AppConstants.DEFAULT_PAGE_NUMBER)
           int pageNumber,
-      @RequestParam(value = "page-size", required = false, defaultValue = DEFAULT_PAGE_SIZE)
+      @RequestParam(
+              value = "page-size",
+              required = false,
+              defaultValue = AppConstants.DEFAULT_PAGE_SIZE)
           int pageSize) {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
@@ -88,9 +92,15 @@ public class ArticleController {
       @RequestParam(value = "tag", required = false) String tagName,
       @RequestParam(value = "favorite-by", required = false) String favoriteBy,
       @RequestParam(value = "author", required = false) String author,
-      @RequestParam(value = "page-number", required = false, defaultValue = DEFAULT_PAGE_NUMBER)
+      @RequestParam(
+              value = "page-number",
+              required = false,
+              defaultValue = AppConstants.DEFAULT_PAGE_NUMBER)
           int pageNumber,
-      @RequestParam(value = "page-size", required = false, defaultValue = DEFAULT_PAGE_SIZE)
+      @RequestParam(
+              value = "page-size",
+              required = false,
+              defaultValue = AppConstants.DEFAULT_PAGE_SIZE)
           int pageSize) {
     return articleService.findRecentArticles(
         tagName, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
@@ -120,7 +130,7 @@ public class ArticleController {
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
       @PathVariable("slug") String slug,
-      @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
+      @RequestBody @Valid UpdateArticleRequest updateArticleRequest) {
     return articleService.updateArticle(slug, updateArticleRequest);
   }
 

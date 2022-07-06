@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.entity.RoleEntity;
-import java.util.Set;
 
 /**
  * Role service to provide implementation for the definitions about a role.
@@ -27,12 +26,4 @@ public interface RoleService {
    * @return the role tuple that matches the id given
    */
   RoleEntity findByName(final String name);
-
-  /**
-   * Retrieves the set of roles with provide user id.
-   *
-   * @param userId the user id
-   * @return set roles
-   */
-  Set<RoleEntity> findByUserId(Long userId);
 }

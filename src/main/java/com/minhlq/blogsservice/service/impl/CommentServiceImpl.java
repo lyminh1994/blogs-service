@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This is implement for the comment service operations.
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
  * @since 1.0
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -42,7 +44,8 @@ public class CommentServiceImpl implements CommentService {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    CommentEntity comment =
+
+    CommentEntity commentSaved =
         commentRepository.save(
             CommentEntity.builder()
                 .body(newCommentRequest.getBody())
@@ -50,10 +53,11 @@ public class CommentServiceImpl implements CommentService {
                 .user(UserMapper.MAPPER.toUser(currentUser))
                 .build());
 
-    return CommentMapper.MAPPER.toCommentResponse(comment);
+    return CommentMapper.MAPPER.toCommentResponse(commentSaved);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<CommentResponse> findArticleComments(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =

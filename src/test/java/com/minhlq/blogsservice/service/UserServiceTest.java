@@ -34,14 +34,7 @@ class UserServiceTest {
   @BeforeEach
   void setUp() {
     user =
-        UserEntity.builder()
-            .id(1L)
-            .username("user01")
-            .password("encode-pass")
-            .email("user01@example.com")
-            .bio("target compelling deliverables")
-            .image("sample-image.png")
-            .build();
+        new UserEntity();
   }
 
   @Test
@@ -49,7 +42,6 @@ class UserServiceTest {
   void shouldCreateUserSuccess() {
     // given - precondition or setup
     RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setEmail("user01@example.com");
     registerRequest.setUsername("user01");
     registerRequest.setPassword("pass");
     given(userRepository.save(user)).willReturn(user);

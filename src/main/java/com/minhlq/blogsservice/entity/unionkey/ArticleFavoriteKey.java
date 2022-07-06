@@ -20,11 +20,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class ArticleFavoriteKey implements Serializable {
 
-  private static final long serialVersionUID = -8855550399306606235L;
-
-  @Column(name = "article_id", nullable = false)
+  @Column(nullable = false)
   private Long articleId;
 
-  @Column(name = "user_id", nullable = false)
+  @Column(nullable = false)
   private Long userId;
 }

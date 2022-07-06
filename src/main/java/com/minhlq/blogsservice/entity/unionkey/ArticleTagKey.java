@@ -20,11 +20,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class ArticleTagKey implements Serializable {
 
-  private static final long serialVersionUID = 3549434090139835218L;
-
-  @Column(name = "article_id", nullable = false)
+  @Column(nullable = false)
   private Long articleId;
 
-  @Column(name = "tag_id", nullable = false)
+  @Column(nullable = false)
   private Long tagId;
 }

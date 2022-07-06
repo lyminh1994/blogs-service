@@ -4,14 +4,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * This class holds all constants used in Crypto service.
+ * This class holds all constants used in Encryption service.
  *
  * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CryptoConstants {
+public final class EncryptionConstants {
 
   public static final String ERROR_ENCRYPTING_DATA = "Error encrypting data";
   public static final String ERROR_DECRYPTING_DATA = "Error decrypting data";

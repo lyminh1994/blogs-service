@@ -31,21 +31,8 @@ public abstract class BaseControllerTest {
   void setUp() {
     mapper = new ObjectMapper();
     String username = "jonathan";
-    String password = "123";
-    String email = "jonathan@gmail.com";
-    String bio = "bio";
-    String image = "image";
-    user =
-        UserEntity.builder()
-            .id(1L)
-            .username(username)
-            .password(password)
-            .email(email)
-            .bio(bio)
-            .image(image)
-            .build();
-    roles.add(new RoleEntity("USER", "Role user"));
-    userDetails = UserPrincipal.buildUserDetails(user, roles);
+    user = new UserEntity();
+    userDetails = UserPrincipal.buildUserDetails(user);
 
     when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
     when(userRepository.findById(1L)).thenReturn(Optional.of(user));

@@ -1,15 +1,11 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.constant.CacheConstants;
-import com.minhlq.blogsservice.entity.RoleEntity;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.RoleService;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -46,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
    *     GrantedAuthority
    */
   @Override
-  @Cacheable(value = CacheConstants.USER_DETAILS, key = "{ #root.methodName, #username }")
+  // @Cacheable(value = CacheConstants.USER_DETAILS, key = "{ #root.methodName, #username }")
   public UserDetails loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
       throw new UsernameNotFoundException("Username is empty");
@@ -59,8 +55,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 () ->
                     new UsernameNotFoundException("User with username " + username + " not found"));
 
-    Set<RoleEntity> roles = roleService.findByUserId(user.getId());
-
-    return UserPrincipal.buildUserDetails(user, roles);
+    return UserPrincipal.buildUserDetails(user);
   }
 }

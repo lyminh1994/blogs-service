@@ -1,73 +1,144 @@
 package com.minhlq.blogsservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.minhlq.blogsservice.config.jpa.BaseEntity;
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 /**
  * The user model for the application.
  *
  * @author Minh Lys
- * @version 1.0
+ * @version 1.0¬
  * @since 1.0
  */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@ToString(callSuper = true)
 @Entity
+@Audited
 @Table(name = "users")
-public class UserEntity implements Serializable {
+public class UserEntity extends BaseEntity<Long> implements Serializable {
 
-  private static final long serialVersionUID = 8109816171293709396L;
-
-  @Id
-  @Column(name = "id", nullable = false)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private Long id;
-
-  @Column(name = "username", unique = true)
+  @Column(unique = true, nullable = false)
+  @NotBlank(message = UserConstants.BLANK_USERNAME)
+  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
   private String username;
 
-  @Column(name = "password")
+  @JsonIgnore
+  @ToString.Exclude
+  @NotBlank(message = UserConstants.BLANK_PASSWORD)
   private String password;
 
-  @Column(name = "email", unique = true)
+  @Column(unique = true)
+  @Email(message = UserConstants.INVALID_EMAIL)
   private String email;
 
-  @Column(name = "first_name")
   private String firstName;
 
-  @Column(name = "last_name")
   private String lastName;
 
-  @Column(name = "phone", unique = true)
+  @Column(unique = true)
   private String phone;
 
-  @Column(name = "birthday")
-  private Instant birthday;
+  private LocalDate birthday;
 
-  @Column(name = "gender")
   private Gender gender;
 
-  @Column(name = "status")
-  private boolean status;
+  private boolean enabled;
 
-  @Column(name = "bio")
-  private String bio;
+  private String profileImage;
 
-  @Column(name = "image", length = 511)
-  private String image;
+  private String verificationToken;
+
+  private int failedLoginAttempts;
+
+  private LocalDateTime lastSuccessfulLogin;
+
+  @NotAudited
+  @ToString.Exclude
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<UserRoleEntity> userRoles = new HashSet<>();
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof UserEntity) || !super.equals(o)) {
+      return false;
+    }
+
+    UserEntity user = (UserEntity) o;
+    return Objects.equals(getPublicId(), user.getPublicId())
+        && Objects.equals(getUsername(), user.getUsername())
+        && Objects.equals(getEmail(), user.getEmail());
+  }
+
+  @Override
+  protected boolean canEqual(Object other) {
+    return other instanceof UserEntity;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getPublicId(), getUsername(), getEmail());
+  }
+
+  /**
+   * Add Role to this User.
+   *
+   * @param role the role
+   */
+  public void addRole(final RoleEntity role) {
+    UserRoleEntity userRole = new UserRoleEntity(this, role);
+    userRoles.add(new UserRoleEntity(this, role));
+    userRole.setUser(this);
+  }
+
+  /**
+   * Remove Role from this User.
+   *
+   * @param role the role
+   */
+  public void removeRole(final RoleEntity role) {
+    UserRoleEntity userRole = new UserRoleEntity(this, role);
+    userRoles.remove(userRole);
+    userRole.setUser(null);
+  }
+
+  /**
+   * Formulates the full name of the user.
+   *
+   * @return the full name of the user
+   */
+  public String getName() {
+    return StringUtils.joinWith(StringUtils.SPACE, getFirstName(), getLastName());
+  }
 }

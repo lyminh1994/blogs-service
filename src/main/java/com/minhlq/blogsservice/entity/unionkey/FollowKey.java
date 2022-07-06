@@ -20,11 +20,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class FollowKey implements Serializable {
 
-  private static final long serialVersionUID = 6245344112897279223L;
-
-  @Column(name = "user_id", nullable = false)
+  @Column(nullable = false)
   private Long userId;
 
-  @Column(name = "follow_id", nullable = false)
+  @Column(nullable = false)
   private Long followId;
 }

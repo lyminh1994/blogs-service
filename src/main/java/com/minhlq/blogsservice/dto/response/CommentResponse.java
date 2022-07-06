@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.dto.response;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -17,9 +17,9 @@ public class CommentResponse {
 
   private String body;
 
-  private Instant createdAt;
+  private LocalDateTime createdAt;
 
-  private Instant updatedAt;
+  private LocalDateTime updatedAt;
 
   private ProfileResponse user;
 }

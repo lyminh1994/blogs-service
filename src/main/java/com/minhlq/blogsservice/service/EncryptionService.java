@@ -7,7 +7,7 @@ package com.minhlq.blogsservice.service;
  * @version 1.0
  * @since 1.0
  */
-public interface CryptoService {
+public interface EncryptionService {
 
   /**
    * Encrypts the text to be sent out.

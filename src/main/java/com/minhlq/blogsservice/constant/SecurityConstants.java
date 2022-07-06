@@ -1,14 +1,11 @@
 package com.minhlq.blogsservice.constant;
 
+import java.util.Collection;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This class holds all security-related URL mappings constants.
@@ -30,6 +27,7 @@ public final class SecurityConstants {
   public static final String LOGIN = "/login";
   public static final String REFRESH_TOKEN = "/refresh-token";
   public static final String LOGOUT = "/logout";
+  public static final String VERIFY_ACCOUNT = "/verify/{verificationToken}";
   public static final String ROOT_PATH = "/";
   public static final String SAME_SITE = "strict";
 
@@ -54,19 +52,16 @@ public final class SecurityConstants {
   };
 
   public static final List<String> ALLOWED_HTTP_METHODS =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              HttpMethod.GET.name(),
-              HttpMethod.POST.name(),
-              HttpMethod.PUT.name(),
-              HttpMethod.DELETE.name(),
-              HttpMethod.PATCH.name(),
-              HttpMethod.OPTIONS.name()));
+      List.of(
+          HttpMethod.GET.name(),
+          HttpMethod.POST.name(),
+          HttpMethod.PUT.name(),
+          HttpMethod.DELETE.name(),
+          HttpMethod.PATCH.name(),
+          HttpMethod.OPTIONS.name());
 
   public static final List<String> ALLOWED_HTTP_HEADERS =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE));
+      List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE);
 
   /**
    * Public matchers to allow access to the application.
@@ -74,6 +69,6 @@ public final class SecurityConstants {
    * @return public matchers.
    */
   public static Collection<String> getPublicMatchers() {
-    return Collections.unmodifiableCollection(Arrays.asList(PUBLIC_MATCHERS));
+    return List.of(PUBLIC_MATCHERS);
   }
 }

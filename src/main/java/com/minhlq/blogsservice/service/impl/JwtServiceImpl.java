@@ -75,9 +75,6 @@ public class JwtServiceImpl implements JwtService {
       JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
 
       return jwtParser.parseClaimsJws(jwt).getBody();
-    } catch (SignatureException e) {
-      log.error("Invalid JWT signature: {}", e.getMessage());
-      throw new SecurityException("Invalid JWT signature!");
     } catch (ExpiredJwtException ex) {
       log.error("JWT is expired: {}", ex.getMessage());
       throw new SecurityException("JWT is expired!");
@@ -87,6 +84,9 @@ public class JwtServiceImpl implements JwtService {
     } catch (MalformedJwtException ex) {
       log.error("Invalid JWT: {}", ex.getMessage());
       throw new SecurityException("Invalid JWT!");
+    } catch (SignatureException e) {
+      log.error("Invalid JWT signature: {}", e.getMessage());
+      throw new SecurityException("Invalid JWT signature!");
     } catch (IllegalArgumentException ex) {
       log.error("JWT claims string is empty: {}", ex.getMessage());
       throw new SecurityException("JWT claims string is empty!");
@@ -102,16 +102,16 @@ public class JwtServiceImpl implements JwtService {
 
       jwtParser.parseClaimsJws(jwt);
       return true;
-    } catch (SignatureException e) {
-      log.error("Invalid JWT signature: {}", e.getMessage());
-    } catch (MalformedJwtException e) {
-      log.error("Invalid JWT token: {}", e.getMessage());
-    } catch (ExpiredJwtException e) {
-      log.error("JWT token is expired: {}", e.getMessage());
-    } catch (UnsupportedJwtException e) {
-      log.error("JWT token is unsupported: {}", e.getMessage());
-    } catch (IllegalArgumentException e) {
-      log.error("JWT claims string is empty: {}", e.getMessage());
+    } catch (ExpiredJwtException ex) {
+      log.error("JWT token is expired: {}", ex.getMessage());
+    } catch (UnsupportedJwtException ex) {
+      log.error("JWT token is unsupported: {}", ex.getMessage());
+    } catch (MalformedJwtException ex) {
+      log.error("Invalid JWT token: {}", ex.getMessage());
+    } catch (SignatureException ex) {
+      log.error("Invalid JWT signature: {}", ex.getMessage());
+    } catch (IllegalArgumentException ex) {
+      log.error("JWT claims string is empty: {}", ex.getMessage());
     }
 
     return false;

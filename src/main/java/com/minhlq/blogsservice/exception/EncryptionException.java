@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 1.0
  */
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error processing your request")
-public class CryptoException extends RuntimeException {
+public class EncryptionException extends RuntimeException {
   private static final long serialVersionUID = 4518149233942557017L;
 
   /**
@@ -21,7 +21,7 @@ public class CryptoException extends RuntimeException {
    * @param message the detail message. The detail message is saved for later retrieval by the
    *     {@link #getMessage()} method.
    */
-  public CryptoException(final String message) {
+  public EncryptionException(final String message) {
     super(message);
   }
 
@@ -33,7 +33,7 @@ public class CryptoException extends RuntimeException {
    * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method)
    * @since 1.4
    */
-  public CryptoException(final Throwable cause) {
+  public EncryptionException(final Throwable cause) {
     super(cause);
   }
 
@@ -48,7 +48,7 @@ public class CryptoException extends RuntimeException {
    * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method).
    * @since 1.4
    */
-  public CryptoException(final String message, Throwable cause) {
+  public EncryptionException(final String message, Throwable cause) {
     super(message, cause);
   }
 }

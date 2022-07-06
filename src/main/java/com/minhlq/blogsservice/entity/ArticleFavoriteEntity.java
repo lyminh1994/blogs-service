@@ -5,9 +5,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * The article favorite relation for the application.
@@ -16,12 +15,11 @@ import lombok.Setter;
  * @version 1.0
  * @since 1.0
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "article_favorites")
+@Table(name = "articles_favorites")
 public class ArticleFavoriteEntity {
 
   @EmbeddedId private ArticleFavoriteKey id;

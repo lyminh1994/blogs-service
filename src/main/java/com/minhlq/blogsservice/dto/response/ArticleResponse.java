@@ -1,10 +1,8 @@
 package com.minhlq.blogsservice.dto.response;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * This class models the format of the article response produced.
@@ -14,8 +12,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ArticleResponse {
 
   private Long id;
@@ -30,9 +26,9 @@ public class ArticleResponse {
 
   private String body;
 
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 
   private boolean favorite;
 

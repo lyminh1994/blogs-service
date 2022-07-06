@@ -21,7 +21,7 @@ class FollowRepositoryTest extends BaseRepositoryTest {
   @DisplayName("Should Find Followed Users Success")
   void shouldFindFollowedUsersSuccess() {
     Long userId = 1L;
-    Set<Long> actual = followRepository.findFollowedUsers(userId);
+    Set<Long> actual = followRepository.findByUserId(userId);
 
     assertNotNull(actual);
     assertEquals(2, actual.size());

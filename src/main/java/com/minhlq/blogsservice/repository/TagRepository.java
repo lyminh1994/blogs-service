@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,8 +16,7 @@ import org.springframework.stereotype.Repository;
  * @since 1.0
  */
 @Repository
-public interface TagRepository
-    extends JpaRepository<TagEntity, Long>, QuerydslPredicateExecutor<TagEntity> {
+public interface TagRepository extends JpaRepository<TagEntity, Long> {
 
   Optional<TagEntity> findByName(String name);
 

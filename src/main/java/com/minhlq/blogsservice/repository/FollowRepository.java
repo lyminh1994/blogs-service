@@ -5,7 +5,6 @@ import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,9 +15,8 @@ import org.springframework.stereotype.Repository;
  * @since 1.0
  */
 @Repository
-public interface FollowRepository
-    extends JpaRepository<FollowEntity, FollowKey>, QuerydslPredicateExecutor<FollowEntity> {
+public interface FollowRepository extends JpaRepository<FollowEntity, FollowKey> {
 
   @Query("select F.id.followId from FollowEntity F where F.id.userId = :userId")
-  Set<Long> findFollowedUsers(Long userId);
+  Set<Long> findByUserId(Long userId);
 }

@@ -31,14 +31,14 @@ public class MethodLogger {
     String method = joinPoint.getSignature().toShortString();
     long start = System.currentTimeMillis();
 
-    log.info("=> Starting -  {} args: {}", method, joinPoint.getArgs());
-    Object response = joinPoint.proceed();
+    log.info("=> Starting - {} args: {}", method, joinPoint.getArgs());
+    Object proceeding = joinPoint.proceed();
     log.info(
-        "<= {} : {} - Finished, duration: {} ms",
+        "<= {} : {} - Finished, duration: {} ms =>",
         method,
-        response,
+        proceeding,
         System.currentTimeMillis() - start);
 
-    return response;
+    return proceeding;
   }
 }

@@ -1,9 +1,10 @@
-package com.minhlq.blogsservice.config;
+package com.minhlq.blogsservice.config.jpa;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -15,9 +16,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since 1.0
  */
 @Configuration
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableTransactionManagement
 public class JpaConfig {
+
+  /**
+   * AuditorAware bean used for auditing.
+   *
+   * @return Application implementation of AuditorAware.
+   */
+  @Bean
+  public AuditorAware<String> auditorAware() {
+    return new ApplicationAuditorAware();
+  }
 
   /**
    * JPAQueryFactory bean used for querydsl.

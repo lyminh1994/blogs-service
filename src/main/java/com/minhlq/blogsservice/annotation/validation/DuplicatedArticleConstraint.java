@@ -27,7 +27,7 @@ public @interface DuplicatedArticleConstraint {
    *
    * @return the validation messages
    */
-  String message() default "Article name already existed";
+  String message() default "Article name already used";
 
   /**
    * Certain validation group that should be triggered.

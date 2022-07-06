@@ -50,11 +50,15 @@ public final class AuthenticationResponse {
     if (Objects.nonNull(localUserDetails)) {
       UserResponse user =
           UserResponse.builder()
-              .id(localUserDetails.getId())
-              .username(localUserDetails.getUsername())
+              .publicId(localUserDetails.getPublicId())
               .email(localUserDetails.getEmail())
-              .bio(localUserDetails.getBio())
-              .image(localUserDetails.getImage())
+              .firstName(localUserDetails.getFirstName())
+              .lastName(localUserDetails.getLastName())
+              .phone(localUserDetails.getPhone())
+              .birthday(localUserDetails.getBirthday())
+              .gender(localUserDetails.getGender())
+              .profileImage(localUserDetails.getProfileImage())
+              .authorities(localUserDetails.getAuthorities())
               .build();
 
       return AuthenticationResponse.builder()

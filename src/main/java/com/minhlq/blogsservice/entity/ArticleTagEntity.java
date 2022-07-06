@@ -5,10 +5,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * The article tag relation for the application.
@@ -17,13 +15,11 @@ import lombok.Setter;
  * @version 1.0
  * @since 1.0
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "article_tags")
+@Table(name = "articles_tags")
 public class ArticleTagEntity {
 
   @EmbeddedId private ArticleTagKey id;

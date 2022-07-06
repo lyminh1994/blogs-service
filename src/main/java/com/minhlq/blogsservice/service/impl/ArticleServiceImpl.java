@@ -44,6 +44,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The article service implementation.
@@ -54,6 +55,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArticleServiceImpl implements ArticleService {
 
   private final JPAQueryFactory queryFactory;
@@ -71,10 +73,11 @@ public class ArticleServiceImpl implements ArticleService {
   private final CommentRepository commentRepository;
 
   @Override
+  @Transactional
   public ArticleResponse createArticle(NewArticleRequest createRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     UserEntity author = UserMapper.MAPPER.toUser(currentUser);
-    ArticleEntity article =
+    ArticleEntity savedArticle =
         articleRepository.saveAndFlush(
             ArticleEntity.builder()
                 .author(author)
@@ -85,32 +88,34 @@ public class ArticleServiceImpl implements ArticleService {
                 .build());
 
     List<String> tagNames = createRequest.getTagNames();
-    if (!tagNames.isEmpty()) {
+    if (tagNames != null && !tagNames.isEmpty()) {
       List<ArticleTagEntity> articleTags =
           tagNames.stream()
               .map(
                   tagName -> {
-                    TagEntity tag =
+                    TagEntity savedTag =
                         tagRepository
                             .findByName(tagName)
                             .orElseGet(() -> tagRepository.saveAndFlush(new TagEntity(tagName)));
 
-                    ArticleTagKey articleTagKey = new ArticleTagKey(article.getId(), tag.getId());
-                    return ArticleTagEntity.builder().id(articleTagKey).build();
+                    ArticleTagKey articleTagId =
+                        new ArticleTagKey(savedArticle.getId(), savedTag.getId());
+
+                    return new ArticleTagEntity(articleTagId);
                   })
               .collect(Collectors.toList());
 
       articleTagRepository.saveAll(articleTags);
     }
 
-    return ArticleMapper.MAPPER.toArticleResponse(article, tagNames);
+    return ArticleMapper.MAPPER.toArticleResponse(savedArticle, tagNames);
   }
 
   @Override
   public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Set<Long> followedUsers = followRepository.findFollowedUsers(currentUser.getId());
-    if (followedUsers.isEmpty()) {
+    Set<Long> followedUsers = followRepository.findByUserId(currentUser.getId());
+    if (followedUsers == null || followedUsers.isEmpty()) {
       return new PageResponse<>(Collections.emptyList(), 0);
     }
 
@@ -124,40 +129,42 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public PageResponse<ArticleResponse> findRecentArticles(
       String tagName, String favoriteBy, String author, PageRequest pageRequest) {
+    QTagEntity qTag = QTagEntity.tagEntity;
+    QArticleEntity qArticle = QArticleEntity.articleEntity;
+    QUserEntity qUser = QUserEntity.userEntity;
+    QArticleTagEntity qArticleTag = QArticleTagEntity.articleTagEntity;
+    QArticleFavoriteEntity qArticleFavorite = QArticleFavoriteEntity.articleFavoriteEntity;
+
     BooleanBuilder conditions = new BooleanBuilder();
     if (StringUtils.isNotBlank(tagName)) {
-      conditions.and(QTagEntity.tagEntity.name.eq(tagName));
+      conditions.and(qTag.name.eq(tagName));
     }
     if (StringUtils.isNotBlank(author)) {
-      conditions.and(QArticleEntity.articleEntity.author.username.eq(author));
+      conditions.and(qArticle.author.username.eq(author));
     }
     if (StringUtils.isNotBlank(favoriteBy)) {
-      conditions.and(QUserEntity.userEntity.username.eq(favoriteBy));
+      conditions.and(qUser.username.eq(favoriteBy));
     }
 
     JPAQuery<?> query =
         queryFactory
-            .from(QArticleEntity.articleEntity)
-            .leftJoin(QArticleTagEntity.articleTagEntity)
-            .on(QArticleEntity.articleEntity.id.eq(QArticleTagEntity.articleTagEntity.id.articleId))
-            .leftJoin(QTagEntity.tagEntity)
-            .on(QTagEntity.tagEntity.id.eq(QArticleTagEntity.articleTagEntity.id.tagId))
-            .leftJoin(QArticleFavoriteEntity.articleFavoriteEntity)
-            .on(
-                QArticleFavoriteEntity.articleFavoriteEntity.id.articleId.eq(
-                    QArticleEntity.articleEntity.id))
-            .leftJoin(QUserEntity.userEntity)
-            .on(
-                QUserEntity.userEntity.id.eq(
-                    QArticleFavoriteEntity.articleFavoriteEntity.id.userId))
+            .from(qArticle)
+            .leftJoin(qArticleTag)
+            .on(qArticle.id.eq(qArticleTag.id.articleId))
+            .leftJoin(qTag)
+            .on(qTag.id.eq(qArticleTag.id.tagId))
+            .leftJoin(qArticleFavorite)
+            .on(qArticleFavorite.id.articleId.eq(qArticle.id))
+            .leftJoin(qUser)
+            .on(qUser.id.eq(qArticleFavorite.id.userId))
             .where(conditions);
 
-    long totalElements = query.select(QArticleEntity.articleEntity.countDistinct()).fetchFirst();
+    long totalElements = query.select(qArticle.countDistinct()).fetchFirst();
 
     List<ArticleEntity> articles =
         query
             .distinct()
-            .select(QArticleEntity.articleEntity)
+            .select(qArticle)
             .offset(pageRequest.getOffset())
             .limit(pageRequest.getPageSize())
             .fetch();
@@ -175,6 +182,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional
   public ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity newArticle =
@@ -199,6 +207,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional
   public void deleteArticle(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
@@ -221,6 +230,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional
   public ArticleResponse favoriteArticle(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
@@ -235,12 +245,15 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional
   public ArticleResponse unFavoriteArticle(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    ArticleFavoriteKey articleFavorite =
+        new ArticleFavoriteKey(article.getId(), currentUser.getId());
     articleFavoriteRepository
-        .findById(new ArticleFavoriteKey(article.getId(), currentUser.getId()))
+        .findById(articleFavorite)
         .ifPresent(articleFavoriteRepository::delete);
 
     return getArticleResponse(currentUser, article);
@@ -270,15 +283,18 @@ public class ArticleServiceImpl implements ArticleService {
     articleResponse.setFavoritesCount(
         articleFavoriteRepository.countArticleFavoritesByArticleId(article.getId()));
 
+    QTagEntity qTag = QTagEntity.tagEntity;
+    QArticleTagEntity qArticleTag = QArticleTagEntity.articleTagEntity;
+    QArticleEntity qArticle = QArticleEntity.articleEntity;
     List<String> tagNames =
         queryFactory
-            .select(QTagEntity.tagEntity.name)
-            .from(QTagEntity.tagEntity)
-            .innerJoin(QArticleTagEntity.articleTagEntity)
-            .on(QArticleTagEntity.articleTagEntity.id.tagId.eq(QTagEntity.tagEntity.id))
-            .innerJoin(QArticleEntity.articleEntity)
-            .on(QArticleTagEntity.articleTagEntity.id.articleId.eq(QArticleEntity.articleEntity.id))
-            .where(QArticleEntity.articleEntity.id.eq(article.getId()))
+            .select(qTag.name)
+            .from(qTag)
+            .innerJoin(qArticleTag)
+            .on(qArticleTag.id.tagId.eq(qTag.id))
+            .innerJoin(qArticle)
+            .on(qArticleTag.id.articleId.eq(qArticle.id))
+            .where(qArticle.id.eq(article.getId()))
             .fetch();
     articleResponse.setTagNames(tagNames);
 

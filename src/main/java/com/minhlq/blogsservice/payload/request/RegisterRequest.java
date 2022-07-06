@@ -1,8 +1,7 @@
 package com.minhlq.blogsservice.payload.request;
 
-import com.minhlq.blogsservice.annotation.validation.DuplicatedEmailConstraint;
 import com.minhlq.blogsservice.annotation.validation.DuplicatedUsernameConstraint;
-import javax.validation.constraints.Email;
+import com.minhlq.blogsservice.constant.UserConstants;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
@@ -21,20 +20,13 @@ import lombok.ToString;
 public final class RegisterRequest {
 
   @EqualsAndHashCode.Include
-  @NotBlank(message = "Username cannot be blank")
-  @Size(min = 3, max = 50, message = "Username should be at least 3 and at most 50 characters")
+  @NotBlank(message = UserConstants.BLANK_USERNAME)
+  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
   @DuplicatedUsernameConstraint
   private String username;
 
-  @Size(max = 60)
-  @EqualsAndHashCode.Include
-  @NotBlank(message = "Email cannot be blank")
-  @Email(message = "A valid email format is required")
-  @DuplicatedEmailConstraint
-  private String email;
-
   @ToString.Exclude
-  @NotBlank(message = "Password cannot be blank")
-  @Size(min = 4, max = 15, message = "Password should be at least 4 characters")
+  @NotBlank(message = UserConstants.BLANK_PASSWORD)
+  @Size(min = 4, message = UserConstants.PASSWORD_SIZE)
   private String password;
 }

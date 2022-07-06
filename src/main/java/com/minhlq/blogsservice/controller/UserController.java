@@ -5,6 +5,7 @@ import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.payload.UserPrincipal;
+import com.minhlq.blogsservice.payload.response.UserResponse;
 import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +47,7 @@ public class UserController {
   @PutMapping
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update user info", description = "Update current user information")
-  public UserPrincipal updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+  public UserResponse updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
 
     UpdateUserDto updateUser = new UpdateUserDto(currentUser, updateUserRequest);
@@ -55,7 +56,7 @@ public class UserController {
     // Authenticate user with the updated profile.
     SecurityUtils.authenticateUser(userDetails);
 
-    return userDetails;
+    return UserResponse.getUserResponse(userDetails);
   }
 
   /**

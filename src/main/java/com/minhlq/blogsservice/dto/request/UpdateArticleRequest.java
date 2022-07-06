@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.dto.request;
 
+import com.minhlq.blogsservice.annotation.validation.DuplicatedArticleConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateArticleRequest {
 
-  private String title = "";
+  @DuplicatedArticleConstraint private String title = "";
 
   private String body = "";
 

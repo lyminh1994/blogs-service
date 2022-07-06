@@ -7,7 +7,6 @@ import com.minhlq.blogsservice.repository.CommentRepository;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.TagRepository;
 import com.minhlq.blogsservice.service.impl.ArticleServiceImpl;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
-
-  @Mock JPAQueryFactory queryFactory;
 
   @Mock ArticleRepository articleRepository;
 

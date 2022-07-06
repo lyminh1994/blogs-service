@@ -4,7 +4,6 @@ import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -15,7 +14,7 @@ import org.mapstruct.factory.Mappers;
  * @version 1.0
  * @since 1.0
  */
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper
 public interface UserMapper {
 
   /** The mapper instance. */

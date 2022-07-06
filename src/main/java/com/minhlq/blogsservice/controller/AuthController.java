@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,8 +55,8 @@ public class AuthController {
   @Loggable
   @PostMapping(SecurityConstants.REGISTER)
   @Operation(summary = "Register", description = "Register new account")
-  public ResponseEntity<AuthenticationResponse> createUser(
-      @Valid @RequestBody RegisterRequest registerRequest) {
+  public ResponseEntity<AuthenticationResponse> register(
+      @RequestBody @Valid RegisterRequest registerRequest) {
     HttpHeaders responseHeaders = new HttpHeaders();
     AuthenticationResponse authenticationResponse =
         authService.createUser(registerRequest, responseHeaders);
@@ -76,10 +77,10 @@ public class AuthController {
    */
   @Loggable
   @PostMapping(SecurityConstants.LOGIN)
-  @Operation(summary = "Login", description = "Authentication user and return access token")
+  @Operation(summary = "Login", description = "Authentication user and return access information")
   public ResponseEntity<AuthenticationResponse> login(
       @CookieValue(required = false) String refreshToken,
-      @Valid @RequestBody LoginRequest loginRequest) {
+      @RequestBody @Valid LoginRequest loginRequest) {
 
     HttpHeaders responseHeaders = new HttpHeaders();
     AuthenticationResponse authenticationResponse =
@@ -111,10 +112,23 @@ public class AuthController {
    */
   @Loggable
   @DeleteMapping(SecurityConstants.LOGOUT)
-  @Operation(summary = "Logout", description = "Logout")
-  public ResponseEntity<Void> logOut(HttpServletRequest request, HttpServletResponse response) {
+  @Operation(summary = "Logout", description = "Logout and clear cookie to headers")
+  public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
     authService.logout(request, response);
     HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
     return ResponseEntity.noContent().headers(responseHeaders).build();
+  }
+
+  /**
+   * Verify account by verification token.
+   *
+   * @param verificationToken the token
+   */
+  @Loggable
+  @GetMapping(SecurityConstants.VERIFY_ACCOUNT)
+  @Operation(summary = "Verify", description = "Verification account by provided token")
+  public ResponseEntity<Void> verify(@PathVariable String verificationToken) {
+    authService.verificationAccount(verificationToken);
+    return ResponseEntity.ok().build();
   }
 }

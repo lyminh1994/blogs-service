@@ -26,4 +26,6 @@ public final class ErrorConstants {
 
   /** Null elements not allowed. */
   public static final String NULL_ELEMENTS_NOT_ALLOWED = "Null elements not allowed!";
+
+  public static final String VERIFY_TOKEN_EXPIRED = "Verification token is expired";
 }

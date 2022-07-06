@@ -1,8 +1,9 @@
 package com.minhlq.blogsservice.entity;
 
-import javax.persistence.Column;
+import com.minhlq.blogsservice.config.jpa.BaseEntity;
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The comment model for the application.
@@ -20,21 +22,43 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@ToString(callSuper = true)
 @Entity
 @Table(name = "comments")
-public class CommentEntity extends BaseEntity {
+public class CommentEntity extends BaseEntity<Long> implements Serializable {
 
-  @Column(name = "body")
   private String body;
 
-  @ManyToOne
-  @JoinColumn(name = "article_id", referencedColumnName = "id")
+  @ManyToOne(targetEntity = ArticleEntity.class)
   private ArticleEntity article;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  @ManyToOne(targetEntity = UserEntity.class)
   private UserEntity user;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o instanceof CommentEntity) || !super.equals(o)) {
+      return false;
+    }
+
+    CommentEntity comment = (CommentEntity) o;
+    return Objects.equals(getPublicId(), comment.getPublicId());
+  }
+
+  @Override
+  protected boolean canEqual(Object other) {
+    return other instanceof CommentEntity;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getPublicId());
+  }
 }

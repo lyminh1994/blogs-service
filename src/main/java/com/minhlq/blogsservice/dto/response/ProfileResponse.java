@@ -1,8 +1,8 @@
 package com.minhlq.blogsservice.dto.response;
 
-import lombok.AllArgsConstructor;
+import com.minhlq.blogsservice.enums.Gender;
+import java.time.LocalDate;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * This class models the format of the user profile response produced.
@@ -12,15 +12,21 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProfileResponse {
 
-  private String username;
+  private String publicId;
 
-  private String bio;
+  private String firstName;
 
-  private String image;
+  private String lastName;
+
+  private String phone;
+
+  private LocalDate birthday;
+
+  private Gender gender;
+
+  private String profileImage;
 
   private boolean following;
 }

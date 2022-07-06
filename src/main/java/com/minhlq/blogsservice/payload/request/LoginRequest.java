@@ -1,10 +1,9 @@
 package com.minhlq.blogsservice.payload.request;
 
+import com.minhlq.blogsservice.constant.UserConstants;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * This class models the format of the login request accepted.
@@ -14,15 +13,13 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public final class LoginRequest {
 
-  @NotBlank(message = "Username cannot be blank")
-  @Size(min = 3, max = 50, message = "Username should be at least 3 and at most 50 characters")
+  @NotBlank(message = UserConstants.BLANK_USERNAME)
+  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
   private String username;
 
-  @NotBlank(message = "Password cannot be left blank")
-  @Size(min = 4, message = "Password should be at least 4 characters")
+  @NotBlank(message = UserConstants.BLANK_PASSWORD)
+  @Size(min = 4, message = UserConstants.PASSWORD_SIZE)
   private String password;
 }

@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NewArticleRequest {
 
-  @NotBlank(message = "title can't be empty")
+  @NotBlank(message = "Title can't be empty")
   @DuplicatedArticleConstraint
   private String title;
 
-  @NotBlank(message = "description can't be empty")
+  @NotBlank(message = "Description can't be empty")
   private String description;
 
-  @NotBlank(message = "body can't be empty")
+  @NotBlank(message = "Body can't be empty")
   private String body;
 
   private List<String> tagNames;

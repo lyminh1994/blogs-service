@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.config.security;
 
-import com.minhlq.blogsservice.service.CryptoService;
+import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
   private final JwtService jwtService;
 
-  private final CryptoService cryptoService;
+  private final EncryptionService encryptionService;
 
   private final UserDetailsService userDetailsService;
 
@@ -48,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     if (StringUtils.isNotBlank(jwt)) {
-      String accessToken = cryptoService.decrypt(jwt);
+      String accessToken = encryptionService.decrypt(jwt);
 
       if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
         String username = jwtService.getUsernameFromJwt(accessToken);

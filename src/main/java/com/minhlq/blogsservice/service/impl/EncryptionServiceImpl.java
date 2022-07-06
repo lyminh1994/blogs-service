@@ -1,8 +1,8 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.constant.CryptoConstants;
-import com.minhlq.blogsservice.exception.CryptoException;
-import com.minhlq.blogsservice.service.CryptoService;
+import com.minhlq.blogsservice.constant.EncryptionConstants;
+import com.minhlq.blogsservice.exception.EncryptionException;
+import com.minhlq.blogsservice.service.EncryptionService;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
  */
 @Log4j2
 @Service
-public class CryptoServiceImpl implements CryptoService {
+public class EncryptionServiceImpl implements EncryptionService {
 
   @Value("${crypto.secret.password}")
   private String password;
@@ -54,12 +54,12 @@ public class CryptoServiceImpl implements CryptoService {
       if (StringUtils.isBlank(text)) {
         return null;
       }
-      byte[] iv = new byte[CryptoConstants.GCM_IV_LENGTH];
+      byte[] iv = new byte[EncryptionConstants.GCM_IV_LENGTH];
       random.nextBytes(iv);
 
-      Cipher cipher = Cipher.getInstance(CryptoConstants.ENCRYPT_ALGORITHM);
+      Cipher cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
       GCMParameterSpec ivSpec =
-          new GCMParameterSpec(CryptoConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
+          new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
       cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPassword(), ivSpec);
 
       byte[] ciphertext = cipher.doFinal(text.getBytes(StandardCharsets.UTF_8));
@@ -75,8 +75,8 @@ public class CryptoServiceImpl implements CryptoService {
         | IllegalBlockSizeException
         | BadPaddingException
         | NoSuchPaddingException e) {
-      log.debug(CryptoConstants.ERROR_ENCRYPTING_DATA, e);
-      throw new CryptoException(e);
+      log.debug(EncryptionConstants.ERROR_ENCRYPTING_DATA, e);
+      throw new EncryptionException(e);
     }
   }
 
@@ -86,19 +86,20 @@ public class CryptoServiceImpl implements CryptoService {
       if (StringUtils.isBlank(encryptedText)) {
         return null;
       }
-      byte[] decoded = Base64.getDecoder().decode(encryptedText);
-      byte[] iv = Arrays.copyOfRange(decoded, 0, CryptoConstants.GCM_IV_LENGTH);
 
-      Cipher cipher = Cipher.getInstance(CryptoConstants.ENCRYPT_ALGORITHM);
+      byte[] decoded = Base64.getDecoder().decode(encryptedText);
+      byte[] iv = Arrays.copyOfRange(decoded, 0, EncryptionConstants.GCM_IV_LENGTH);
+
+      Cipher cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
       GCMParameterSpec ivSpec =
-          new GCMParameterSpec(CryptoConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
+          new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
       cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(), ivSpec);
 
       byte[] ciphertext =
           cipher.doFinal(
               decoded,
-              CryptoConstants.GCM_IV_LENGTH,
-              decoded.length - CryptoConstants.GCM_IV_LENGTH);
+              EncryptionConstants.GCM_IV_LENGTH,
+              decoded.length - EncryptionConstants.GCM_IV_LENGTH);
 
       return new String(ciphertext, StandardCharsets.UTF_8);
     } catch (NoSuchAlgorithmException
@@ -108,8 +109,8 @@ public class CryptoServiceImpl implements CryptoService {
         | IllegalBlockSizeException
         | BadPaddingException
         | NoSuchPaddingException e) {
-      log.debug(CryptoConstants.ERROR_DECRYPTING_DATA, e);
-      throw new CryptoException(e);
+      log.debug(EncryptionConstants.ERROR_DECRYPTING_DATA, e);
+      throw new EncryptionException(e);
     }
   }
 
@@ -122,8 +123,8 @@ public class CryptoServiceImpl implements CryptoService {
 
       return URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {
-      log.debug(CryptoConstants.ERROR_DECRYPTING_DATA, e);
-      throw new CryptoException(e);
+      log.debug(EncryptionConstants.ERROR_DECRYPTING_DATA, e);
+      throw new EncryptionException(e);
     }
   }
 
@@ -136,26 +137,27 @@ public class CryptoServiceImpl implements CryptoService {
 
       return URLDecoder.decode(text, StandardCharsets.UTF_8.toString()).replaceAll("\\s+", "+");
     } catch (UnsupportedEncodingException e) {
-      log.debug(CryptoConstants.ERROR_DECRYPTING_DATA, e);
-      throw new CryptoException(e);
+      log.debug(EncryptionConstants.ERROR_DECRYPTING_DATA, e);
+      throw new EncryptionException(e);
     }
   }
 
   private SecretKey getKeyFromPassword() {
     try {
-      SecretKeyFactory factory = SecretKeyFactory.getInstance(CryptoConstants.DERIVATION_FUNCTION);
+      SecretKeyFactory factory =
+          SecretKeyFactory.getInstance(EncryptionConstants.DERIVATION_FUNCTION);
       byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
       KeySpec spec =
           new PBEKeySpec(
               password.toCharArray(),
               saltBytes,
-              CryptoConstants.ITERATION_COUNT,
-              CryptoConstants.KEY_LENGTH);
+              EncryptionConstants.ITERATION_COUNT,
+              EncryptionConstants.KEY_LENGTH);
 
       return new SecretKeySpec(
-          factory.generateSecret(spec).getEncoded(), CryptoConstants.AES_ALGORITHM);
+          factory.generateSecret(spec).getEncoded(), EncryptionConstants.AES_ALGORITHM);
     } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-      throw new CryptoException(e);
+      throw new EncryptionException(e);
     }
   }
 }

@@ -45,7 +45,7 @@ public class CommentController {
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
-      @PathVariable("slug") String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
+      @PathVariable("slug") String slug, @RequestBody @Valid NewCommentRequest newCommentRequest) {
     return commentService.createComment(slug, newCommentRequest);
   }
 

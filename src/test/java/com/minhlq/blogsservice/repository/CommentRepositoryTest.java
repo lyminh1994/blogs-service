@@ -24,9 +24,7 @@ class CommentRepositoryTest extends BaseRepositoryTest {
   @Test
   @DisplayName("Should Find By Article Success")
   void shouldFindByArticleSuccess() {
-    ArticleEntity article = new ArticleEntity();
-    article.setId(1L);
-    List<CommentEntity> actual = commentRepository.findByArticle(article);
+    List<CommentEntity> actual = commentRepository.findByArticle(ArticleEntity.builder().build());
 
     assertNotNull(actual);
     assertEquals(2, actual.size());
@@ -35,9 +33,8 @@ class CommentRepositoryTest extends BaseRepositoryTest {
   @Test
   @DisplayName("Should Find By Id And Article Success")
   void shouldFindByIdAndArticleSuccess() {
-    ArticleEntity article = new ArticleEntity();
-    article.setId(1L);
-    Optional<CommentEntity> actual = commentRepository.findByIdAndArticle(1L, article);
+    Optional<CommentEntity> actual =
+        commentRepository.findByIdAndArticle(1L, ArticleEntity.builder().build());
 
     assertTrue(actual.isPresent());
     assertEquals("body 1", actual.get().getBody());

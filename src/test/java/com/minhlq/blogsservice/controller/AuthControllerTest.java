@@ -1,208 +1,68 @@
 package com.minhlq.blogsservice.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogsservice.entity.UserEntity;
-import com.minhlq.blogsservice.payload.request.LoginRequest;
-import com.minhlq.blogsservice.payload.request.RegisterRequest;
-import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
-import com.minhlq.blogsservice.repository.UserRepository;
+import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.service.AuthService;
-import com.minhlq.blogsservice.service.JwtService;
-import com.minhlq.blogsservice.service.UserService;
-import java.util.Optional;
+import com.minhlq.blogsservice.service.CookieService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@WebMvcTest(AuthController.class)
+@ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
-  @Autowired MockMvc mockMvc;
-  @MockBean UserService userService;
-  @MockBean AuthService authService;
-  @MockBean JwtService jwtService;
-  @MockBean UserDetailsService userDetailsService;
-  @MockBean UserRepository userRepository;
-  @MockBean AuthenticationManager authenticationManager;
 
-  ObjectMapper mapper;
+  @Mock private AuthService authService;
+
+  @Mock private CookieService cookieService;
+
+  @InjectMocks private AuthController authController;
+
+  private MockMvc mockMvc;
+  private ObjectMapper mapper;
+  private String registerUrl;
+  private String loginUrl;
+  private String refreshTokenUrl;
+  private String logoutUrl;
+  private String verifyUrl;
 
   @BeforeEach
   void setUp() {
+    this.mockMvc =
+        MockMvcBuilders.standaloneSetup(authController)
+            .alwaysDo(MockMvcResultHandlers.print())
+            .build();
+
     mapper = new ObjectMapper();
+    registerUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.REGISTER;
+    loginUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.LOGIN;
+    refreshTokenUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.REFRESH_TOKEN;
+    logoutUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.LOGOUT;
+    verifyUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.VERIFY_ACCOUNT;
   }
 
   @Test
-  @DisplayName("Should Create User Success POST request to endpoint - /auth/register")
-  void shouldCreateUserSuccess() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setEmail("user01@example.com");
-    registerRequest.setUsername("user01");
-    registerRequest.setPassword("pass");
-    String accessToken = "accessToken";
-    String refreshToken = "refreshToken";
-
-    when(authService.createUser(any(RegisterRequest.class), any()))
-        .thenReturn(AuthenticationResponse.buildJwtResponse(accessToken));
-
+  void givenEmptyRegisterBody_whenCallRegister_thenReturnBadRequest() throws Exception {
     mockMvc
-        .perform(
-            post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(registerRequest)))
-        .andExpect(status().isCreated())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.user", nullValue()))
-        .andExpect(jsonPath("$.accessToken", is(accessToken)))
-        .andExpect(jsonPath("$.refreshToken", is(refreshToken)));
+        .perform(MockMvcRequestBuilders.post(registerUrl))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest());
   }
 
   @Test
-  @DisplayName(
-      "Should Show Error Message For Blank Username POST request to endpoint - /auth/register")
-  void shouldShowErrorMessageForBlankUsername() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setEmail("user01@example.com");
-    registerRequest.setUsername(null);
-    registerRequest.setPassword("pass");
-
+  void givenExistedUsername_whenCallRegister_thenReturnBadRequest() throws Exception {
     mockMvc
         .perform(
-            post("/auth/register")
+            MockMvcRequestBuilders.post(registerUrl)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(registerRequest)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.errors.username[0]", is("can't be empty")));
-  }
-
-  @Test
-  @DisplayName(
-      "Should Show Error Message For Invalid Email POST request to endpoint - /auth/register")
-  void shouldShowErrorMessageForInvalidEmail() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setEmail("jonathan99.com");
-    registerRequest.setUsername("user01");
-    registerRequest.setPassword("pass");
-    mockMvc
-        .perform(
-            post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(registerRequest)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.errors.email[0]", is("should be an email")));
-  }
-
-  @Test
-  @DisplayName(
-      "Should Show Error For Duplicated Username POST request to endpoint - /auth/register")
-  void shouldShowErrorForDuplicatedUsername() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setEmail("user01@example.com");
-    registerRequest.setUsername("user01");
-    registerRequest.setPassword("pass");
-    UserEntity user =
-        UserEntity.builder()
-            .id(1L)
-            .username("jonathan99")
-            .password("123")
-            .email("jonathan99@gmail.com")
-            .bio("bio")
-            .image("image")
-            .build();
-    when(userRepository.findByUsername("jonathan99")).thenReturn(Optional.of(user));
-
-    mockMvc
-        .perform(
-            post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(registerRequest)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.errors.username[0]", is("duplicated username")));
-  }
-
-  @Test
-  @DisplayName("Should Show Error For Duplicated Email POST request to endpoint - /auth/register")
-  void shouldShowErrorForDuplicatedEmail() throws Exception {
-    RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setEmail("user01@example.com");
-    registerRequest.setUsername("user01");
-    registerRequest.setPassword("pass");
-    UserEntity user =
-        UserEntity.builder()
-            .id(1L)
-            .username("jonathan99")
-            .password("123")
-            .email("jonathan99@gmail.com")
-            .bio("bio")
-            .image("image")
-            .build();
-    when(userRepository.findByEmail("jonathan99@gmail.com")).thenReturn(Optional.of(user));
-
-    mockMvc
-        .perform(
-            post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(registerRequest)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.errors.email[0]", is("duplicated email")));
-  }
-
-  @Test
-  @DisplayName("Should Login Success POST request to endpoint - /auth/login")
-  void shouldLoginSuccess() throws Exception {
-    LoginRequest loginRequest = new LoginRequest("jonathan99", "123");
-    String accessToken = "accessToken";
-    String refreshToken = "refreshToken";
-
-    when(authService.login(any(), any(), any()))
-        .thenReturn(AuthenticationResponse.buildJwtResponse(accessToken));
-
-    mockMvc
-        .perform(
-            post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(loginRequest)))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.user", nullValue()))
-        .andExpect(jsonPath("$.accessToken", is(accessToken)))
-        .andExpect(jsonPath("$.refreshToken", is(refreshToken)));
-  }
-
-  @Test
-  @DisplayName("Should Fail Login With Wrong Password POST request to endpoint - /auth/login")
-  void shouldFailLoginWithWrongPassword() throws Exception {
-    LoginRequest loginRequest = new LoginRequest("jonathan99", "456");
-
-    when(authService.login(any(), any(), any())).thenThrow(BadCredentialsException.class);
-
-    mockMvc
-        .perform(
-            post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(loginRequest)))
-        .andExpect(status().isUnauthorized())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.message", is("invalid username or password!")));
+                .content(mapper.writeValueAsString(null)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest());
   }
 }

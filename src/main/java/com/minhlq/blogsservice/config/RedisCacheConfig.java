@@ -26,7 +26,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @EnableCaching
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-public class RedisConfig {
+public class RedisCacheConfig {
 
   /**
    * By default, the template can only support {@code RedisTemplate<String, String>}. That is, it

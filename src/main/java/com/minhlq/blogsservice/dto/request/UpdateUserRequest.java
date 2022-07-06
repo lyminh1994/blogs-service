@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.dto.request;
 
 import com.minhlq.blogsservice.enums.Gender;
-import java.time.Instant;
+import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,11 +28,9 @@ public class UpdateUserRequest {
 
   private String phone;
 
-  private Instant birthday;
+  private LocalDate birthday;
 
   private Gender gender;
 
-  private String bio;
-
-  private String image;
+  private String profileImage;
 }

@@ -52,4 +52,11 @@ public interface AuthService {
    * @param response the response
    */
   void logout(HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   * Verify account by verification token.
+   *
+   * @param verificationToken the token
+   */
+  void verificationAccount(String verificationToken);
 }

@@ -5,7 +5,6 @@ import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,9 +15,7 @@ import org.springframework.stereotype.Repository;
  * @since 1.0
  */
 @Repository
-public interface ArticleTagRepository
-    extends JpaRepository<ArticleTagEntity, ArticleTagKey>,
-        QuerydslPredicateExecutor<ArticleTagEntity> {
+public interface ArticleTagRepository extends JpaRepository<ArticleTagEntity, ArticleTagKey> {
 
   @Query("from ArticleTagEntity AT where AT.id.articleId = :articleId")
   List<ArticleTagEntity> findByArticleId(Long articleId);
