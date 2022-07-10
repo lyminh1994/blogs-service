@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.dto.request;
 
-import com.minhlq.blogsservice.annotation.validation.DuplicatedArticleConstraint;
+import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

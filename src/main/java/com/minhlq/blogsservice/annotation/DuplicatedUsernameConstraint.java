@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.annotation.validation;
+package com.minhlq.blogsservice.annotation;
 
-import com.minhlq.blogsservice.annotation.validation.validator.DuplicatedArticleValidator;
+import com.minhlq.blogsservice.annotation.impl.validator.DuplicatedUsernameValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +10,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * The custom validator to validate article name does not exist.
+ * The custom validator to validate user username cannot duplicate.
  *
  * @author Minh Lys
  * @version 1.0
@@ -19,15 +19,15 @@ import javax.validation.Payload;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = DuplicatedArticleValidator.class)
-public @interface DuplicatedArticleConstraint {
+@Constraint(validatedBy = DuplicatedUsernameValidator.class)
+public @interface DuplicatedUsernameConstraint {
 
   /**
    * Resolve a message in case of violation.
    *
    * @return the validation messages
    */
-  String message() default "Article name already used";
+  String message() default "Username has existed";
 
   /**
    * Certain validation group that should be triggered.

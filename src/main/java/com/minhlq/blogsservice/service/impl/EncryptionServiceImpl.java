@@ -54,6 +54,7 @@ public class EncryptionServiceImpl implements EncryptionService {
       if (StringUtils.isBlank(text)) {
         return null;
       }
+
       byte[] iv = new byte[EncryptionConstants.GCM_IV_LENGTH];
       random.nextBytes(iv);
 

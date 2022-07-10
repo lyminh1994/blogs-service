@@ -16,7 +16,8 @@ import org.springframework.lang.NonNull;
  */
 @EqualsAndHashCode
 public final class ApplicationAuditorAware implements AuditorAware<String> {
-  private static final String CURRENT_AUDITOR = "system";
+
+  private static final String DEFAULT_AUDITOR = "system";
 
   /**
    * Returns the current auditor of the application.
@@ -38,6 +39,6 @@ public final class ApplicationAuditorAware implements AuditorAware<String> {
 
     // If there is no authentication,
     // then the system will be used as the current auditor.
-    return Optional.of(CURRENT_AUDITOR);
+    return Optional.of(DEFAULT_AUDITOR);
   }
 }

@@ -38,7 +38,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity<T extends Serializable> {
 
-  private static final String SEQUENCE_NAME = "id_seq";
+  private static final String SEQUENCE_NAME = "seq_id";
   private static final String SEQUENCE_INITIAL_VALUE = "1";
   private static final String STRATEGY =
       "com.minhlq.blogsservice.config.jpa.AssignedSequenceStyleGenerator";
@@ -125,7 +125,7 @@ public class BaseEntity<T extends Serializable> {
   /**
    * A callback to assign a random UUID to publicId.
    *
-   * <p>Assign a public id to the user. This is used to identify the user in the system and can be
+   * <p>Assign a public id to the entity. This is used to identify the entity in the system and can be
    * shared publicly over the internet.
    */
   @PrePersist

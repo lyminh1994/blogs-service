@@ -43,7 +43,7 @@ public interface AuthService {
    * @param request the request
    * @return the authentication response
    */
-  AuthenticationResponse refreshToken(String refreshToken, HttpServletRequest request);
+  AuthenticationResponse refreshAccessToken(String refreshToken, HttpServletRequest request);
 
   /**
    * Logout the user from the system and clear all cookies from request and response.

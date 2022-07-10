@@ -26,6 +26,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
   Optional<UserEntity> findByPhone(String phone);
 
-  Optional<UserEntity> getAllByVerificationTokenAndEnabled(
-      String verificationToken, boolean enabled);
+  Optional<UserEntity> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
 }

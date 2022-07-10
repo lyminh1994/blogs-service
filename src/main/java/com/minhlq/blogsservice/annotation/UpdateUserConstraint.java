@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.annotation.validation;
+package com.minhlq.blogsservice.annotation;
 
-import com.minhlq.blogsservice.annotation.validation.validator.DuplicatedEmailValidator;
+import com.minhlq.blogsservice.annotation.impl.validator.UpdateUserValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,31 +10,31 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * The custom validator to validate user email cannot duplicate.
+ * The custom validator to validate user email has used by another user.
  *
  * @author Minh Lys
  * @version 1.0
  * @since 1.0
  */
 @Documented
-@Target({ElementType.FIELD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = DuplicatedEmailValidator.class)
-public @interface DuplicatedEmailConstraint {
+@Constraint(validatedBy = UpdateUserValidator.class)
+public @interface UpdateUserConstraint {
 
   /**
    * Resolve a message in case of violation.
    *
    * @return the validation messages
    */
-  String message() default "Email has existed";
+  String message() default "Invalid update user params";
 
   /**
    * Certain validation group that should be triggered.
    *
    * @return the class
    */
-  Class<?>[] groups() default {};
+  Class[] groups() default {};
 
   /**
    * Payload to be passed in this validation.

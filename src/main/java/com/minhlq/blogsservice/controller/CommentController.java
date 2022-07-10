@@ -46,7 +46,7 @@ public class CommentController {
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
       @PathVariable("slug") String slug, @RequestBody @Valid NewCommentRequest newCommentRequest) {
-    return commentService.createComment(slug, newCommentRequest);
+    return commentService.addCommentToArticle(slug, newCommentRequest);
   }
 
   /**
@@ -72,6 +72,6 @@ public class CommentController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
   public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
-    commentService.deleteComment(slug, commentId);
+    commentService.deleteCommentFromArticle(slug, commentId);
   }
 }

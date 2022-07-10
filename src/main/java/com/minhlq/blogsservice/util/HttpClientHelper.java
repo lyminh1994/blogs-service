@@ -26,7 +26,7 @@ public class HttpClientHelper {
 
   private final RestTemplate restTemplate;
 
-  private ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
   /**
    * Execute rest api request with empty body.
@@ -37,13 +37,7 @@ public class HttpClientHelper {
    */
   public String execute(String url, HttpMethod method) {
     ResponseEntity<String> responseEntity = restTemplate.exchange(url, method, null, String.class);
-    HttpStatus status = responseEntity.getStatusCode();
-    String body = responseEntity.getBody();
-    if (status.is2xxSuccessful()) {
-      return body;
-    }
-
-    throw new HttpClientException(status, body);
+    return responseEntity.getBody();
   }
 
   /**
@@ -58,11 +52,7 @@ public class HttpClientHelper {
     HttpEntity<Object> requestEntity = HttpEntityUtils.entity(StringUtils.EMPTY, body);
     ResponseEntity<String> responseEntity =
         restTemplate.exchange(url, method, requestEntity, String.class);
-    if (responseEntity.getStatusCode().is2xxSuccessful()) {
-      return responseEntity.getBody();
-    }
-
-    return null;
+    return responseEntity.getBody();
   }
 
   /**
@@ -77,11 +67,7 @@ public class HttpClientHelper {
         HttpEntityUtils.entity(StringUtils.EMPTY, body, MediaType.MULTIPART_FORM_DATA);
     ResponseEntity<String> responseEntity =
         restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-    if (responseEntity.getStatusCode().is2xxSuccessful()) {
-      return responseEntity.getBody();
-    }
-
-    return null;
+    return responseEntity.getBody();
   }
 
   public <T> T getForValue(String url, Class<T> valueType) {

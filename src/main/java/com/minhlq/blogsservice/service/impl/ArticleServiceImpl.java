@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,7 +89,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .build());
 
     List<String> tagNames = createRequest.getTagNames();
-    if (tagNames != null && !tagNames.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(tagNames)) {
       List<ArticleTagEntity> articleTags =
           tagNames.stream()
               .map(
@@ -115,7 +116,7 @@ public class ArticleServiceImpl implements ArticleService {
   public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     Set<Long> followedUsers = followRepository.findByUserId(currentUser.getId());
-    if (followedUsers == null || followedUsers.isEmpty()) {
+    if (CollectionUtils.isEmpty(followedUsers)) {
       return new PageResponse<>(Collections.emptyList(), 0);
     }
 
@@ -168,9 +169,10 @@ public class ArticleServiceImpl implements ArticleService {
             .offset(pageRequest.getOffset())
             .limit(pageRequest.getPageSize())
             .fetch();
-    List<ArticleResponse> responses = getArticleResponses(articles);
 
-    return new PageResponse<>(responses, totalElements);
+    List<ArticleResponse> contents = getArticleResponses(articles);
+
+    return new PageResponse<>(contents, totalElements);
   }
 
   @Override
@@ -267,20 +269,17 @@ public class ArticleServiceImpl implements ArticleService {
    * @return article
    */
   private ArticleResponse getArticleResponse(UserPrincipal currentUser, ArticleEntity article) {
-    ArticleResponse articleResponse = ArticleMapper.MAPPER.toArticleResponse(article);
+    ArticleResponse result = ArticleMapper.MAPPER.toArticleResponse(article);
     if (currentUser != null) {
-      articleResponse
-          .getAuthor()
-          .setFollowing(
-              followRepository.existsById(
-                  new FollowKey(currentUser.getId(), article.getAuthor().getId())));
+      FollowKey followId = new FollowKey(currentUser.getId(), article.getAuthor().getId());
+      result.getAuthor().setFollowing(followRepository.existsById(followId));
 
-      articleResponse.setFavorite(
-          articleFavoriteRepository.existsById(
-              new ArticleFavoriteKey(article.getId(), currentUser.getId())));
+      ArticleFavoriteKey articleFavoriteId =
+          new ArticleFavoriteKey(article.getId(), currentUser.getId());
+      result.setFavorite(articleFavoriteRepository.existsById(articleFavoriteId));
     }
 
-    articleResponse.setFavoritesCount(
+    result.setFavoritesCount(
         articleFavoriteRepository.countArticleFavoritesByArticleId(article.getId()));
 
     QTagEntity qTag = QTagEntity.tagEntity;
@@ -296,9 +295,9 @@ public class ArticleServiceImpl implements ArticleService {
             .on(qArticleTag.id.articleId.eq(qArticle.id))
             .where(qArticle.id.eq(article.getId()))
             .fetch();
-    articleResponse.setTagNames(tagNames);
+    result.setTagNames(tagNames);
 
-    return articleResponse;
+    return result;
   }
 
   /**

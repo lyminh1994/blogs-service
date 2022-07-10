@@ -51,8 +51,6 @@ spring:
     redis:
       repositories:
         enabled: false
-  mvc:
-    log-request-details: false
 
 # Crypto and JWT config
 crypto:

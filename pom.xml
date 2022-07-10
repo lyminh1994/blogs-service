@@ -126,6 +126,12 @@
       <artifactId>querydsl-apt</artifactId>
       <version>${querydsl.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>classgraph</artifactId>
+          <groupId>io.github.classgraph</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.querydsl</groupId>

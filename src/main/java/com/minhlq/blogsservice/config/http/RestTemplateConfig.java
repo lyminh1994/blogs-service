@@ -60,7 +60,7 @@ public class RestTemplateConfig {
   public RestTemplate restTemplate() {
     return new RestTemplateBuilder()
         .requestFactory(this::clientHttpRequestFactory)
-        .errorHandler(new HttpClientErrorHandler())
+        .errorHandler(new HttpClientErrorHandler(jsonMapper()))
         .interceptors(new HttpClientHeadersInterceptor(), new HttpClientLoggingInterceptor())
         .build();
   }

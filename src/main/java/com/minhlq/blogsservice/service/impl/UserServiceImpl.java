@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
                   currentUser.setGender(params.getGender());
                   currentUser.setProfileImage(params.getProfileImage());
 
-                  return userRepository.save(currentUser);
+                  return userRepository.saveAndFlush(currentUser);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
@@ -82,9 +82,9 @@ public class UserServiceImpl implements UserService {
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followKey = new FollowKey(currentUser.getId(), targetUser.getId());
-              if (!followRepository.existsById(followKey)) {
-                followRepository.save(new FollowEntity(followKey));
+              FollowKey followId = new FollowKey(currentUser.getId(), targetUser.getId());
+              if (!followRepository.existsById(followId)) {
+                followRepository.save(new FollowEntity(followId));
               }
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, true);
@@ -99,8 +99,8 @@ public class UserServiceImpl implements UserService {
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followKey = new FollowKey(currentUser.getId(), targetUser.getId());
-              followRepository.findById(followKey).ifPresent(followRepository::delete);
+              FollowKey followId = new FollowKey(currentUser.getId(), targetUser.getId());
+              followRepository.findById(followId).ifPresent(followRepository::delete);
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);
             })

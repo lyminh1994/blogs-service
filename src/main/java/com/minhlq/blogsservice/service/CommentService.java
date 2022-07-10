@@ -20,7 +20,7 @@ public interface CommentService {
    * @param newCommentRequest the comment
    * @return comment
    */
-  CommentResponse createComment(String slug, NewCommentRequest newCommentRequest);
+  CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest);
 
   /**
    * Find all article comments.
@@ -36,5 +36,5 @@ public interface CommentService {
    * @param slug the slug
    * @param commentId the comment id
    */
-  void deleteComment(String slug, Long commentId);
+  void deleteCommentFromArticle(String slug, Long commentId);
 }

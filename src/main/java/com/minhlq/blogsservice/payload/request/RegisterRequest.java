@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.payload.request;
 
-import com.minhlq.blogsservice.annotation.validation.DuplicatedUsernameConstraint;
+import com.minhlq.blogsservice.annotation.DuplicatedUsernameConstraint;
 import com.minhlq.blogsservice.constant.UserConstants;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

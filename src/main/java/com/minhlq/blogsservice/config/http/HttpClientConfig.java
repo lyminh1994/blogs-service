@@ -37,6 +37,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeaderElementIterator;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -55,6 +56,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration
 @EnableScheduling
 public class HttpClientConfig {
+
+  @Value("${server.port}")
+  private String port;
 
   /**
    * A bean to config connection pool ensures that already opened connections are reused.
@@ -79,7 +83,7 @@ public class HttpClientConfig {
       // set maximum amount of connections for each http route in pool
       poolingConnectionManager.setDefaultMaxPerRoute(MAX_ROUTE_CONNECTIONS);
       // increase the amounts of connections if host is localhost
-      HttpHost localhost = new HttpHost("http://localhost:8080");
+      HttpHost localhost = new HttpHost("http://localhost:" + port);
       poolingConnectionManager.setMaxPerRoute(new HttpRoute(localhost), MAX_LOCALHOST_CONNECTIONS);
     } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
       log.error("Initialize Pooling Http Client Connection Manager fails", e);

@@ -100,7 +100,7 @@ public class AuthController {
   @Operation(summary = "Refresh token", description = "Create and return new access token")
   public ResponseEntity<AuthenticationResponse> refreshToken(
       @CookieValue String refreshToken, HttpServletRequest request) {
-    AuthenticationResponse authenticationResponse = authService.refreshToken(refreshToken, request);
+    AuthenticationResponse authenticationResponse = authService.refreshAccessToken(refreshToken, request);
     return ResponseEntity.ok().body(authenticationResponse);
   }
 

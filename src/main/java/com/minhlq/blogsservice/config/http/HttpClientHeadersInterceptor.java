@@ -30,6 +30,7 @@ public class HttpClientHeadersInterceptor implements ClientHttpRequestIntercepto
 
     HttpRequest requestWrapper = new HttpRequestWrapper(request);
     List<MediaType> accepts = new ArrayList<>();
+    accepts.add(MediaType.ALL);
     requestWrapper.getHeaders().setAccept(accepts);
 
     return execution.execute(requestWrapper, bytes);

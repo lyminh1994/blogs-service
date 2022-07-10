@@ -40,12 +40,12 @@ public class CommentServiceImpl implements CommentService {
   private final FollowRepository followRepository;
 
   @Override
-  public CommentResponse createComment(String slug, NewCommentRequest newCommentRequest) {
+  public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    CommentEntity commentSaved =
+    CommentEntity savedComment =
         commentRepository.save(
             CommentEntity.builder()
                 .body(newCommentRequest.getBody())
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
                 .user(UserMapper.MAPPER.toUser(currentUser))
                 .build());
 
-    return CommentMapper.MAPPER.toCommentResponse(commentSaved);
+    return CommentMapper.MAPPER.toCommentResponse(savedComment);
   }
 
   @Override
@@ -68,11 +68,8 @@ public class CommentServiceImpl implements CommentService {
             comment -> {
               CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
               if (currentUser != null) {
-                response
-                    .getUser()
-                    .setFollowing(
-                        followRepository.existsById(
-                            new FollowKey(currentUser.getId(), comment.getUser().getId())));
+                FollowKey followId = new FollowKey(currentUser.getId(), comment.getUser().getId());
+                response.getUser().setFollowing(followRepository.existsById(followId));
               }
 
               return response;
@@ -81,7 +78,7 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteComment(String slug, Long commentId) {
+  public void deleteCommentFromArticle(String slug, Long commentId) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);

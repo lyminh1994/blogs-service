@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.annotation.validation.validator;
+package com.minhlq.blogsservice.annotation.impl.validator;
 
-import com.minhlq.blogsservice.annotation.validation.DuplicatedEmailConstraint;
+import com.minhlq.blogsservice.annotation.DuplicatedEmailConstraint;
 import com.minhlq.blogsservice.repository.UserRepository;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

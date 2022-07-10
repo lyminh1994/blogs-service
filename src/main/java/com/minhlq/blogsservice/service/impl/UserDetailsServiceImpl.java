@@ -1,9 +1,11 @@
 package com.minhlq.blogsservice.service.impl;
 
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.entity.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.RoleService;
+import java.text.MessageFormat;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Primary;
@@ -45,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   // @Cacheable(value = CacheConstants.USER_DETAILS, key = "{ #root.methodName, #username }")
   public UserDetails loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
-      throw new UsernameNotFoundException("Username is empty");
+      throw new UsernameNotFoundException(UserConstants.BLANK_USERNAME);
     }
 
     UserEntity user =
@@ -53,7 +55,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             .findByUsername(username)
             .orElseThrow(
                 () ->
-                    new UsernameNotFoundException("User with username " + username + " not found"));
+                    new UsernameNotFoundException(
+                        MessageFormat.format(UserConstants.USER_NOT_FOUND, username)));
 
     return UserPrincipal.buildUserDetails(user);
   }

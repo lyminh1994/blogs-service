@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.annotation.validation.validator;
+package com.minhlq.blogsservice.annotation.impl.validator;
 
-import com.minhlq.blogsservice.annotation.validation.UpdateUserConstraint;
+import com.minhlq.blogsservice.annotation.UpdateUserConstraint;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;

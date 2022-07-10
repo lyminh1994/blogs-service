@@ -49,9 +49,9 @@ public final class UserConstants {
   public static final String PASSWORD_SIZE = "Password should be at least 4 characters";
 
   public static final String COULD_NOT_CREATE_USER = "Could not create user";
-  public static final String COULD_NOT_VERIFY_USER = "Could not create user";
+  public static final String COULD_NOT_VERIFY_USER = "Could not verify user";
   public static final String USER_ALREADY_EXIST = "Email {} already exist and nothing will be done";
-  public static final String USER_NOT_FOUND = "User not found";
+  public static final String USER_NOT_FOUND = "User with username: \"{}\" not found";
   public static final String USERNAME_OR_EMAIL_EXITS = "Username or email already exist";
   public static final String USER_EXIST_BUT_NOT_ENABLED =
       "Email {} exists but not enabled. Returning user {}";

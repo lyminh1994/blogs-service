@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.util;
 
 import com.minhlq.blogsservice.constant.ErrorConstants;
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import java.util.Collection;
 import java.util.Objects;
@@ -166,19 +167,19 @@ public class SecurityUtils {
    * @param userDetails the user details
    */
   public void validateUserDetailsStatus(UserDetails userDetails) {
-    log.debug("User details {}", userDetails);
+    log.debug(UserConstants.USER_DETAILS_DEBUG_MESSAGE, userDetails);
 
     if (!userDetails.isEnabled()) {
-      throw new DisabledException("User is disabled");
+      throw new DisabledException(UserConstants.USER_DISABLED_MESSAGE);
     }
     if (!userDetails.isAccountNonLocked()) {
-      throw new LockedException("User is locked");
+      throw new LockedException(UserConstants.USER_LOCKED_MESSAGE);
     }
     if (!userDetails.isAccountNonExpired()) {
-      throw new AccountExpiredException("User is expired");
+      throw new AccountExpiredException(UserConstants.USER_EXPIRED_MESSAGE);
     }
     if (!userDetails.isCredentialsNonExpired()) {
-      throw new CredentialsExpiredException("User credentials expired");
+      throw new CredentialsExpiredException(UserConstants.USER_CREDENTIALS_EXPIRED_MESSAGE);
     }
   }
 }
