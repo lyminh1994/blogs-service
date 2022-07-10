@@ -1,9 +1,13 @@
 package com.minhlq.blogsservice.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.minhlq.blogsservice.exception.HttpClientException;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -22,6 +26,8 @@ public class HttpClientHelper {
 
   private final RestTemplate restTemplate;
 
+  private ObjectMapper objectMapper;
+
   /**
    * Execute rest api request with empty body.
    *
@@ -31,11 +37,13 @@ public class HttpClientHelper {
    */
   public String execute(String url, HttpMethod method) {
     ResponseEntity<String> responseEntity = restTemplate.exchange(url, method, null, String.class);
-    if (responseEntity.getStatusCode().is2xxSuccessful()) {
-      return responseEntity.getBody();
+    HttpStatus status = responseEntity.getStatusCode();
+    String body = responseEntity.getBody();
+    if (status.is2xxSuccessful()) {
+      return body;
     }
 
-    return null;
+    throw new HttpClientException(status, body);
   }
 
   /**
@@ -74,5 +82,14 @@ public class HttpClientHelper {
     }
 
     return null;
+  }
+
+  public <T> T getForValue(String url, Class<T> valueType) {
+    String response = execute(url, HttpMethod.GET);
+    try {
+      return objectMapper.readValue(response, valueType);
+    } catch (IOException e) {
+      throw new HttpClientException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
   }
 }

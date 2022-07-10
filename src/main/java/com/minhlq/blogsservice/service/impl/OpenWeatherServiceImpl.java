@@ -6,13 +6,13 @@ import com.minhlq.blogsservice.constant.CacheConstants;
 import com.minhlq.blogsservice.dto.OpenWeatherDto;
 import com.minhlq.blogsservice.enums.WeatherMeasurementUnits;
 import com.minhlq.blogsservice.service.OpenWeatherService;
+import com.minhlq.blogsservice.util.HttpClientHelper;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -33,7 +33,7 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
   @Value("${app.open-weather.api-key}")
   private String apiKey;
 
-  private final RestTemplate restTemplate;
+  private final HttpClientHelper clientHelper;
 
   @Override
   @Cacheable(cacheNames = CacheConstants.CURRENT_WEATHER)
@@ -48,6 +48,6 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
             .queryParamIfPresent("lang", Optional.of(language))
             .queryParam("appid", apiKey);
 
-    return restTemplate.getForObject(builder.toUriString(), OpenWeatherDto.class);
+    return clientHelper.getForValue(builder.toUriString(), OpenWeatherDto.class);
   }
 }
