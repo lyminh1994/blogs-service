@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.entity.RoleEntity;
+import com.minhlq.blogsservice.entity.Role;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.repository.RoleRepository;
 import com.minhlq.blogsservice.service.RoleService;
@@ -26,16 +26,16 @@ public class RoleServiceImpl implements RoleService {
   /**
    * Create the roleEntity with the roleEntity instance given.
    *
-   * @param roleEntity the roleEntity
+   * @param role the roleEntity
    * @return the persisted roleEntity with assigned id
    */
   @Override
   @Transactional
   // @CachePut({CacheConstants.ROLE, CacheConstants.ROLES})
-  public RoleEntity save(RoleEntity roleEntity) {
-    Validate.notNull(roleEntity, "The roleEntity cannot be null");
+  public Role save(Role role) {
+    Validate.notNull(role, "The roleEntity cannot be null");
 
-    return roleRepository.save(roleEntity);
+    return roleRepository.save(role);
   }
 
   /**
@@ -46,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
    */
   @Override
   // @Cacheable(CacheConstants.ROLE)
-  public RoleEntity findByName(String name) {
+  public Role findByName(String name) {
     Validate.notNull(name, "The name cannot be null");
 
     return roleRepository.findByName(name).orElseThrow(ResourceNotFoundException::new);

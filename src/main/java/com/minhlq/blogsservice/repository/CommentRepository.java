@@ -1,9 +1,10 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.entity.ArticleEntity;
-import com.minhlq.blogsservice.entity.CommentEntity;
-import java.util.List;
+import com.minhlq.blogsservice.entity.Article;
+import com.minhlq.blogsservice.entity.Comment;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,9 +16,9 @@ import org.springframework.stereotype.Repository;
  * @since 1.0
  */
 @Repository
-public interface CommentRepository extends JpaRepository<CommentEntity, String> {
+public interface CommentRepository extends JpaRepository<Comment, String> {
 
-  List<CommentEntity> findByArticle(ArticleEntity article);
+  Page<Comment> findByArticle(Article article, Pageable pageable);
 
-  Optional<CommentEntity> findByIdAndArticle(Long id, ArticleEntity article);
+  Optional<Comment> findByIdAndArticle(Long id, Article article);
 }

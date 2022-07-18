@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.service.impl;
 import static com.minhlq.blogsservice.constant.OpenWeatherConstants.CURRENT_WEATHER_DATA;
 
 import com.minhlq.blogsservice.constant.CacheConstants;
-import com.minhlq.blogsservice.dto.OpenWeatherDto;
+import com.minhlq.blogsservice.dto.OpenWeatherDTO;
 import com.minhlq.blogsservice.enums.WeatherMeasurementUnits;
 import com.minhlq.blogsservice.service.OpenWeatherService;
 import com.minhlq.blogsservice.util.HttpClientHelper;
@@ -37,7 +37,7 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 
   @Override
   @Cacheable(cacheNames = CacheConstants.CURRENT_WEATHER)
-  public OpenWeatherDto getCurrentWeather(
+  public OpenWeatherDTO getCurrentWeather(
       String latitude, String longitude, WeatherMeasurementUnits units, String language) {
     String url = baseUrl + CURRENT_WEATHER_DATA;
     UriComponentsBuilder builder =
@@ -48,6 +48,6 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
             .queryParamIfPresent("lang", Optional.of(language))
             .queryParam("appid", apiKey);
 
-    return clientHelper.getForValue(builder.toUriString(), OpenWeatherDto.class);
+    return clientHelper.getForValue(builder.toUriString(), OpenWeatherDTO.class);
   }
 }

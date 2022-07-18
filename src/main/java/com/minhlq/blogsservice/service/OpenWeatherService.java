@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service;
 
-import com.minhlq.blogsservice.dto.OpenWeatherDto;
+import com.minhlq.blogsservice.dto.OpenWeatherDTO;
 import com.minhlq.blogsservice.enums.WeatherMeasurementUnits;
 
 /**
@@ -21,6 +21,6 @@ public interface OpenWeatherService {
    * @param language the response language
    * @return weather information
    */
-  OpenWeatherDto getCurrentWeather(
+  OpenWeatherDTO getCurrentWeather(
       String latitude, String longitude, WeatherMeasurementUnits units, String language);
 }

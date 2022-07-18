@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.entity.RoleEntity;
+import com.minhlq.blogsservice.entity.Role;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * @since 1.0
  */
 @Repository
-public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
-  Optional<RoleEntity> findByName(String name);
+  Optional<Role> findByName(String name);
 }

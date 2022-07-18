@@ -2,8 +2,9 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.entity.RoleEntity;
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.constant.UserConstants;
+import com.minhlq.blogsservice.entity.Role;
+import com.minhlq.blogsservice.entity.User;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -19,6 +20,7 @@ import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,18 +68,22 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   public AuthenticationResponse createUser(
       RegisterRequest registerRequest, HttpHeaders responseHeaders) {
-    RoleEntity role = roleService.findByName("ROLE_USER");
-    String verificationToken = jwtService.createJwt(registerRequest.getUsername());
+    Role role = roleService.findByName("ROLE_USER");
+    Duration verificationTokenDuration =
+        Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
 
-    UserEntity user =
-        UserEntity.builder()
-            .username(registerRequest.getUsername())
-            .password(passwordEncoder.encode(registerRequest.getPassword()))
-            .verificationToken(encryptionService.encode(verificationToken))
-            .build();
+    String verificationToken =
+        jwtService.createJwt(
+            registerRequest.getUsername(),
+            Date.from(Instant.now().plusSeconds(verificationTokenDuration.toSeconds())));
+
+    User user = new User();
+    user.setUsername(registerRequest.getUsername());
+    user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+    user.setVerificationToken(encryptionService.encode(verificationToken));
     user.addRole(role);
 
-    UserEntity savedUser = userRepository.saveAndFlush(user);
+    User savedUser = userRepository.saveAndFlush(user);
     UserPrincipal userDetails = UserPrincipal.buildUserDetails(savedUser);
     SecurityUtils.authenticateUser(userDetails);
 
@@ -88,12 +94,19 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
+  @Transactional
   public AuthenticationResponse login(
       String refreshToken, LoginRequest loginRequest, HttpHeaders responseHeaders) {
 
     String username = loginRequest.getUsername();
     // Authentication will fail if the credentials are invalid and throw exception.
     SecurityUtils.authenticateUser(authenticationManager, username, loginRequest.getPassword());
+
+    // Update user last successful login and reset failed login attempts
+    User user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    user.setLastSuccessfulLogin(LocalDateTime.now());
+    user.setFailedLoginAttempts(0);
+    userRepository.save(user);
 
     boolean isRefreshTokenValid = false;
     if (StringUtils.isNotEmpty(refreshToken)) {
@@ -146,7 +159,7 @@ public class AuthServiceImpl implements AuthService {
       throw new SecurityException(ErrorConstants.VERIFY_TOKEN_EXPIRED);
     }
 
-    UserEntity user =
+    User user =
         userRepository
             .findByVerificationTokenAndEnabled(decodedToken, false)
             .orElseThrow(ResourceNotFoundException::new);

@@ -40,10 +40,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class EncryptionServiceImpl implements EncryptionService {
 
-  @Value("${crypto.secret.password}")
+  @Value("${encryption.secret.password}")
   private String password;
 
-  @Value("${crypto.secret.salt}")
+  @Value("${encryption.secret.salt}")
   private String salt;
 
   private final SecureRandom random = new SecureRandom();

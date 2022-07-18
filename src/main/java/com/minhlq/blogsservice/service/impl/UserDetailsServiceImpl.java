@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.UserConstants;
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.User;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.RoleService;
@@ -50,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       throw new UsernameNotFoundException(UserConstants.BLANK_USERNAME);
     }
 
-    UserEntity user =
+    User user =
         userRepository
             .findByUsername(username)
             .orElseThrow(

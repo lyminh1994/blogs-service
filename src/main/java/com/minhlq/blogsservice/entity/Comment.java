@@ -1,9 +1,9 @@
 package com.minhlq.blogsservice.entity;
 
-import com.minhlq.blogsservice.config.jpa.BaseEntity;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -28,15 +28,17 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "comments")
-public class CommentEntity extends BaseEntity<Long> implements Serializable {
+public class Comment extends AbstractAuditEntity<Long> implements Serializable {
 
   private String body;
 
-  @ManyToOne(targetEntity = ArticleEntity.class)
-  private ArticleEntity article;
+  @ToString.Exclude
+  @ManyToOne(targetEntity = Article.class, fetch = FetchType.LAZY)
+  private Article article;
 
-  @ManyToOne(targetEntity = UserEntity.class)
-  private UserEntity user;
+  @ToString.Exclude
+  @ManyToOne(targetEntity = User.class)
+  private User user;
 
   @Override
   public boolean equals(Object o) {
@@ -44,17 +46,17 @@ public class CommentEntity extends BaseEntity<Long> implements Serializable {
       return true;
     }
 
-    if (!(o instanceof CommentEntity) || !super.equals(o)) {
+    if (!(o instanceof Comment) || !super.equals(o)) {
       return false;
     }
 
-    CommentEntity comment = (CommentEntity) o;
+    Comment comment = (Comment) o;
     return Objects.equals(getPublicId(), comment.getPublicId());
   }
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof CommentEntity;
+    return other instanceof Comment;
   }
 
   @Override

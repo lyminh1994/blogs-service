@@ -1,9 +1,7 @@
 package com.minhlq.blogsservice.config.http;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogsservice.exception.HttpClientException;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -16,10 +14,7 @@ import org.springframework.web.client.ResponseErrorHandler;
  * @since 1.0
  */
 @Log4j2
-@RequiredArgsConstructor
 public class HttpClientErrorHandler implements ResponseErrorHandler {
-
-  private final ObjectMapper objectMapper;
 
   @Override
   public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {

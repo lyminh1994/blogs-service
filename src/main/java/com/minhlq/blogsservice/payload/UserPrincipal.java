@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.payload;
 
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.User;
 import com.minhlq.blogsservice.enums.Gender;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,7 +70,7 @@ public final class UserPrincipal implements UserDetails {
    * @return the userDetails
    * @throws NullPointerException if the user is null
    */
-  public static UserPrincipal buildUserDetails(final UserEntity user) {
+  public static UserPrincipal buildUserDetails(final User user) {
     Validate.notNull(user, "User must not be null");
 
     // Build the authorities from the user's roles

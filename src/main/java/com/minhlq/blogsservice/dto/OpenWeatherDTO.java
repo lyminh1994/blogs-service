@@ -11,7 +11,7 @@ import lombok.Data;
  * @since 1.0
  */
 @Data
-public class OpenWeatherDto {
+public class OpenWeatherDTO {
 
   private int cod;
   private String name;

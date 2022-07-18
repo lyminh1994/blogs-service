@@ -3,9 +3,7 @@ package com.minhlq.blogsservice.dto.request;
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * This class models the format of the add new article request accepted.
@@ -15,8 +13,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class NewArticleRequest {
 
   @NotBlank(message = "Title can't be empty")

@@ -2,7 +2,8 @@ package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
-import java.util.List;
+import com.minhlq.blogsservice.dto.response.PageResponse;
+import org.springframework.data.domain.PageRequest;
 
 /**
  * The comment service to provide for the comment operations.
@@ -26,9 +27,10 @@ public interface CommentService {
    * Find all article comments.
    *
    * @param slug the slug
+   * @param pageRequest the paging params
    * @return comments
    */
-  List<CommentResponse> findArticleComments(String slug);
+  PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest);
 
   /**
    * Delete comment of article with provided comment id.

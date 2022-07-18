@@ -1,11 +1,15 @@
 package com.minhlq.blogsservice.entity;
 
-import com.minhlq.blogsservice.config.jpa.BaseEntity;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,23 +30,27 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
 @Entity
 @Table(name = "articles")
-public class ArticleEntity extends BaseEntity<Long> implements Serializable {
+public class Article extends AbstractAuditEntity<Long> implements Serializable {
 
-  @ToString.Exclude
-  @ManyToOne(targetEntity = UserEntity.class)
-  private UserEntity author;
+  private String title;
 
   @Column(unique = true)
   private String slug;
 
-  private String title;
-
   private String description;
 
   private String body;
+
+  @ToString.Exclude
+  @ManyToOne(targetEntity = User.class)
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  private User author;
+
+  @ToString.Exclude
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
+  private List<Comment> comments;
 
   @Override
   public boolean equals(Object o) {
@@ -50,18 +58,18 @@ public class ArticleEntity extends BaseEntity<Long> implements Serializable {
       return true;
     }
 
-    if (!(o instanceof ArticleEntity) || !super.equals(o)) {
+    if (!(o instanceof Article) || !super.equals(o)) {
       return false;
     }
 
-    ArticleEntity article = (ArticleEntity) o;
+    Article article = (Article) o;
     return Objects.equals(getPublicId(), article.getPublicId())
         && Objects.equals(getSlug(), article.getSlug());
   }
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof ArticleEntity;
+    return other instanceof Article;
   }
 
   @Override

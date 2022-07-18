@@ -16,9 +16,7 @@ public class ProfileResponse {
 
   private String publicId;
 
-  private String firstName;
-
-  private String lastName;
+  private String name;
 
   private String phone;
 

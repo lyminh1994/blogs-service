@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.dto.mapper;
 
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.User;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -26,7 +26,7 @@ public interface UserMapper {
    * @param userDetails the user details
    * @return the User
    */
-  UserEntity toUser(UserPrincipal userDetails);
+  User toUser(UserPrincipal userDetails);
 
   /**
    * Convert and populate a user to userProfile object.
@@ -35,5 +35,5 @@ public interface UserMapper {
    * @param following is following user
    * @return the profile
    */
-  ProfileResponse toProfileResponse(UserEntity user, boolean following);
+  ProfileResponse toProfileResponse(User user, boolean following);
 }

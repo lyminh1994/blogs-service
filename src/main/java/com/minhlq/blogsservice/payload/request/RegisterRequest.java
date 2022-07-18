@@ -22,7 +22,7 @@ public final class RegisterRequest {
   @EqualsAndHashCode.Include
   @NotBlank(message = UserConstants.BLANK_USERNAME)
   @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
-  @DuplicatedUsernameConstraint
+  @DuplicatedUsernameConstraint(message = UserConstants.USERNAME_EXITS)
   private String username;
 
   @ToString.Exclude

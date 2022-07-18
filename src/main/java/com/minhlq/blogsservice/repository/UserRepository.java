@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
@@ -15,16 +15,16 @@ import org.springframework.stereotype.Repository;
  * @since 1.0
  */
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
   @EntityGraph(
       type = EntityGraphType.FETCH,
       attributePaths = {"userRoles"})
-  Optional<UserEntity> findByUsername(String username);
+  Optional<User> findByUsername(String username);
 
-  Optional<UserEntity> findByEmail(String email);
+  Optional<User> findByEmail(String email);
 
-  Optional<UserEntity> findByPhone(String phone);
+  Optional<User> findByPhone(String phone);
 
-  Optional<UserEntity> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
+  Optional<User> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
 }

@@ -1,5 +1,6 @@
-package com.minhlq.blogsservice.config.jpa;
+package com.minhlq.blogsservice.entity;
 
+import com.minhlq.blogsservice.config.jpa.AssignedSequenceStyleGenerator;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,7 +16,6 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.annotation.CreatedBy;
@@ -33,10 +33,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  */
 @Getter
 @Setter
-@ToString
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity<T extends Serializable> {
+public abstract class AbstractAuditEntity<T extends Serializable> {
 
   private static final String SEQUENCE_NAME = "seq_id";
   private static final String SEQUENCE_INITIAL_VALUE = "1";
@@ -92,17 +91,17 @@ public class BaseEntity<T extends Serializable> {
       return true;
     }
 
-    if (!(o instanceof BaseEntity<?>)) {
+    if (!(o instanceof AbstractAuditEntity<?>)) {
       return false;
     }
 
-    BaseEntity<?> that = (BaseEntity<?>) o;
+    AbstractAuditEntity<?> that = (AbstractAuditEntity<?>) o;
     if (!that.canEqual(this)) {
       return false;
     }
 
-    return Objects.equals(getVersion(), that.getVersion())
-        && Objects.equals(getPublicId(), that.getPublicId());
+    return Objects.equals(this.getVersion(), that.getVersion())
+        && Objects.equals(this.getPublicId(), that.getPublicId());
   }
 
   /**
@@ -114,7 +113,7 @@ public class BaseEntity<T extends Serializable> {
    * @return if the other object can be equal to this object.
    */
   protected boolean canEqual(Object other) {
-    return other instanceof BaseEntity;
+    return other instanceof AbstractAuditEntity;
   }
 
   @Override
@@ -125,13 +124,13 @@ public class BaseEntity<T extends Serializable> {
   /**
    * A callback to assign a random UUID to publicId.
    *
-   * <p>Assign a public id to the entity. This is used to identify the entity in the system and can be
-   * shared publicly over the internet.
+   * <p>Assign a public id to the entity. This is used to identify the entity in the system and can
+   * be shared publicly over the internet.
    */
   @PrePersist
   private void onCreate() {
-    if (Objects.isNull(getPublicId())) {
-      setPublicId(UUID.randomUUID().toString());
+    if (Objects.isNull(this.getPublicId())) {
+      this.setPublicId(UUID.randomUUID().toString());
     }
   }
 }

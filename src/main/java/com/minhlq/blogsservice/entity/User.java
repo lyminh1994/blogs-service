@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.minhlq.blogsservice.config.jpa.BaseEntity;
 import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,19 +30,18 @@ import org.hibernate.envers.NotAudited;
  * The user model for the application.
  *
  * @author Minh Lys
- * @version 1.0¬
+ * @version 1.0
  * @since 1.0
  */
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
 @Audited
 @Table(name = "users")
-public class UserEntity extends BaseEntity<Long> implements Serializable {
+public class User extends AbstractAuditEntity<Long> implements Serializable {
 
   @Column(unique = true, nullable = false)
   @NotBlank(message = UserConstants.BLANK_USERNAME)
@@ -77,25 +74,25 @@ public class UserEntity extends BaseEntity<Long> implements Serializable {
 
   private String verificationToken;
 
-  private int failedLoginAttempts;
+  @NotAudited private int failedLoginAttempts;
 
-  private LocalDateTime lastSuccessfulLogin;
+  @NotAudited private LocalDateTime lastSuccessfulLogin;
 
   @NotAudited
   @ToString.Exclude
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-  private Set<UserRoleEntity> userRoles = new HashSet<>();
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<UserRole> userRoles = new HashSet<>();
 
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof UserEntity) || !super.equals(o)) {
+    if (!(o instanceof User) || !super.equals(o)) {
       return false;
     }
 
-    UserEntity user = (UserEntity) o;
+    User user = (User) o;
     return Objects.equals(getPublicId(), user.getPublicId())
         && Objects.equals(getUsername(), user.getUsername())
         && Objects.equals(getEmail(), user.getEmail());
@@ -103,7 +100,7 @@ public class UserEntity extends BaseEntity<Long> implements Serializable {
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof UserEntity;
+    return other instanceof User;
   }
 
   @Override
@@ -116,9 +113,9 @@ public class UserEntity extends BaseEntity<Long> implements Serializable {
    *
    * @param role the role
    */
-  public void addRole(final RoleEntity role) {
-    UserRoleEntity userRole = new UserRoleEntity(this, role);
-    userRoles.add(new UserRoleEntity(this, role));
+  public void addRole(final Role role) {
+    UserRole userRole = new UserRole(this, role);
+    userRoles.add(new UserRole(this, role));
     userRole.setUser(this);
   }
 
@@ -127,8 +124,8 @@ public class UserEntity extends BaseEntity<Long> implements Serializable {
    *
    * @param role the role
    */
-  public void removeRole(final RoleEntity role) {
-    UserRoleEntity userRole = new UserRoleEntity(this, role);
+  public void removeRole(final Role role) {
+    UserRole userRole = new UserRole(this, role);
     userRoles.remove(userRole);
     userRole.setUser(null);
   }

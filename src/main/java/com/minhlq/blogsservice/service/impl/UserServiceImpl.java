@@ -1,11 +1,11 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.dto.UpdateUserDto;
+import com.minhlq.blogsservice.dto.UpdateUserDTO;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
-import com.minhlq.blogsservice.entity.FollowEntity;
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.Follow;
+import com.minhlq.blogsservice.entity.User;
 import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -34,8 +34,8 @@ public class UserServiceImpl implements UserService {
   private final FollowRepository followRepository;
 
   @Override
-  public UserPrincipal updateUser(UpdateUserDto updateUserDto) {
-    UserEntity updatedUser =
+  public UserPrincipal updateUser(UpdateUserDTO updateUserDto) {
+    User updatedUser =
         userRepository
             .findById(updateUserDto.getTargetUser().getId())
             .map(
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
             targetUser -> {
               FollowKey followId = new FollowKey(currentUser.getId(), targetUser.getId());
               if (!followRepository.existsById(followId)) {
-                followRepository.save(new FollowEntity(followId));
+                followRepository.save(new Follow(followId));
               }
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, true);

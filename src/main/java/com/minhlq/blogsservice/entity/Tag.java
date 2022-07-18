@@ -8,8 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The tag model for the application.
@@ -18,12 +19,13 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  * @since 1.0
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "tags")
-public class TagEntity implements Serializable {
+public class Tag implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -32,7 +34,7 @@ public class TagEntity implements Serializable {
   @Column(nullable = false)
   private String name;
 
-  public TagEntity(String name) {
+  public Tag(String name) {
     this.name = name;
   }
 }

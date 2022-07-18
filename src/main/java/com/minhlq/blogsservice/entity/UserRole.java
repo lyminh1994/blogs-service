@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.entity;
 
-import com.minhlq.blogsservice.config.jpa.BaseEntity;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -28,37 +27,40 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "users_roles")
-public class UserRoleEntity extends BaseEntity<Long> implements Serializable {
+public class UserRole extends AbstractAuditEntity<Long> implements Serializable {
 
   @ToString.Exclude
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = UserEntity.class)
-  private UserEntity user;
+  @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+  private User user;
 
   @ToString.Exclude
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoleEntity.class, cascade = CascadeType.MERGE)
-  private RoleEntity role;
+  @ManyToOne(
+      targetEntity = Role.class,
+      cascade = {CascadeType.MERGE},
+      fetch = FetchType.LAZY)
+  private Role role;
 
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof UserRoleEntity) || !super.equals(o)) {
+    if (!(o instanceof UserRole) || !super.equals(o)) {
       return false;
     }
 
-    UserRoleEntity userRole = (UserRoleEntity) o;
+    UserRole userRole = (UserRole) o;
     return Objects.equals(getUser(), userRole.getUser())
         && Objects.equals(getRole(), userRole.getRole());
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), getUser(), getRole());
+  protected boolean canEqual(Object other) {
+    return other instanceof UserRole;
   }
 
   @Override
-  protected boolean canEqual(Object other) {
-    return other instanceof UserRoleEntity;
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getUser(), getRole());
   }
 }

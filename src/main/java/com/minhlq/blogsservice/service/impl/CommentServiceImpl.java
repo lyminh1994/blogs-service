@@ -4,8 +4,9 @@ import com.minhlq.blogsservice.dto.mapper.CommentMapper;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
-import com.minhlq.blogsservice.entity.ArticleEntity;
-import com.minhlq.blogsservice.entity.CommentEntity;
+import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.entity.Article;
+import com.minhlq.blogsservice.entity.Comment;
 import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.NoAuthorizationException;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
@@ -18,6 +19,8 @@ import com.minhlq.blogsservice.util.SecurityUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,12 +45,12 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    ArticleEntity article =
+    Article article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    CommentEntity savedComment =
-        commentRepository.save(
-            CommentEntity.builder()
+    Comment savedComment =
+        commentRepository.saveAndFlush(
+            Comment.builder()
                 .body(newCommentRequest.getBody())
                 .article(article)
                 .user(UserMapper.MAPPER.toUser(currentUser))
@@ -58,31 +61,37 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<CommentResponse> findArticleComments(String slug) {
+  public PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    ArticleEntity article =
+    Article article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    return commentRepository.findByArticle(article).stream()
-        .map(
-            comment -> {
-              CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
-              if (currentUser != null) {
-                FollowKey followId = new FollowKey(currentUser.getId(), comment.getUser().getId());
-                response.getUser().setFollowing(followRepository.existsById(followId));
-              }
+    Page<Comment> comments = commentRepository.findByArticle(article, pageRequest);
 
-              return response;
-            })
-        .collect(Collectors.toList());
+    List<CommentResponse> contents =
+        comments.getContent().stream()
+            .map(
+                comment -> {
+                  CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
+                  if (currentUser != null) {
+                    FollowKey followId =
+                        new FollowKey(currentUser.getId(), comment.getUser().getId());
+                    response.getUser().setFollowing(followRepository.existsById(followId));
+                  }
+
+                  return response;
+                })
+            .collect(Collectors.toList());
+
+    return new PageResponse<>(contents, comments.getTotalElements());
   }
 
   @Override
   public void deleteCommentFromArticle(String slug, Long commentId) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    ArticleEntity article =
+    Article article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    CommentEntity comment =
+    Comment comment =
         commentRepository
             .findByIdAndArticle(commentId, article)
             .orElseThrow(ResourceNotFoundException::new);
