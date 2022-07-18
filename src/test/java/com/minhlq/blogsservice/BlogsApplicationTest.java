@@ -15,7 +15,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @ExtendWith(MockitoExtension.class)
 class BlogsApplicationTest {
 
-  @Mock private transient ConfigurableApplicationContext context;
+  @Mock private ConfigurableApplicationContext context;
 
   @AfterEach
   void tearDown() {

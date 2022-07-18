@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import com.minhlq.blogsservice.entity.UserEntity;
+import com.minhlq.blogsservice.entity.User;
 import com.minhlq.blogsservice.payload.request.RegisterRequest;
 import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
 import com.minhlq.blogsservice.repository.UserRepository;
@@ -29,12 +29,12 @@ class UserServiceTest {
 
   @InjectMocks UserServiceImpl userService;
 
-  UserEntity user;
+  User user;
 
   @BeforeEach
   void setUp() {
     user =
-        new UserEntity();
+        new User();
   }
 
   @Test

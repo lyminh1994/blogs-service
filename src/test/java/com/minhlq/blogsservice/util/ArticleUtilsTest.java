@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class ArticleUtilsTest {
 
   @Test
-  void givenIncorrectFormatSlug_whenCallingToSlug_thenReturnCorrectSlug() {
+  void givenTitle_whenCallingToSlug_thenReturnSlug() {
     String actual = ArticleUtils.toSlug("Title 1");
 
     Assertions.assertEquals("title-1", actual);

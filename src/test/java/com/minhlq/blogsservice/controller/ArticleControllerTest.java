@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.helper.BaseControllerTest;
 import com.minhlq.blogsservice.service.ArticleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ArticleController.class)
-class ArticleControllerTest extends BaseControllerTest {
+class ArticleControllerTest {
   @Autowired MockMvc mockMvc;
   @MockBean ArticleService articleService;
 

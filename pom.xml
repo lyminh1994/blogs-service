@@ -16,9 +16,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-compiler.source>11</maven-compiler.source>
     <maven-compiler.target>11</maven-compiler.target>
+    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 
     <!--Dependencies version-->
     <jjwt.version>0.11.5</jjwt.version>
@@ -29,6 +29,8 @@
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <springdoc-openapi.version>1.6.9</springdoc-openapi.version>
+    <commons-validator.version>1.7</commons-validator.version>
+    <datafaker.version>1.4.0</datafaker.version>
   </properties>
   <dependencies>
 
@@ -164,6 +166,11 @@
       <version>${commons-collections4.version}</version>
     </dependency>
     <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+      <version>${commons-validator.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
@@ -194,6 +201,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.datafaker</groupId>
+      <artifactId>datafaker</artifactId>
+      <version>${datafaker.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

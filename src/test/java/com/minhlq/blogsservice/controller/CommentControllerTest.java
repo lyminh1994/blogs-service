@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.helper.BaseControllerTest;
 import com.minhlq.blogsservice.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CommentController.class)
-class CommentControllerTest extends BaseControllerTest {
+class CommentControllerTest {
   @Autowired MockMvc mockMvc;
   @MockBean CommentService commentService;
 
