@@ -5,7 +5,6 @@ import com.minhlq.blogsservice.entity.unionkey.FollowKey;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 /**
  * Repository for the User following.
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  * @since 1.0
  */
-@Repository
 public interface FollowRepository extends JpaRepository<Follow, FollowKey> {
 
   @Query("select F.id.followId from Follow F where F.id.userId = :userId")

@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  * Repository for the User.
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  * @since 1.0
  */
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
   @EntityGraph(
