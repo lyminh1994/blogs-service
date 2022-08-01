@@ -98,18 +98,18 @@ springdoc:
 logging:
   level:
     root: info
-    web: debug
+    org.springframework.web: debug
     com.minhlq.blogsservice: debug
     org.hibernate.SQL: info
     org.hibernate.type: debug
     org.springframework.security: trace
-#  logback:
-#    rollingpolicy:
-#      max-file-size: 5MB
-#      max-history: 10
-#  file:
-#    path: logs
-#    name: logs/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 1MB
+      max-history: 10
+  file:
+    path: logs
+    name: logs/blogs-service.log
 
 # Actuator config
 management:
