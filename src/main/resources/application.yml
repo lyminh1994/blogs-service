@@ -79,9 +79,6 @@ application:
   version: @project.version@
   static-resource-location: /tmp/media/
   static-resource-url: /media/**
-  open-weather:
-    base-url: https://api.openweathermap.org
-    api-key: 878816e6df18cd321379ad9329799e1d
 
 # Open API 3
 springdoc:

@@ -84,7 +84,7 @@ public class SecurityConfig {
         .authenticated()
         .antMatchers(HttpMethod.POST, "/auth/**")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/articles/**", "/user/{username}", "/tags", "/weathers/**")
+        .antMatchers(HttpMethod.GET, "/articles/**", "/user/{username}", "/tags")
         .permitAll()
         .anyRequest()
         .authenticated();

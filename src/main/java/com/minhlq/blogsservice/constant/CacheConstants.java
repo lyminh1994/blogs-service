@@ -24,7 +24,4 @@ public final class CacheConstants {
 
   /** Constant for the cache key for user details */
   public static final String USER_DETAILS = "userDetails";
-
-  // Weather API cache
-  public static final String CURRENT_WEATHER = "currentWeather";
 }

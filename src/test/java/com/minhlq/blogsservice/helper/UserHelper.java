@@ -11,7 +11,6 @@ import java.util.Set;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.validator.routines.EmailValidator;
 
 /**
  * User utility class that holds methods used across application.
@@ -117,16 +116,6 @@ public final class UserHelper {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
     userDto.setEnabled(true);
     userDto.setFailedLoginAttempts(0);
-  }
-
-  /**
-   * Verifies input string is an email.
-   *
-   * @param email email.
-   * @return true if pattern matches valid3 email, otherwise false.
-   */
-  public static boolean isEmail(String email) {
-    return EmailValidator.getInstance().isValid(email);
   }
 
   /**
