@@ -15,7 +15,7 @@ import org.springframework.data.jpa.repository.Query;
  * @version 1.0
  * @since 1.0
  */
-public interface ArticleRepository extends JpaRepository<Article, String> {
+public interface ArticleRepository extends JpaRepository<Article, Long> {
 
   Optional<Article> findBySlug(String slug);
 

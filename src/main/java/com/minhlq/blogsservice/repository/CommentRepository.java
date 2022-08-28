@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @version 1.0
  * @since 1.0
  */
-public interface CommentRepository extends JpaRepository<Comment, String> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
   Page<Comment> findByArticle(Article article, Pageable pageable);
 
