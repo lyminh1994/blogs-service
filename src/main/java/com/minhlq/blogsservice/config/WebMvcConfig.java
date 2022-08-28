@@ -15,10 +15,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-  @Value("${app.static-resource-location}")
+  @Value("${application.static-resource-location}")
   private String staticResourceLocation;
 
-  @Value("${app.static-resource-url}")
+  @Value("${application.static-resource-url}")
   private String staticResourceUrl;
 
   @Override

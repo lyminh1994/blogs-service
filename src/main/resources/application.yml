@@ -74,7 +74,9 @@ cors:
   exposed-headers:
 
 # Application configuration
-app:
+application:
+  title: @project.name@
+  version: @project.version@
   static-resource-location: /tmp/media/
   static-resource-url: /media/**
   open-weather:
@@ -83,9 +85,9 @@ app:
 
 # Open API 3
 springdoc:
-  name: "@project.name@"
-  version: "@project.version@"
-  description: "@project.description@"
+  name: @project.name@
+  version: @project.version@
+  description: @project.description@
   show-actuator: true
   swagger-ui:
     path: /swagger-ui

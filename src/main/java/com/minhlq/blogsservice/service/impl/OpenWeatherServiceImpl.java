@@ -27,10 +27,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class OpenWeatherServiceImpl implements OpenWeatherService {
 
-  @Value("${app.open-weather.base-url}")
+  @Value("${application.open-weather.base-url}")
   private String baseUrl;
 
-  @Value("${app.open-weather.api-key}")
+  @Value("${application.open-weather.api-key}")
   private String apiKey;
 
   private final HttpClientHelper clientHelper;
