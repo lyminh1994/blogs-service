@@ -1,3 +1,3 @@
-FROM adoptopenjdk:11-jre-openj9
-RUN mkdir /opt/app
-COPY /target/* /opt/app
+FROM eclipse-temurin:11-alpine
+COPY target/blogs-service-1.0.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

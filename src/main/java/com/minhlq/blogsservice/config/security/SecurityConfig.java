@@ -1,11 +1,14 @@
 package com.minhlq.blogsservice.config.security;
 
-import com.minhlq.blogsservice.constant.SecurityConstants;
+import static com.minhlq.blogsservice.constant.SecurityConstants.getPublicMatchers;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpMethod.POST;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -73,18 +76,18 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     http.cors().and().csrf().disable();
-    http.formLogin().disable().httpBasic().disable().logout().disable();
+    http.httpBasic().disable().formLogin().disable().logout().disable();
 
     http.authorizeRequests()
-        .antMatchers(HttpMethod.OPTIONS)
+        .antMatchers(OPTIONS)
         .permitAll()
-        .antMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
+        .antMatchers(getPublicMatchers().toArray(new String[] {}))
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/articles/feeds")
+        .antMatchers(GET, "/articles/feeds")
         .authenticated()
-        .antMatchers(HttpMethod.POST, "/auth/**")
+        .antMatchers(POST, "/auth/**")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/articles/**", "/user/{username}", "/tags")
+        .antMatchers(GET, "/articles/**", "/user/{username}", "/tags")
         .permitAll()
         .anyRequest()
         .authenticated();

@@ -1,11 +1,19 @@
 package com.minhlq.blogsservice.constant;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+
 import java.util.Collection;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 
 /**
  * This class holds all security-related URL mappings constants.
@@ -47,21 +55,15 @@ public final class SecurityConstants {
     "/actuator/**",
     "/v3/api-docs/**",
     "/swagger-ui/**",
-    "/swagger-ui.html",
+    "/components/schemas/**",
     String.join("/", AUTH_ROOT_URL, "**"),
   };
 
   public static final List<String> ALLOWED_HTTP_METHODS =
-      List.of(
-          HttpMethod.GET.name(),
-          HttpMethod.POST.name(),
-          HttpMethod.PUT.name(),
-          HttpMethod.DELETE.name(),
-          HttpMethod.PATCH.name(),
-          HttpMethod.OPTIONS.name());
+      List.of(GET.name(), POST.name(), PUT.name(), DELETE.name(), PATCH.name(), OPTIONS.name());
 
   public static final List<String> ALLOWED_HTTP_HEADERS =
-      List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE);
+      List.of(AUTHORIZATION, CACHE_CONTROL, CONTENT_TYPE);
 
   /**
    * Public matchers to allow access to the application.

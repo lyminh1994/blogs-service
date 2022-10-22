@@ -1,123 +1,18 @@
+# Application configuration
+application:
+  title: @project.name@
+  version: @project.version@
+  description: @project.description@
+
+# Server configuration
 server:
   port: 8080
   servlet:
     context-path: /
+
+# Spring configuration
 spring:
   profiles:
     active: dev
   application:
     name: blogs_service
-  devtools:
-    add-properties: false
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: Root@1234
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      auto-commit: true
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
-      idle-timeout: 30000
-      max-lifetime: 60000
-      minimum-idle: 5
-      maximum-pool-size: 30
-      pool-name: blogs-pool
-  jpa:
-    open-in-view: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-  redis:
-    host: localhost
-    port: 6379
-    password: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    timeout: 10000ms
-    database: 3
-    lettuce:
-      pool:
-        enabled: true
-        max-active: 8
-        max-wait: -1ms
-        max-idle: 8
-        min-idle: 0
-  cache:
-    type: redis
-  data:
-    redis:
-      repositories:
-        enabled: false
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
-    mapper:
-      accept-case-insensitive-enums: true
-
-# Crypto and JWT config
-encryption:
-  secret:
-    password: password
-    salt: salt
-jwt:
-  config:
-    secret: VbRSsaYcfTcIdox2DrmJ6nxJCcweiudkn/ik8aXg3g5KtF6U6sKyrvpILdwzMn7ZwxmyOSnK2qatONcQpunYBGSQyvk6xtYVqBy92vs4IWEZhseKRug6C9TftNvmAp0Cs1Jsq0J7yhunN1yPk1IrHk4OJfAU0harnPWDJ/7JtzAuzdNcVYcCfStg7fdtah/5ycQ+OuW1pW6zMKptQC8yPe4hxgQqSQ8D52GVQg==
-    ttl: 600000
-
-# CORS Configuration
-cors:
-  max-age: 3600
-  allow-credentials: true
-  allowed-methods:
-  allowed-headers:
-  allowed-origins: http://localhost:3000/, http://localhost:4200/
-  exposed-headers:
-
-# Application configuration
-application:
-  title: @project.name@
-  version: @project.version@
-  static-resource-location: /tmp/media/
-  static-resource-url: /media/**
-
-# Open API 3
-springdoc:
-  name: @project.name@
-  version: @project.version@
-  description: @project.description@
-  show-actuator: true
-  swagger-ui:
-    path: /swagger-ui
-    csrf:
-      enabled: true
-    display-request-duration: true
-    disable-swagger-default-url: true
-
-# Logging config
-logging:
-  level:
-    root: info
-    org.springframework.web: debug
-    com.minhlq.blogsservice: debug
-    org.hibernate.SQL: info
-    org.hibernate.type: debug
-    org.springframework.security: trace
-  logback:
-    rollingpolicy:
-      max-file-size: 1MB
-      max-history: 10
-  file:
-    path: logs
-    name: logs/blogs-service.log
-
-# Actuator config
-management:
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: '*'

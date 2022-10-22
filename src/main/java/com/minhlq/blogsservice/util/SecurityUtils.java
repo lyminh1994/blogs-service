@@ -1,7 +1,13 @@
 package com.minhlq.blogsservice.util;
 
-import com.minhlq.blogsservice.constant.ErrorConstants;
-import com.minhlq.blogsservice.constant.UserConstants;
+import static com.minhlq.blogsservice.constant.ErrorConstants.UNAUTHORIZED_ACCESS;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_CREDENTIALS_EXPIRED_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_DEBUG_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_DISABLED_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_EXPIRED_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_LOCKED_MESSAGE;
+import static org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
+
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import java.util.Collection;
 import java.util.Objects;
@@ -23,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 
 /**
  * This utility class holds custom operations on security used in the application.
@@ -141,7 +146,7 @@ public class SecurityUtils {
       return (UserPrincipal) getAuthentication().getPrincipal();
     }
 
-    log.warn(ErrorConstants.UNAUTHORIZED_ACCESS);
+    log.warn(UNAUTHORIZED_ACCESS);
     return null;
   }
 
@@ -152,9 +157,8 @@ public class SecurityUtils {
    * @param response the response
    */
   public void logout(HttpServletRequest request, HttpServletResponse response) {
-    String rememberMeCookieKey = AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
     CookieClearingLogoutHandler logoutHandler =
-        new CookieClearingLogoutHandler(rememberMeCookieKey);
+        new CookieClearingLogoutHandler(SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
 
     SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
     logoutHandler.logout(request, response, null);
@@ -167,19 +171,19 @@ public class SecurityUtils {
    * @param userDetails the user details
    */
   public void validateUserDetailsStatus(UserDetails userDetails) {
-    log.debug(UserConstants.USER_DETAILS_DEBUG_MESSAGE, userDetails);
+    log.debug(USER_DETAILS_DEBUG_MESSAGE, userDetails);
 
     if (!userDetails.isEnabled()) {
-      throw new DisabledException(UserConstants.USER_DISABLED_MESSAGE);
+      throw new DisabledException(USER_DISABLED_MESSAGE);
     }
     if (!userDetails.isAccountNonLocked()) {
-      throw new LockedException(UserConstants.USER_LOCKED_MESSAGE);
+      throw new LockedException(USER_LOCKED_MESSAGE);
     }
     if (!userDetails.isAccountNonExpired()) {
-      throw new AccountExpiredException(UserConstants.USER_EXPIRED_MESSAGE);
+      throw new AccountExpiredException(USER_EXPIRED_MESSAGE);
     }
     if (!userDetails.isCredentialsNonExpired()) {
-      throw new CredentialsExpiredException(UserConstants.USER_CREDENTIALS_EXPIRED_MESSAGE);
+      throw new CredentialsExpiredException(USER_CREDENTIALS_EXPIRED_MESSAGE);
     }
   }
 }

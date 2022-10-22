@@ -136,6 +136,6 @@ public class User extends AbstractAuditEntity<Long> implements Serializable {
    * @return the full name of the user
    */
   public String getName() {
-    return StringUtils.joinWith(StringUtils.SPACE, getFirstName(), getLastName());
+    return StringUtils.trimToNull(StringUtils.join(StringUtils.SPACE, firstName, lastName));
   }
 }

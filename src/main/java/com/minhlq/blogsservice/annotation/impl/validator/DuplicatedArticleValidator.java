@@ -1,11 +1,11 @@
 package com.minhlq.blogsservice.annotation.impl.validator;
 
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
-import com.minhlq.blogsservice.repository.ArticleRepository;
-import com.minhlq.blogsservice.util.ArticleUtils;
+import com.minhlq.blogsservice.service.ArticleService;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The implement for DuplicatedArticleConstraint annotation.
@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class DuplicatedArticleValidator
     implements ConstraintValidator<DuplicatedArticleConstraint, String> {
 
-  private final ArticleRepository articleRepository;
+  private final ArticleService articleService;
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    return articleRepository.findBySlug(ArticleUtils.toSlug(value)).isEmpty();
+    return StringUtils.isBlank(value) || articleService.isSlugExited(value);
   }
 }

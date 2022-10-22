@@ -1,7 +1,12 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.annotation.Loggable;
-import com.minhlq.blogsservice.constant.SecurityConstants;
+import static com.minhlq.blogsservice.constant.SecurityConstants.AUTH_ROOT_URL;
+import static com.minhlq.blogsservice.constant.SecurityConstants.LOGIN;
+import static com.minhlq.blogsservice.constant.SecurityConstants.LOGOUT;
+import static com.minhlq.blogsservice.constant.SecurityConstants.REFRESH_TOKEN;
+import static com.minhlq.blogsservice.constant.SecurityConstants.REGISTER;
+import static com.minhlq.blogsservice.constant.SecurityConstants.VERIFY_ACCOUNT;
+
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.request.LoginRequest;
 import com.minhlq.blogsservice.payload.request.RegisterRequest;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @SecurityRequirements
 @RequiredArgsConstructor
-@RequestMapping(SecurityConstants.AUTH_ROOT_URL)
+@RequestMapping(AUTH_ROOT_URL)
 @Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
@@ -52,8 +58,7 @@ public class AuthController {
    * @param registerRequest the register
    * @return the jwt token details
    */
-  @Loggable
-  @PostMapping(SecurityConstants.REGISTER)
+  @PostMapping(REGISTER)
   @Operation(summary = "Register", description = "Register new account")
   public ResponseEntity<AuthenticationResponse> register(
       @RequestBody @Valid RegisterRequest registerRequest) {
@@ -75,8 +80,7 @@ public class AuthController {
    * @param loginRequest the login request
    * @return the jwt token details
    */
-  @Loggable
-  @PostMapping(SecurityConstants.LOGIN)
+  @PostMapping(LOGIN)
   @Operation(summary = "Login", description = "Authentication user and return access information")
   public ResponseEntity<AuthenticationResponse> login(
       @CookieValue(required = false) String refreshToken,
@@ -95,13 +99,14 @@ public class AuthController {
    * @param request The request
    * @return the jwt token details
    */
-  @Loggable
-  @GetMapping(SecurityConstants.REFRESH_TOKEN)
-  @Operation(summary = "Refresh token", description = "Create and return new access token")
-  public ResponseEntity<AuthenticationResponse> refreshToken(
+  @GetMapping(REFRESH_TOKEN)
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+      summary = "Refresh access token",
+      description = "Create and return new access information")
+  public AuthenticationResponse refreshToken(
       @CookieValue String refreshToken, HttpServletRequest request) {
-    AuthenticationResponse authenticationResponse = authService.refreshAccessToken(refreshToken, request);
-    return ResponseEntity.ok().body(authenticationResponse);
+    return authService.refreshAccessToken(refreshToken, request);
   }
 
   /**
@@ -110,12 +115,11 @@ public class AuthController {
    * @param request the request
    * @param response the response
    */
-  @Loggable
-  @DeleteMapping(SecurityConstants.LOGOUT)
-  @Operation(summary = "Logout", description = "Logout and clear cookie to headers")
+  @DeleteMapping(LOGOUT)
+  @Operation(summary = "Logout", description = "Logout and clear cookie of user browser")
   public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
-    authService.logout(request, response);
     HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
+    authService.logout(request, response);
     return ResponseEntity.noContent().headers(responseHeaders).build();
   }
 
@@ -124,11 +128,9 @@ public class AuthController {
    *
    * @param verificationToken the token
    */
-  @Loggable
-  @GetMapping(SecurityConstants.VERIFY_ACCOUNT)
-  @Operation(summary = "Verify", description = "Verification account by provided token")
-  public ResponseEntity<Void> verify(@PathVariable String verificationToken) {
+  @GetMapping(VERIFY_ACCOUNT)
+  @Operation(summary = "Verify account", description = "Active account by provided token")
+  public void verify(@PathVariable String verificationToken) {
     authService.verificationAccount(verificationToken);
-    return ResponseEntity.ok().build();
   }
 }

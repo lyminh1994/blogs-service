@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.service.TagService;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ class TagsControllerTest {
   @MockBean TagService tagService;
   @MockBean JwtService jwtService;
   @MockBean UserDetailsService userDetailsService;
+  @MockBean EncryptionService encryptionService;
 
   @Test
   @DisplayName("Should Get Tag Success GET request to endpoint - /tags")

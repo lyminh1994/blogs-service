@@ -21,7 +21,7 @@ public final class UserConstants {
   public static final String USERNAME = "username";
   public static final String PUBLIC_ID = "publicId";
 
-  public static final String USER_PERSISTED_SUCCESSFULLY = "User successfully persisted {0}";
+  public static final String USER_PERSISTED_SUCCESSFULLY = "User successfully persisted {}";
 
   /** Username cannot be left blank. */
   public static final String BLANK_USERNAME = "Username cannot be blank";
@@ -51,11 +51,11 @@ public final class UserConstants {
   public static final String COULD_NOT_CREATE_USER = "Could not create user";
   public static final String COULD_NOT_VERIFY_USER = "Could not verify user";
   public static final String USER_ALREADY_EXIST = "Email {0} already exist and nothing will be done";
-  public static final String USER_NOT_FOUND = "User with username: \"{0}\" not found";
+  public static final String USER_NOT_FOUND = "User with username: \"{}\" not found";
   public static final String USERNAME_EXITS = "Username already exist";
   public static final String USER_EXIST_BUT_NOT_ENABLED =
-      "Email {0} exists but not enabled. Returning user {1}";
-  public static final String USER_DETAILS_DEBUG_MESSAGE = "User details {0}";
+      "Email {0} exists but not enabled. Returning user {}";
+  public static final String USER_DETAILS_DEBUG_MESSAGE = "User details {}";
   public static final String USER_ID_MUST_NOT_BE_NULL = "User Id must not be null";
   public static final String USER_DISABLED_MESSAGE = "User is disabled";
   public static final String USER_LOCKED_MESSAGE = "User is locked";
