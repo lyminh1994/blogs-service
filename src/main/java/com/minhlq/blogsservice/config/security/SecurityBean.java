@@ -1,5 +1,11 @@
 package com.minhlq.blogsservice.config.security;
 
+import static com.minhlq.blogsservice.constant.SecurityConstants.ALLOWED_HTTP_METHODS;
+import static com.minhlq.blogsservice.constant.SecurityConstants.API_ROOT_URL_MAPPING;
+import static com.minhlq.blogsservice.constant.SecurityConstants.SECURITY_STRENGTH;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import java.time.Duration;
 import java.util.Arrays;
@@ -9,7 +15,6 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -33,7 +38,7 @@ public class SecurityBean {
    */
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(SecurityConstants.SECURITY_STRENGTH);
+    return new BCryptPasswordEncoder(SECURITY_STRENGTH);
   }
 
   /**
@@ -54,7 +59,7 @@ public class SecurityBean {
     corsConfiguration.setAllowedOrigins(props.getAllowedOrigins());
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration(SecurityConstants.API_ROOT_URL_MAPPING, corsConfiguration);
+    source.registerCorsConfiguration(API_ROOT_URL_MAPPING, corsConfiguration);
 
     return source;
   }
@@ -86,7 +91,7 @@ public class SecurityBean {
    */
   private void setExposedHeaders(CorsConfigProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getExposedHeaders())) {
-      corsConfig.setExposedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE));
+      corsConfig.setExposedHeaders(Arrays.asList(AUTHORIZATION, SET_COOKIE));
     } else {
       corsConfig.setExposedHeaders(props.getExposedHeaders());
     }
@@ -136,7 +141,7 @@ public class SecurityBean {
    */
   private void setAllowedMethods(CorsConfigProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getAllowedMethods())) {
-      corsConfig.setAllowedMethods(SecurityConstants.ALLOWED_HTTP_METHODS);
+      corsConfig.setAllowedMethods(ALLOWED_HTTP_METHODS);
     } else {
       corsConfig.setAllowedMethods(props.getAllowedMethods());
     }

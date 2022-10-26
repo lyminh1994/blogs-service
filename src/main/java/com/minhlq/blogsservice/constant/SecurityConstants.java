@@ -55,7 +55,6 @@ public final class SecurityConstants {
     "/actuator/**",
     "/v3/api-docs/**",
     "/swagger-ui/**",
-    "/components/schemas/**",
     String.join("/", AUTH_ROOT_URL, "**"),
   };
 

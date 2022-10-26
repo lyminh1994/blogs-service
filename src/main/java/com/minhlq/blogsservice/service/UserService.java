@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service;
 
-import com.minhlq.blogsservice.dto.UpdateUserDTO;
+import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -24,7 +24,7 @@ public interface UserService {
    * @return the updated user
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  UserPrincipal updateUser(@Valid UpdateUserDTO updateUserDto);
+  UserPrincipal updateUser(@Valid UpdateUserDto updateUserDto);
 
   /**
    * Returns a user profile for the given username or throw exception if a user could not be found.

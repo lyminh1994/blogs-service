@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.annotation.impl.validator;
 
 import com.minhlq.blogsservice.annotation.UpdateUserConstraint;
-import com.minhlq.blogsservice.dto.UpdateUserDTO;
+import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import java.util.Objects;
@@ -18,12 +18,12 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class UpdateUserValidator
-    implements ConstraintValidator<UpdateUserConstraint, UpdateUserDTO> {
+    implements ConstraintValidator<UpdateUserConstraint, UpdateUserDto> {
 
   private final UserRepository userRepository;
 
   @Override
-  public boolean isValid(UpdateUserDTO value, ConstraintValidatorContext context) {
+  public boolean isValid(UpdateUserDto value, ConstraintValidatorContext context) {
     final String inputEmail = value.getParams().getEmail();
     final String inputPhone = value.getParams().getPhone();
     final UserPrincipal targetUser = value.getTargetUser();

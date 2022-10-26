@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.annotation.Loggable;
-import com.minhlq.blogsservice.dto.UpdateUserDTO;
+import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -50,7 +50,7 @@ public class UserController {
   public UserResponse updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
 
-    UpdateUserDTO updateUser = new UpdateUserDTO(currentUser, updateUserRequest);
+    UpdateUserDto updateUser = new UpdateUserDto(currentUser, updateUserRequest);
     UserPrincipal userDetails = userService.updateUser(updateUser);
 
     // Authenticate user with the updated profile.

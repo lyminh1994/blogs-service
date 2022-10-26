@@ -1,5 +1,7 @@
 package com.minhlq.blogsservice.constant;
 
+import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER_PREFIX;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,5 @@ public final class TestConstants {
   public static final String AUTHENTICATION_TOKEN =
       "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMDAxIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.aLAFz9x6OF4BSpUQxIKWn39sDp8Cr9ZEeVqcMTdwtBsEZwdCKyR2lkjo_2BzcOJz96N7Qdx7t7VUXerKShnbxg";
 
-  public static final String BEARER_AUTHENTICATION_TOKEN =
-      SecurityConstants.BEARER_PREFIX + AUTHENTICATION_TOKEN;
+  public static final String BEARER_AUTHENTICATION_TOKEN = BEARER_PREFIX + AUTHENTICATION_TOKEN;
 }

@@ -82,7 +82,7 @@ public class OpenApiConfig {
   }
 
   @Bean
-  public OpenAPI customizeOpenAPISecurity() {
+  public OpenAPI customizeOpenApiSecurity() {
     return new OpenAPI()
         .addSecurityItem(new SecurityRequirement().addList(BEARER_AUTH))
         .components(

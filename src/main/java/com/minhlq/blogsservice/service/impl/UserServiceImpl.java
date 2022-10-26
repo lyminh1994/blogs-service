@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.dto.UpdateUserDTO;
+import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
   private final FollowRepository followRepository;
 
   @Override
-  public UserPrincipal updateUser(UpdateUserDTO updateUserDto) {
+  public UserPrincipal updateUser(UpdateUserDto updateUserDto) {
     User updatedUser =
         userRepository
             .findById(updateUserDto.getTargetUser().getId())

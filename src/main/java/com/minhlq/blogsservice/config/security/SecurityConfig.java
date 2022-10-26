@@ -81,7 +81,7 @@ public class SecurityConfig {
     http.authorizeRequests()
         .antMatchers(OPTIONS)
         .permitAll()
-        .antMatchers(getPublicMatchers().toArray(new String[] {}))
+        .antMatchers(getPublicMatchers().toArray(new String[0]))
         .permitAll()
         .antMatchers(GET, "/articles/feeds")
         .authenticated()
