@@ -31,6 +31,7 @@
     <springdoc-openapi.version>1.6.12</springdoc-openapi.version>
     <datafaker.version>1.6.0</datafaker.version>
     <postgresql.version>42.5.0</postgresql.version>
+    <snakeyaml.version>1.33</snakeyaml.version>
   </properties>
   <dependencies>
 
@@ -38,6 +39,21 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
     </dependency>
 
     <!-- Logging -->
@@ -171,6 +187,12 @@
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-security</artifactId>
       <version>${springdoc-openapi.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Testing -->
