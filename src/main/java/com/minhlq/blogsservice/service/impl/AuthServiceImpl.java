@@ -3,10 +3,10 @@ package com.minhlq.blogsservice.service.impl;
 import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.constant.UserConstants;
-import com.minhlq.blogsservice.model.RoleEntity;
-import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.model.RoleEntity;
+import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.payload.request.LoginRequest;
 import com.minhlq.blogsservice.payload.request.RegisterRequest;
@@ -18,12 +18,6 @@ import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.util.SecurityUtils;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Date;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +28,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * This is implement for the authentication service operations.
@@ -103,7 +104,8 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.authenticateUser(authenticationManager, username, loginRequest.getPassword());
 
     // Update user last successful login and reset failed login attempts
-    UserEntity user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    UserEntity user =
+        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     user.setLastSuccessfulLogin(LocalDateTime.now());
     user.setFailedLoginAttempts(0);
     userRepository.save(user);

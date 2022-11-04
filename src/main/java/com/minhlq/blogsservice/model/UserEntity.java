@@ -3,20 +3,6 @@ package com.minhlq.blogsservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +11,21 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The user model for the application.
@@ -136,6 +137,6 @@ public class UserEntity extends AbstractAuditEntity<Long> implements Serializabl
    * @return the full name of the user
    */
   public String getName() {
-    return StringUtils.trimToNull(StringUtils.join(StringUtils.SPACE, firstName, lastName));
+    return StringUtils.trimToEmpty(StringUtils.join(firstName, StringUtils.SPACE, lastName));
   }
 }
