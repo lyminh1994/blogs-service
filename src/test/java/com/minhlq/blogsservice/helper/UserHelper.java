@@ -2,8 +2,8 @@ package com.minhlq.blogsservice.helper;
 
 import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.UserConstants;
-import com.minhlq.blogsservice.entity.User;
-import com.minhlq.blogsservice.entity.UserRole;
+import com.minhlq.blogsservice.model.UserEntity;
+import com.minhlq.blogsservice.model.UserRoleEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +39,7 @@ public final class UserHelper {
    *
    * @return a user
    */
-  public static User createUser() {
+  public static UserEntity createUser() {
     return createUser(FAKER.name().username());
   }
 
@@ -49,7 +49,7 @@ public final class UserHelper {
    * @param enabled if the user should be enabled or disabled
    * @return the user
    */
-  public static User createUser(final boolean enabled) {
+  public static UserEntity createUser(final boolean enabled) {
     return createUser(
         FAKER.name().username(),
         FAKER.internet().password(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH),
@@ -63,7 +63,7 @@ public final class UserHelper {
    * @param username username used to create user.
    * @return a user
    */
-  public static User createUser(String username) {
+  public static UserEntity createUser(String username) {
     return createUser(
         username,
         FAKER.internet().password(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH),
@@ -78,7 +78,7 @@ public final class UserHelper {
    * @param email email used to create user.
    * @return a user
    */
-  public static User createUser(String username, String password, String email) {
+  public static UserEntity createUser(String username, String password, String email) {
     return createUser(username, password, email, false);
   }
 
@@ -91,9 +91,9 @@ public final class UserHelper {
    * @param enabled boolean value used to evaluate if user enabled.
    * @return a user
    */
-  public static User createUser(
+  public static UserEntity createUser(
       String username, String password, String email, boolean enabled) {
-    User user = new User();
+    UserEntity user = new UserEntity();
     user.setUsername(username);
     user.setPassword(password);
     user.setEmail(email);
@@ -112,7 +112,7 @@ public final class UserHelper {
    *
    * @param userDto the userDto
    */
-  public static void enableUser(final User userDto) {
+  public static void enableUser(final UserEntity userDto) {
     Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
     userDto.setEnabled(true);
     userDto.setFailedLoginAttempts(0);
@@ -124,10 +124,10 @@ public final class UserHelper {
    * @param userRoles the userRoles
    * @return set of the roles as strings
    */
-  public static List<String> getRoles(Set<UserRole> userRoles) {
+  public static List<String> getRoles(Set<UserRoleEntity> userRoles) {
     List<String> roles = new ArrayList<>();
 
-    for (UserRole userRole : userRoles) {
+    for (UserRoleEntity userRole : userRoles) {
       if (Objects.nonNull(userRole.getRole())) {
         roles.add(userRole.getRole().getName());
       }
@@ -142,7 +142,7 @@ public final class UserHelper {
    * @param user the user
    * @return profile image
    */
-  public static String getUserProfileImage(User user) {
+  public static String getUserProfileImage(UserEntity user) {
     if (StringUtils.isBlank(user.getProfileImage())) {
       return PIC_SUM_PHOTOS_150_RANDOM;
     }

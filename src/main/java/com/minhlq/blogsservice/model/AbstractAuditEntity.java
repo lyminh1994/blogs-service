@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import com.minhlq.blogsservice.config.jpa.AssignedSequenceStyleGenerator;
 import java.io.Serializable;
@@ -38,9 +38,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class AbstractAuditEntity<T extends Serializable> {
 
   private static final String SEQUENCE_NAME = "seq_id";
+
   private static final String SEQUENCE_INITIAL_VALUE = "1";
+
   private static final String STRATEGY =
       "com.minhlq.blogsservice.config.jpa.AssignedSequenceStyleGenerator";
+
   private static final String SEQUENCE_GENERATOR_NAME = "seq_generator";
 
   /**

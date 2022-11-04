@@ -60,11 +60,11 @@ class AuthControllerTest {
     validator = new DuplicatedUsernameValidator(userRepository);
 
     mapper = new ObjectMapper();
-    registerUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.REGISTER;
-    loginUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.LOGIN;
-    refreshTokenUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.REFRESH_TOKEN;
-    logoutUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.LOGOUT;
-    verifyUrl = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.VERIFY_ACCOUNT;
+    registerUrl = "";
+    loginUrl = "";
+    refreshTokenUrl = "";
+    logoutUrl = "";
+    verifyUrl = "";
   }
 
   @Test

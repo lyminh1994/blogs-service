@@ -3,8 +3,8 @@ package com.minhlq.blogsservice.service.impl;
 import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.constant.UserConstants;
-import com.minhlq.blogsservice.entity.Role;
-import com.minhlq.blogsservice.entity.User;
+import com.minhlq.blogsservice.model.RoleEntity;
+import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   public AuthenticationResponse createUser(
       RegisterRequest registerRequest, HttpHeaders responseHeaders) {
-    Role role = roleService.findByName("ROLE_USER");
+    RoleEntity role = roleService.findByName("ROLE_USER");
     Duration verificationTokenDuration =
         Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
 
@@ -77,13 +77,13 @@ public class AuthServiceImpl implements AuthService {
             registerRequest.getUsername(),
             Date.from(Instant.now().plusSeconds(verificationTokenDuration.toSeconds())));
 
-    User user = new User();
+    UserEntity user = new UserEntity();
     user.setUsername(registerRequest.getUsername());
     user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
     user.setVerificationToken(encryptionService.encode(verificationToken));
     user.addRole(role);
 
-    User savedUser = userRepository.saveAndFlush(user);
+    UserEntity savedUser = userRepository.saveAndFlush(user);
     UserPrincipal userDetails = UserPrincipal.buildUserDetails(savedUser);
     SecurityUtils.authenticateUser(userDetails);
 
@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.authenticateUser(authenticationManager, username, loginRequest.getPassword());
 
     // Update user last successful login and reset failed login attempts
-    User user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    UserEntity user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     user.setLastSuccessfulLogin(LocalDateTime.now());
     user.setFailedLoginAttempts(0);
     userRepository.save(user);
@@ -159,7 +159,7 @@ public class AuthServiceImpl implements AuthService {
       throw new SecurityException(ErrorConstants.VERIFY_TOKEN_EXPIRED);
     }
 
-    User user =
+    UserEntity user =
         userRepository
             .findByVerificationTokenAndEnabled(decodedToken, false)
             .orElseThrow(ResourceNotFoundException::new);

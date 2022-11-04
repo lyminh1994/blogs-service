@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @version 1.0
  * @since 1.0
  */
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error processing your request")
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "exception.message")
 public class EncryptionException extends RuntimeException {
   private static final long serialVersionUID = 4518149233942557017L;
 

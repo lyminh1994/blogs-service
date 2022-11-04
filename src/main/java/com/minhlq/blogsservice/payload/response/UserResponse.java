@@ -1,5 +1,7 @@
 package com.minhlq.blogsservice.payload.response;
 
+import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_MUST_NOT_BE_NULL;
+
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import java.time.LocalDate;
@@ -39,7 +41,7 @@ public final class UserResponse {
   private Collection<? extends GrantedAuthority> authorities;
 
   public static UserResponse getUserResponse(final UserPrincipal userDetails) {
-    Validate.notNull(userDetails, "User details must not be null");
+    Validate.notNull(userDetails, USER_DETAILS_MUST_NOT_BE_NULL);
 
     return UserResponse.builder()
         .publicId(userDetails.getPublicId())

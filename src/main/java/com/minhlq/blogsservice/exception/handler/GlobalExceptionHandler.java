@@ -2,12 +2,9 @@ package com.minhlq.blogsservice.exception.handler;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-import com.minhlq.blogsservice.exception.HttpClientException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -34,17 +31,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(HttpClientException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public Object handleHttpClientException(HttpClientException e) {
-    Map<String, Object> result = new HashMap<>();
-    result.put("code", e.getCode());
-    result.put("message", e.getMessage());
-    result.put("data", e.getData());
-
-    return result;
-  }
-
   @NonNull
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -66,8 +52,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(BAD_REQUEST).body(new ErrorResource(fieldErrorResources));
   }
 
-  @ResponseStatus(BAD_REQUEST)
   @ExceptionHandler({ConstraintViolationException.class})
+  @ResponseStatus(BAD_REQUEST)
   public ErrorResource handleConstraintViolation(ConstraintViolationException ex) {
     List<FieldErrorResource> errors = new ArrayList<>();
     for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {

@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.entity.ArticleTag;
-import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
+import com.minhlq.blogsservice.model.ArticleTagEntity;
+import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,8 +13,8 @@ import org.springframework.data.jpa.repository.Query;
  * @version 1.0
  * @since 1.0
  */
-public interface ArticleTagRepository extends JpaRepository<ArticleTag, ArticleTagKey> {
+public interface ArticleTagRepository extends JpaRepository<ArticleTagEntity, ArticleTagKey> {
 
-  @Query("from ArticleTag AT where AT.id.articleId = :articleId")
-  List<ArticleTag> findByArticleId(Long articleId);
+  @Query("from ArticleTagEntity AT where AT.id.articleId = :articleId")
+  List<ArticleTagEntity> findByArticleId(Long articleId);
 }

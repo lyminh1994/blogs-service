@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,36 +27,36 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "users_roles")
-public class UserRole extends AbstractAuditEntity<Long> implements Serializable {
+public class UserRoleEntity extends AbstractAuditEntity<Long> implements Serializable {
 
   @ToString.Exclude
-  @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-  private User user;
+  @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+  private UserEntity user;
 
   @ToString.Exclude
   @ManyToOne(
-      targetEntity = Role.class,
+      targetEntity = RoleEntity.class,
       cascade = {CascadeType.MERGE},
       fetch = FetchType.LAZY)
-  private Role role;
+  private RoleEntity role;
 
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof UserRole) || !super.equals(o)) {
+    if (!(o instanceof UserRoleEntity) || !super.equals(o)) {
       return false;
     }
 
-    UserRole userRole = (UserRole) o;
+    UserRoleEntity userRole = (UserRoleEntity) o;
     return Objects.equals(getUser(), userRole.getUser())
         && Objects.equals(getRole(), userRole.getRole());
   }
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof UserRole;
+    return other instanceof UserRoleEntity;
   }
 
   @Override

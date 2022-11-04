@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @version 1.0
  * @since 1.0
  */
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "")
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "exception.message")
 public class SecurityException extends RuntimeException {
 
   public SecurityException(String message) {

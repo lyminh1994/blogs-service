@@ -6,19 +6,19 @@ import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
-import com.minhlq.blogsservice.entity.Article;
-import com.minhlq.blogsservice.entity.ArticleFavorite;
-import com.minhlq.blogsservice.entity.ArticleTag;
-import com.minhlq.blogsservice.entity.QArticle;
-import com.minhlq.blogsservice.entity.QArticleFavorite;
-import com.minhlq.blogsservice.entity.QArticleTag;
-import com.minhlq.blogsservice.entity.QTag;
-import com.minhlq.blogsservice.entity.QUser;
-import com.minhlq.blogsservice.entity.Tag;
-import com.minhlq.blogsservice.entity.User;
-import com.minhlq.blogsservice.entity.unionkey.ArticleFavoriteKey;
-import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
-import com.minhlq.blogsservice.entity.unionkey.FollowKey;
+import com.minhlq.blogsservice.model.ArticleEntity;
+import com.minhlq.blogsservice.model.ArticleFavoriteEntity;
+import com.minhlq.blogsservice.model.ArticleTagEntity;
+import com.minhlq.blogsservice.model.QArticle;
+import com.minhlq.blogsservice.model.QArticleFavorite;
+import com.minhlq.blogsservice.model.QArticleTag;
+import com.minhlq.blogsservice.model.QTag;
+import com.minhlq.blogsservice.model.QUser;
+import com.minhlq.blogsservice.model.TagEntity;
+import com.minhlq.blogsservice.model.UserEntity;
+import com.minhlq.blogsservice.model.unionkey.ArticleFavoriteKey;
+import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
+import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.NoAuthorizationException;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -73,10 +73,10 @@ public class ArticleServiceImpl implements ArticleService {
   @Transactional
   public ArticleResponse createArticle(NewArticleRequest createRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    User author = UserMapper.MAPPER.toUser(currentUser);
-    Article savedArticle =
+    UserEntity author = UserMapper.MAPPER.toUser(currentUser);
+    ArticleEntity savedArticle =
         articleRepository.saveAndFlush(
-            Article.builder()
+            ArticleEntity.builder()
                 .author(author)
                 .slug(ArticleUtils.toSlug(createRequest.getTitle()))
                 .title(createRequest.getTitle())
@@ -86,19 +86,19 @@ public class ArticleServiceImpl implements ArticleService {
 
     List<String> tagNames = createRequest.getTagNames();
     if (CollectionUtils.isNotEmpty(tagNames)) {
-      List<ArticleTag> articleTags =
+      List<ArticleTagEntity> articleTags =
           tagNames.stream()
               .map(
                   tagName -> {
-                    Tag savedTag =
+                    TagEntity savedTag =
                         tagRepository
                             .findByName(tagName)
-                            .orElseGet(() -> tagRepository.saveAndFlush(new Tag(tagName)));
+                            .orElseGet(() -> tagRepository.saveAndFlush(new TagEntity(tagName)));
 
                     ArticleTagKey articleTagId =
                         new ArticleTagKey(savedArticle.getId(), savedTag.getId());
 
-                    return new ArticleTag(articleTagId);
+                    return new ArticleTagEntity(articleTagId);
                   })
               .collect(Collectors.toList());
 
@@ -116,7 +116,7 @@ public class ArticleServiceImpl implements ArticleService {
       return new PageResponse<>(Collections.emptyList(), 0);
     }
 
-    Page<Article> articles = articleRepository.findByFollowedUsers(followedUsers, pageRequest);
+    Page<ArticleEntity> articles = articleRepository.findByFollowedUsers(followedUsers, pageRequest);
     List<ArticleResponse> contents = getArticleResponses(articles.getContent());
 
     return new PageResponse<>(contents, articles.getTotalElements());
@@ -157,7 +157,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     long totalElements = query.select(qArticle.countDistinct()).fetchFirst();
 
-    List<Article> articles =
+    List<ArticleEntity> articles =
         query
             .distinct()
             .select(qArticle)
@@ -173,7 +173,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticleResponse findBySlug(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     return getArticleResponse(currentUser, article);
   }
@@ -182,7 +182,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Transactional
   public ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article newArticle =
+    ArticleEntity newArticle =
         articleRepository
             .findBySlug(slug)
             .map(
@@ -207,16 +207,16 @@ public class ArticleServiceImpl implements ArticleService {
   @Transactional
   public void deleteArticle(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     if (!currentUser.getId().equals(article.getAuthor().getId())) {
       throw new NoAuthorizationException();
     }
 
-    List<ArticleTag> articleTags = articleTagRepository.findByArticleId(article.getId());
+    List<ArticleTagEntity> articleTags = articleTagRepository.findByArticleId(article.getId());
     articleTagRepository.deleteAll(articleTags);
 
-    List<ArticleFavorite> articleFavorites =
+    List<ArticleFavoriteEntity> articleFavorites =
         articleFavoriteRepository.findByArticleId(article.getId());
     articleFavoriteRepository.deleteAll(articleFavorites);
 
@@ -227,12 +227,12 @@ public class ArticleServiceImpl implements ArticleService {
   @Transactional
   public ArticleResponse favoriteArticle(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavoriteKey =
         new ArticleFavoriteKey(article.getId(), currentUser.getId());
     if (articleFavoriteRepository.findById(articleFavoriteKey).isEmpty()) {
-      articleFavoriteRepository.save(new ArticleFavorite(articleFavoriteKey));
+      articleFavoriteRepository.save(new ArticleFavoriteEntity(articleFavoriteKey));
     }
 
     return getArticleResponse(currentUser, article);
@@ -242,7 +242,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Transactional
   public ArticleResponse unFavoriteArticle(String slug) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavorite =
         new ArticleFavoriteKey(article.getId(), currentUser.getId());
@@ -265,7 +265,7 @@ public class ArticleServiceImpl implements ArticleService {
    * @param article the article
    * @return article
    */
-  private ArticleResponse getArticleResponse(UserPrincipal currentUser, Article article) {
+  private ArticleResponse getArticleResponse(UserPrincipal currentUser, ArticleEntity article) {
     ArticleResponse result = ArticleMapper.MAPPER.toArticleResponse(article);
     if (currentUser != null) {
       FollowKey followId = new FollowKey(currentUser.getId(), article.getAuthor().getId());
@@ -303,7 +303,7 @@ public class ArticleServiceImpl implements ArticleService {
    * @param articles the articles
    * @return articles
    */
-  private List<ArticleResponse> getArticleResponses(List<Article> articles) {
+  private List<ArticleResponse> getArticleResponses(List<ArticleEntity> articles) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     return articles.stream()
         .map(article -> getArticleResponse(currentUser, article))

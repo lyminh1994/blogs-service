@@ -1,6 +1,8 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.constant.AppConstants;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
@@ -12,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/articles")
-@Tag(name = "Articles", description = "Article APIs")
+@Tag(name = "Articles", description = "Blog Article APIs")
 public class ArticleController {
 
   private final ArticleService articleService;
@@ -46,7 +47,7 @@ public class ArticleController {
    * @return the article
    */
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(CREATED)
   @Operation(summary = "Create article", description = "Create article")
   public ArticleResponse createArticle(@RequestBody @Valid NewArticleRequest articleRequest) {
     return articleService.createArticle(articleRequest);
@@ -60,18 +61,10 @@ public class ArticleController {
    * @return paging articles
    */
   @GetMapping("/feeds")
-  @Operation(summary = "Get feeds", description = "Get current user articles feeds")
+  @Operation(summary = "Get feed", description = "Get current user articles feed")
   public PageResponse<ArticleResponse> getFeeds(
-      @RequestParam(
-              value = "page-number",
-              required = false,
-              defaultValue = AppConstants.DEFAULT_PAGE_NUMBER)
-          int pageNumber,
-      @RequestParam(
-              value = "page-size",
-              required = false,
-              defaultValue = AppConstants.DEFAULT_PAGE_SIZE)
-          int pageSize) {
+      @RequestParam(value = "page-number", required = false, defaultValue = "0") int pageNumber,
+      @RequestParam(value = "page-size", required = false, defaultValue = "10") int pageSize) {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
@@ -92,16 +85,8 @@ public class ArticleController {
       @RequestParam(value = "tag", required = false) String tagName,
       @RequestParam(value = "favorite-by", required = false) String favoriteBy,
       @RequestParam(value = "author", required = false) String author,
-      @RequestParam(
-              value = "page-number",
-              required = false,
-              defaultValue = AppConstants.DEFAULT_PAGE_NUMBER)
-          int pageNumber,
-      @RequestParam(
-              value = "page-size",
-              required = false,
-              defaultValue = AppConstants.DEFAULT_PAGE_SIZE)
-          int pageSize) {
+      @RequestParam(value = "page-number", required = false, defaultValue = "0") int pageNumber,
+      @RequestParam(value = "page-size", required = false, defaultValue = "10") int pageSize) {
     return articleService.findRecentArticles(
         tagName, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
   }
@@ -140,7 +125,7 @@ public class ArticleController {
    * @param slug slug
    */
   @DeleteMapping("/{slug}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
   public void deleteArticle(@PathVariable("slug") String slug) {
     articleService.deleteArticle(slug);

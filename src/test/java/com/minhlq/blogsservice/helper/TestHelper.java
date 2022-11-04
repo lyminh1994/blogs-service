@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogsservice.entity.User;
+import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import java.io.IOException;
 import java.util.Collection;
@@ -63,7 +63,7 @@ public class TestHelper {
 
       auth = new AnonymousAuthenticationToken(username, user, authorities);
     } else {
-      User user = UserHelper.createUser(username);
+      UserEntity user = UserHelper.createUser(username);
       UserPrincipal principal = UserPrincipal.buildUserDetails(user);
 
       auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);

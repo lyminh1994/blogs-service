@@ -1,5 +1,10 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_COOKIE_CANNOT_BE_NULL;
+import static com.minhlq.blogsservice.constant.SecurityConstants.NAME_CANNOT_BE_NULL_OR_EMPTY;
+import static com.minhlq.blogsservice.constant.SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY;
+import static com.minhlq.blogsservice.constant.SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL;
+
 import com.minhlq.blogsservice.constant.ProfileTypeConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.enums.TokenType;
@@ -42,7 +47,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public Cookie createCookie(HttpCookie httpCookie) {
-    Validate.notNull(httpCookie, "The httpCookie cannot be null");
+    Validate.notNull(httpCookie, HTTP_COOKIE_CANNOT_BE_NULL);
 
     Cookie cookie = new Cookie(httpCookie.getName(), httpCookie.getValue());
     cookie.setSecure(
@@ -62,12 +67,12 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie createCookie(String name, String value, Duration duration) {
-    Validate.notBlank(name, "The name cannot be null or empty");
+    Validate.notBlank(name, NAME_CANNOT_BE_NULL_OR_EMPTY);
 
     return ResponseCookie.from(name, value)
         .secure(Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD))
-        .sameSite(SecurityConstants.SAME_SITE)
-        .path(SecurityConstants.ROOT_PATH)
+        .sameSite("strict")
+        .path("/")
         .maxAge(Objects.isNull(duration) ? this.duration : duration)
         .httpOnly(true)
         .build();
@@ -82,7 +87,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie createTokenCookie(String token, TokenType tokenType) {
-    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notBlank(token, TOKEN_CANNOT_BE_NULL_OR_EMPTY);
 
     return createTokenCookie(token, tokenType, duration);
   }
@@ -97,8 +102,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie createTokenCookie(String token, TokenType tokenType, Duration duration) {
-    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
-    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notBlank(token, TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notNull(tokenType, TOKEN_TYPE_CANNOT_BE_NULL);
 
     return createCookie(tokenType.getName(), token, duration);
   }
@@ -111,7 +116,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie deleteTokenCookie(TokenType tokenType) {
-    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notNull(tokenType, TOKEN_TYPE_CANNOT_BE_NULL);
 
     return createCookie(tokenType.getName(), StringUtils.EMPTY, Duration.ZERO);
   }
@@ -124,7 +129,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addDeletedCookieToHeaders(TokenType tokenType) {
-    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notNull(tokenType, TOKEN_TYPE_CANNOT_BE_NULL);
 
     HttpCookie httpCookie = deleteTokenCookie(tokenType);
     HttpHeaders httpHeaders = new HttpHeaders();
@@ -141,8 +146,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addCookieToHeaders(TokenType tokenType, String token) {
-    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
-    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notNull(tokenType, TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notBlank(token, TOKEN_CANNOT_BE_NULL_OR_EMPTY);
 
     return addCookieToHeaders(tokenType, token, duration);
   }
@@ -157,8 +162,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addCookieToHeaders(TokenType tokenType, String token, Duration duration) {
-    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
-    Validate.notBlank(token, SecurityConstants.THE_TOKEN_CANNOT_BE_NULL_OR_EMPTY);
+    Validate.notNull(tokenType, TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notBlank(token, TOKEN_CANNOT_BE_NULL_OR_EMPTY);
 
     HttpHeaders httpHeaders = new HttpHeaders();
     addCookieToHeaders(
@@ -178,7 +183,7 @@ public class CookieServiceImpl implements CookieService {
   @Override
   public void addCookieToHeaders(
       HttpHeaders httpHeaders, TokenType tokenType, String token, Duration duration) {
-    Validate.notNull(tokenType, SecurityConstants.THE_TOKEN_TYPE_CANNOT_BE_NULL);
+    Validate.notNull(tokenType, TOKEN_TYPE_CANNOT_BE_NULL);
 
     httpHeaders.add(
         HttpHeaders.SET_COOKIE, createTokenCookie(token, tokenType, duration).toString());

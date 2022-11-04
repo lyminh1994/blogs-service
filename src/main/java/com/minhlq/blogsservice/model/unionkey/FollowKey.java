@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity.unionkey;
+package com.minhlq.blogsservice.model.unionkey;
 
 import java.io.Serializable;
 import javax.persistence.Column;

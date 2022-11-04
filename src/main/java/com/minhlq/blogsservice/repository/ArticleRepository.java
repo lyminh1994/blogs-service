@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.entity.Article;
+import com.minhlq.blogsservice.model.ArticleEntity;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -15,10 +15,10 @@ import org.springframework.data.jpa.repository.Query;
  * @version 1.0
  * @since 1.0
  */
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
-  Optional<Article> findBySlug(String slug);
+  Optional<ArticleEntity> findBySlug(String slug);
 
-  @Query(value = "from Article A where A.author.id in (:followedUsers)")
-  Page<Article> findByFollowedUsers(Set<Long> followedUsers, Pageable pageable);
+  @Query(value = "from ArticleEntity A where A.author.id in (:followedUsers)")
+  Page<ArticleEntity> findByFollowedUsers(Set<Long> followedUsers, Pageable pageable);
 }

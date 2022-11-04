@@ -5,9 +5,9 @@ import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
-import com.minhlq.blogsservice.entity.Article;
-import com.minhlq.blogsservice.entity.Comment;
-import com.minhlq.blogsservice.entity.unionkey.FollowKey;
+import com.minhlq.blogsservice.model.ArticleEntity;
+import com.minhlq.blogsservice.model.CommentEntity;
+import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import com.minhlq.blogsservice.exception.NoAuthorizationException;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -45,12 +45,12 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    Comment savedComment =
+    CommentEntity savedComment =
         commentRepository.saveAndFlush(
-            Comment.builder()
+            CommentEntity.builder()
                 .body(newCommentRequest.getBody())
                 .article(article)
                 .user(UserMapper.MAPPER.toUser(currentUser))
@@ -63,10 +63,10 @@ public class CommentServiceImpl implements CommentService {
   @Transactional(readOnly = true)
   public PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    Page<Comment> comments = commentRepository.findByArticle(article, pageRequest);
+    Page<CommentEntity> comments = commentRepository.findByArticle(article, pageRequest);
 
     List<CommentResponse> contents =
         comments.getContent().stream()
@@ -89,9 +89,9 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public void deleteCommentFromArticle(String slug, Long commentId) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Article article =
+    ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    Comment comment =
+    CommentEntity comment =
         commentRepository
             .findByIdAndArticle(commentId, article)
             .orElseThrow(ResourceNotFoundException::new);

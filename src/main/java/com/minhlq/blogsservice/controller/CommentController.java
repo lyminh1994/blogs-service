@@ -1,6 +1,8 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.constant.AppConstants;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
@@ -11,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/articles/{slug}/comments")
-@Tag(name = "Comments", description = "Article Comments APIs")
+@Tag(name = "Comments", description = "Blog Comments of Article APIs")
 public class CommentController {
 
   private final CommentService commentService;
@@ -45,7 +46,7 @@ public class CommentController {
    * @return comment
    */
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
       @PathVariable("slug") String slug, @RequestBody @Valid NewCommentRequest newCommentRequest) {
@@ -63,16 +64,8 @@ public class CommentController {
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
   public PageResponse<CommentResponse> getComments(
       @PathVariable("slug") String slug,
-      @RequestParam(
-              name = "page-number",
-              required = false,
-              defaultValue = AppConstants.DEFAULT_PAGE_NUMBER)
-          int pageNumber,
-      @RequestParam(
-              name = "page-size",
-              required = false,
-              defaultValue = AppConstants.DEFAULT_PAGE_SIZE)
-          int pageSize) {
+      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
+      @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize) {
     return commentService.findArticleComments(slug, PageRequest.of(pageNumber, pageSize));
   }
 
@@ -82,8 +75,8 @@ public class CommentController {
    * @param slug slug
    * @param commentId id
    */
-  @DeleteMapping(value = "/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @DeleteMapping("/{id}")
+  @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
   public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
     commentService.deleteCommentFromArticle(slug, commentId);

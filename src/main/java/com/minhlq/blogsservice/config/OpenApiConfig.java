@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.config;
 
-import static com.minhlq.blogsservice.constant.SecurityConstants.AUTH_ROOT_URL;
 import static org.springdoc.core.Constants.ALL_PATTERN;
 import static org.springdoc.core.Constants.HEALTH_PATTERN;
 
@@ -11,6 +10,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.OperationCustomizer;
@@ -29,8 +29,6 @@ import org.springframework.context.annotation.Profile;
  */
 @Configuration
 public class OpenApiConfig {
-
-  public static final String BEARER_AUTH = "bearerAuth";
 
   /**
    * Configures the actuator group.
@@ -72,25 +70,31 @@ public class OpenApiConfig {
             openApi ->
                 openApi.info(
                     new Info()
-                        .title(name)
+                        .title(StringUtils.capitalize(name))
                         .version(version)
                         .description(description)
                         .termsOfService("http://swagger.io/terms/")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org"))))
-        .pathsToExclude(endpointProperties.getBasePath() + ALL_PATTERN, AUTH_ROOT_URL + ALL_PATTERN)
+        .pathsToExclude(endpointProperties.getBasePath() + ALL_PATTERN, "/auth" + ALL_PATTERN)
         .build();
   }
 
+  /**
+   * Configures OpenAPI security JWT schema bean
+   *
+   * @return the {@link OpenAPI} bean
+   */
   @Bean
   public OpenAPI customizeOpenApiSecurity() {
+    final String bearerAuth = "bearerAuth";
     return new OpenAPI()
-        .addSecurityItem(new SecurityRequirement().addList(BEARER_AUTH))
+        .addSecurityItem(new SecurityRequirement().addList(bearerAuth))
         .components(
             new Components()
                 .addSecuritySchemes(
-                    BEARER_AUTH,
+                    bearerAuth,
                     new SecurityScheme()
-                        .name(BEARER_AUTH)
+                        .name(bearerAuth)
                         .type(Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT")));

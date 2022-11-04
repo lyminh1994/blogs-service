@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.UserConstants;
-import com.minhlq.blogsservice.entity.User;
+import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.RoleService;
@@ -47,10 +47,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   // @Cacheable(value = CacheConstants.USER_DETAILS, key = "{ #root.methodName, #username }")
   public UserDetails loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
-      throw new UsernameNotFoundException(UserConstants.BLANK_USERNAME);
+      throw new UsernameNotFoundException(UserConstants.USERNAME_CANNOT_BLANK);
     }
 
-    User user =
+    UserEntity user =
         userRepository
             .findByUsername(username)
             .orElseThrow(

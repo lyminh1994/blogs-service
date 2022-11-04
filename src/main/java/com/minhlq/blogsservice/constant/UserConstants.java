@@ -24,13 +24,14 @@ public final class UserConstants {
   public static final String USER_PERSISTED_SUCCESSFULLY = "User successfully persisted {}";
 
   /** Username cannot be left blank. */
-  public static final String BLANK_USERNAME = "Username cannot be blank";
+  public static final String USERNAME_CANNOT_BLANK = "Username cannot be blank";
 
   public static final String USER_MUST_NOT_BE_NULL = "User must not be null";
   public static final String USER_DTO_MUST_NOT_BE_NULL = "UserDto must not be null";
+  public static final String USER_DETAILS_MUST_NOT_BE_NULL = "User details must not be null";
 
   /** Username should be at least 3 and at most 50 characters. */
-  public static final String USERNAME_SIZE =
+  public static final String INVALID_USERNAME_SIZE =
       "Username should be at least 3 and at most 50 characters";
 
   /** Email cannot be blank. */
@@ -44,16 +45,16 @@ public final class UserConstants {
   public static final String INVALID_EMAIL = "A valid email format is required";
 
   /** Password cannot be left blank. */
-  public static final String BLANK_PASSWORD = "Password cannot be left blank";
+  public static final String PASSWORD_CANNOT_BLANK = "Password cannot be left blank";
 
-  public static final String PASSWORD_SIZE = "Password should be at least 4 characters";
+  public static final String INVALID_PASSWORD_SIZE = "Password should be at least 4 characters";
 
   public static final String COULD_NOT_CREATE_USER = "Could not create user";
   public static final String COULD_NOT_VERIFY_USER = "Could not verify user";
   public static final String USER_ALREADY_EXIST =
       "Email {0} already exist and nothing will be done";
   public static final String USER_NOT_FOUND = "User with username: \"{}\" not found";
-  public static final String USERNAME_EXITS = "Username already exist";
+  public static final String USERNAME_EXISTED = "Username already exist";
   public static final String USER_EXIST_BUT_NOT_ENABLED =
       "Email {0} exists but not enabled. Returning user {}";
   public static final String USER_DETAILS_DEBUG_MESSAGE = "User details {}";

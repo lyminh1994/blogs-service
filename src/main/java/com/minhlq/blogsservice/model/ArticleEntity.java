@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,7 +32,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "articles")
-public class Article extends AbstractAuditEntity<Long> implements Serializable {
+public class ArticleEntity extends AbstractAuditEntity<Long> implements Serializable {
 
   private String title;
 
@@ -44,13 +44,13 @@ public class Article extends AbstractAuditEntity<Long> implements Serializable {
   private String body;
 
   @ToString.Exclude
-  @ManyToOne(targetEntity = User.class)
+  @ManyToOne(targetEntity = UserEntity.class)
   @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private User author;
+  private UserEntity author;
 
   @ToString.Exclude
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
-  private List<Comment> comments;
+  private List<CommentEntity> comments;
 
   @Override
   public boolean equals(Object o) {
@@ -58,18 +58,18 @@ public class Article extends AbstractAuditEntity<Long> implements Serializable {
       return true;
     }
 
-    if (!(o instanceof Article) || !super.equals(o)) {
+    if (!(o instanceof ArticleEntity) || !super.equals(o)) {
       return false;
     }
 
-    Article article = (Article) o;
+    ArticleEntity article = (ArticleEntity) o;
     return Objects.equals(getPublicId(), article.getPublicId())
         && Objects.equals(getSlug(), article.getSlug());
   }
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof Article;
+    return other instanceof ArticleEntity;
   }
 
   @Override

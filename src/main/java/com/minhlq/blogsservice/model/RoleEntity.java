@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import java.io.Serializable;
 import javax.persistence.Cacheable;
@@ -22,7 +22,7 @@ import lombok.Setter;
 @Entity
 @Cacheable
 @Table(name = "roles")
-public class Role implements Serializable {
+public class RoleEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)

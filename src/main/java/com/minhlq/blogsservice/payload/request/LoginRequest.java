@@ -1,6 +1,10 @@
 package com.minhlq.blogsservice.payload.request;
 
-import com.minhlq.blogsservice.constant.UserConstants;
+import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
+import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
+import static com.minhlq.blogsservice.constant.UserConstants.INVALID_PASSWORD_SIZE;
+import static com.minhlq.blogsservice.constant.UserConstants.INVALID_USERNAME_SIZE;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
@@ -15,11 +19,11 @@ import lombok.Data;
 @Data
 public final class LoginRequest {
 
-  @NotBlank(message = UserConstants.BLANK_USERNAME)
-  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
+  @NotBlank(message = USERNAME_CANNOT_BLANK)
+  @Size(min = 3, max = 50, message = INVALID_USERNAME_SIZE)
   private String username;
 
-  @NotBlank(message = UserConstants.BLANK_PASSWORD)
-  @Size(min = 4, message = UserConstants.PASSWORD_SIZE)
+  @NotBlank(message = PASSWORD_CANNOT_BLANK)
+  @Size(min = 4, message = INVALID_PASSWORD_SIZE)
   private String password;
 }

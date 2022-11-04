@@ -30,8 +30,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 class JwtRequestFilterTest {
   static final String encryptedToken = TestConstants.ENCRYPTED_TOKEN;
   static final String validBearerToken = TestConstants.BEARER_AUTHENTICATION_TOKEN;
-  static final String invalidBearerToken = SecurityConstants.BEARER_PREFIX;
-  static final String API_AUTH_LOGIN = SecurityConstants.AUTH_ROOT_URL + SecurityConstants.LOGIN;
+  static final String invalidBearerToken = SecurityConstants.BEARER;
+  static final String API_AUTH_LOGIN = "/auth/login";
 
   @Mock JwtService jwtService;
 

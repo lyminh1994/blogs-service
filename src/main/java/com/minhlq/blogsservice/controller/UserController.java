@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@Tag(name = "User", description = "User Information APIs")
+@Tag(name = "User", description = "Blog User Information APIs")
 public class UserController {
 
   private final UserService userService;
@@ -65,8 +65,8 @@ public class UserController {
    * @param username the username
    * @return user profile.
    */
-  @SecurityRequirements
   @GetMapping("/{username}")
+  @SecurityRequirements
   @Operation(summary = "Get profile", description = "Get user profile by username")
   public ProfileResponse getProfile(@PathVariable("username") String username) {
     return userService.findByUsername(username);

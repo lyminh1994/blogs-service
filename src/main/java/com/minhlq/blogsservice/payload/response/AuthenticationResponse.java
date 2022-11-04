@@ -1,10 +1,10 @@
 package com.minhlq.blogsservice.payload.response;
 
-import com.minhlq.blogsservice.constant.SecurityConstants;
+import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
+
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import java.util.Objects;
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -15,7 +15,6 @@ import lombok.Data;
  * @since 1.0
  */
 @Data
-@Builder
 public final class AuthenticationResponse {
 
   private final UserResponse user;
@@ -61,13 +60,9 @@ public final class AuthenticationResponse {
               .authorities(localUserDetails.getAuthorities())
               .build();
 
-      return AuthenticationResponse.builder()
-          .user(user)
-          .accessToken(jwToken)
-          .type(SecurityConstants.BEARER)
-          .build();
+      return new AuthenticationResponse(user, jwToken, BEARER);
     }
 
-    return AuthenticationResponse.builder().build();
+    return null;
   }
 }

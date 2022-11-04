@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.entity.Follow;
-import com.minhlq.blogsservice.entity.unionkey.FollowKey;
+import com.minhlq.blogsservice.model.FollowEntity;
+import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,8 +13,8 @@ import org.springframework.data.jpa.repository.Query;
  * @version 1.0
  * @since 1.0
  */
-public interface FollowRepository extends JpaRepository<Follow, FollowKey> {
+public interface FollowRepository extends JpaRepository<FollowEntity, FollowKey> {
 
-  @Query("select F.id.followId from Follow F where F.id.userId = :userId")
+  @Query("select F.id.followId from FollowEntity F where F.id.userId = :userId")
   Set<Long> findByUserId(Long userId);
 }

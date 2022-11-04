@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
-import com.minhlq.blogsservice.entity.unionkey.ArticleFavoriteKey;
+import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The article favorite relation for the application.
+ * The user follow model for the application.
  *
  * @author Minh Lys
  * @version 1.0
@@ -22,8 +22,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "articles_favorites")
-public class ArticleFavorite implements Serializable {
+@Table(name = "follows")
+public class FollowEntity implements Serializable {
 
-  @EmbeddedId private ArticleFavoriteKey id;
+  @EmbeddedId private FollowKey id;
 }

@@ -1,7 +1,12 @@
 package com.minhlq.blogsservice.payload.request;
 
+import static com.minhlq.blogsservice.constant.UserConstants.INVALID_PASSWORD_SIZE;
+import static com.minhlq.blogsservice.constant.UserConstants.INVALID_USERNAME_SIZE;
+import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
+import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
+import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_EXISTED;
+
 import com.minhlq.blogsservice.annotation.DuplicatedUsernameConstraint;
-import com.minhlq.blogsservice.constant.UserConstants;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
@@ -20,13 +25,13 @@ import lombok.ToString;
 public final class RegisterRequest {
 
   @EqualsAndHashCode.Include
-  @NotBlank(message = UserConstants.BLANK_USERNAME)
-  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
-  @DuplicatedUsernameConstraint(message = UserConstants.USERNAME_EXITS)
+  @NotBlank(message = USERNAME_CANNOT_BLANK)
+  @Size(min = 3, max = 50, message = INVALID_USERNAME_SIZE)
+  @DuplicatedUsernameConstraint(message = USERNAME_EXISTED)
   private String username;
 
   @ToString.Exclude
-  @NotBlank(message = UserConstants.BLANK_PASSWORD)
-  @Size(min = 4, message = UserConstants.PASSWORD_SIZE)
+  @NotBlank(message = PASSWORD_CANNOT_BLANK)
+  @Size(min = 4, message = INVALID_PASSWORD_SIZE)
   private String password;
 }

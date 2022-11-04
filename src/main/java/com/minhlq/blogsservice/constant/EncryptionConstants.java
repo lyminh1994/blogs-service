@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EncryptionConstants {
 
-  public static final String ERROR_ENCRYPTING_DATA = "Error encrypting data";
-  public static final String ERROR_DECRYPTING_DATA = "Error decrypting data";
+  public static final String ENCRYPTING_DATA_ERROR = "Error encrypting data";
+  public static final String DECRYPTING_DATA_ERROR = "Error decrypting data";
   public static final String DERIVATION_FUNCTION = "PBKDF2WithHmacSHA256";
   public static final String ENCRYPT_ALGORITHM = "AES/GCM/NoPadding";
   public static final String AES_ALGORITHM = "AES";

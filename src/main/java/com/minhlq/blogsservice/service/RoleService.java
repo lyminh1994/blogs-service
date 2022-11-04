@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service;
 
-import com.minhlq.blogsservice.entity.Role;
+import com.minhlq.blogsservice.model.RoleEntity;
 
 /**
  * Role service to provide implementation for the definitions about a role.
@@ -17,7 +17,7 @@ public interface RoleService {
    * @param role the role
    * @return the persisted role with assigned id
    */
-  Role save(final Role role);
+  RoleEntity save(final RoleEntity role);
 
   /**
    * Retrieves the role with the specified name.
@@ -25,5 +25,5 @@ public interface RoleService {
    * @param name the name of the role to retrieve
    * @return the role tuple that matches the id given
    */
-  Role findByName(final String name);
+  RoleEntity findByName(final String name);
 }

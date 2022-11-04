@@ -40,15 +40,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
     // Get the token from the request header
-    String jwt = jwtService.getJwtToken(request, false);
+    String jwtToken = jwtService.getJwtToken(request, false);
 
-    if (StringUtils.isBlank(jwt)) {
+    if (StringUtils.isBlank(jwtToken)) {
       // if no Authorization token was found from the header, check the cookies.
-      jwt = jwtService.getJwtToken(request, true);
+      jwtToken = jwtService.getJwtToken(request, true);
     }
 
-    if (StringUtils.isNotBlank(jwt)) {
-      String accessToken = encryptionService.decrypt(jwt);
+    if (StringUtils.isNotBlank(jwtToken)) {
+      String accessToken = encryptionService.decrypt(jwtToken);
 
       if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
         String username = jwtService.getUsernameFromJwt(accessToken);

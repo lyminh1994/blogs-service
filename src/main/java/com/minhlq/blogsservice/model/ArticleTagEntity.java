@@ -1,6 +1,6 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
-import com.minhlq.blogsservice.entity.unionkey.ArticleTagKey;
+import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "articles_tags")
-public class ArticleTag implements Serializable {
+public class ArticleTagEntity implements Serializable {
 
   @EmbeddedId private ArticleTagKey id;
 }

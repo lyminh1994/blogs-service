@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tags")
-public class Tag implements Serializable {
+public class TagEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -34,7 +34,7 @@ public class Tag implements Serializable {
   @Column(nullable = false)
   private String name;
 
-  public Tag(String name) {
+  public TagEntity(String name) {
     this.name = name;
   }
 }

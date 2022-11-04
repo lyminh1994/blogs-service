@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,17 +28,17 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "comments")
-public class Comment extends AbstractAuditEntity<Long> implements Serializable {
+public class CommentEntity extends AbstractAuditEntity<Long> implements Serializable {
 
   private String body;
 
   @ToString.Exclude
-  @ManyToOne(targetEntity = Article.class, fetch = FetchType.LAZY)
-  private Article article;
+  @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
+  private ArticleEntity article;
 
   @ToString.Exclude
-  @ManyToOne(targetEntity = User.class)
-  private User user;
+  @ManyToOne(targetEntity = UserEntity.class)
+  private UserEntity user;
 
   @Override
   public boolean equals(Object o) {
@@ -46,17 +46,17 @@ public class Comment extends AbstractAuditEntity<Long> implements Serializable {
       return true;
     }
 
-    if (!(o instanceof Comment) || !super.equals(o)) {
+    if (!(o instanceof CommentEntity) || !super.equals(o)) {
       return false;
     }
 
-    Comment comment = (Comment) o;
+    CommentEntity comment = (CommentEntity) o;
     return Objects.equals(getPublicId(), comment.getPublicId());
   }
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof Comment;
+    return other instanceof CommentEntity;
   }
 
   @Override

@@ -28,8 +28,9 @@ public class DateTimeProviderImpl implements DateTimeProvider {
    *
    * @return the current time
    */
+  @NonNull
   @Override
-  public @NonNull Optional<TemporalAccessor> getNow() {
+  public Optional<TemporalAccessor> getNow() {
     return Optional.of(LocalDateTime.now(clock));
   }
 }

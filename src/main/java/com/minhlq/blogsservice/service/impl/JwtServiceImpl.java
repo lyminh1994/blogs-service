@@ -1,7 +1,10 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.enums.TokenType;
+import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
+import static com.minhlq.blogsservice.enums.TokenType.ACCESS;
+import static org.apache.commons.lang3.StringUtils.SPACE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -11,11 +14,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
@@ -24,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,7 +54,7 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String createJwt(String username, Date expiration) {
-    byte[] keyBytes = Decoders.BASE64.decode(secret);
+    byte[] keyBytes = Base64.getDecoder().decode(secret);
     Key key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .setSubject(username)
@@ -70,25 +72,20 @@ public class JwtServiceImpl implements JwtService {
    */
   private Claims parseJwt(String jwt) {
     try {
-      byte[] keyBytes = Decoders.BASE64.decode(secret);
+      byte[] keyBytes = Base64.getDecoder().decode(secret);
       Key key = Keys.hmacShaKeyFor(keyBytes);
       JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
 
       return jwtParser.parseClaimsJws(jwt).getBody();
     } catch (ExpiredJwtException ex) {
-      log.error("JWT is expired: {}", ex.getMessage());
       throw new SecurityException("JWT is expired!");
     } catch (UnsupportedJwtException ex) {
-      log.error("JWT is unsupported: {}", ex.getMessage());
       throw new SecurityException("JWT is unsupported!");
     } catch (MalformedJwtException ex) {
-      log.error("Invalid JWT: {}", ex.getMessage());
       throw new SecurityException("Invalid JWT!");
     } catch (SignatureException e) {
-      log.error("Invalid JWT signature: {}", e.getMessage());
       throw new SecurityException("Invalid JWT signature!");
     } catch (IllegalArgumentException ex) {
-      log.error("JWT claims string is empty: {}", ex.getMessage());
       throw new SecurityException("JWT claims string is empty!");
     }
   }
@@ -96,7 +93,7 @@ public class JwtServiceImpl implements JwtService {
   @Override
   public boolean isValidJwtToken(String jwt) {
     try {
-      byte[] keyBytes = Decoders.BASE64.decode(secret);
+      byte[] keyBytes = Base64.getDecoder().decode(secret);
       Key key = Keys.hmacShaKeyFor(keyBytes);
       JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
 
@@ -138,11 +135,10 @@ public class JwtServiceImpl implements JwtService {
    * @return the jwt token
    */
   private String getJwtFromRequest(HttpServletRequest request) {
-    String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
+    String headerAuth = request.getHeader(AUTHORIZATION);
 
-    if (StringUtils.isNotBlank(headerAuth)
-        && headerAuth.startsWith(SecurityConstants.BEARER_PREFIX)) {
-      return headerAuth.split(StringUtils.SPACE)[1];
+    if (StringUtils.isNotBlank(headerAuth) && headerAuth.startsWith(BEARER)) {
+      return headerAuth.split(SPACE)[1];
     }
 
     return null;
@@ -158,7 +154,7 @@ public class JwtServiceImpl implements JwtService {
     Cookie[] cookies = request.getCookies();
     if (Objects.nonNull(cookies)) {
       for (Cookie cookie : cookies) {
-        if (TokenType.ACCESS.getName().equals(cookie.getName())) {
+        if (ACCESS.getName().equals(cookie.getName())) {
           return cookie.getValue();
         }
       }

@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.dto.mapper;
 
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
-import com.minhlq.blogsservice.entity.Article;
+import com.minhlq.blogsservice.model.ArticleEntity;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -20,7 +20,7 @@ public interface ArticleMapper {
   /** The mapper instance. */
   ArticleMapper MAPPER = Mappers.getMapper(ArticleMapper.class);
 
-  ArticleResponse toArticleResponse(Article article, List<String> tagNames);
+  ArticleResponse toArticleResponse(ArticleEntity article, List<String> tagNames);
 
-  ArticleResponse toArticleResponse(Article article);
+  ArticleResponse toArticleResponse(ArticleEntity article);
 }

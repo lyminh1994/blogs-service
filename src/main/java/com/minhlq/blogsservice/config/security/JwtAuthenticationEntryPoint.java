@@ -1,5 +1,7 @@
 package com.minhlq.blogsservice.config.security;
 
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +31,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       throws IOException {
     log.error("Unauthorized error: {}", authException.getMessage());
 
-    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getLocalizedMessage());
+    response.sendError(SC_UNAUTHORIZED, authException.getLocalizedMessage());
   }
 }

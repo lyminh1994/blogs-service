@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.entity;
+package com.minhlq.blogsservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minhlq.blogsservice.constant.UserConstants;
@@ -41,16 +41,16 @@ import org.hibernate.envers.NotAudited;
 @Entity
 @Audited
 @Table(name = "users")
-public class User extends AbstractAuditEntity<Long> implements Serializable {
+public class UserEntity extends AbstractAuditEntity<Long> implements Serializable {
 
   @Column(unique = true, nullable = false)
-  @NotBlank(message = UserConstants.BLANK_USERNAME)
-  @Size(min = 3, max = 50, message = UserConstants.USERNAME_SIZE)
+  @NotBlank(message = UserConstants.USERNAME_CANNOT_BLANK)
+  @Size(min = 3, max = 50, message = UserConstants.INVALID_USERNAME_SIZE)
   private String username;
 
   @JsonIgnore
   @ToString.Exclude
-  @NotBlank(message = UserConstants.BLANK_PASSWORD)
+  @NotBlank(message = UserConstants.PASSWORD_CANNOT_BLANK)
   private String password;
 
   @Column(unique = true)
@@ -81,18 +81,18 @@ public class User extends AbstractAuditEntity<Long> implements Serializable {
   @NotAudited
   @ToString.Exclude
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-  private Set<UserRole> userRoles = new HashSet<>();
+  private Set<UserRoleEntity> userRoles = new HashSet<>();
 
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof User) || !super.equals(o)) {
+    if (!(o instanceof UserEntity) || !super.equals(o)) {
       return false;
     }
 
-    User user = (User) o;
+    UserEntity user = (UserEntity) o;
     return Objects.equals(getPublicId(), user.getPublicId())
         && Objects.equals(getUsername(), user.getUsername())
         && Objects.equals(getEmail(), user.getEmail());
@@ -100,7 +100,7 @@ public class User extends AbstractAuditEntity<Long> implements Serializable {
 
   @Override
   protected boolean canEqual(Object other) {
-    return other instanceof User;
+    return other instanceof UserEntity;
   }
 
   @Override
@@ -113,9 +113,9 @@ public class User extends AbstractAuditEntity<Long> implements Serializable {
    *
    * @param role the role
    */
-  public void addRole(final Role role) {
-    UserRole userRole = new UserRole(this, role);
-    userRoles.add(new UserRole(this, role));
+  public void addRole(final RoleEntity role) {
+    UserRoleEntity userRole = new UserRoleEntity(this, role);
+    userRoles.add(new UserRoleEntity(this, role));
     userRole.setUser(this);
   }
 
@@ -124,8 +124,8 @@ public class User extends AbstractAuditEntity<Long> implements Serializable {
    *
    * @param role the role
    */
-  public void removeRole(final Role role) {
-    UserRole userRole = new UserRole(this, role);
+  public void removeRole(final RoleEntity role) {
+    UserRoleEntity userRole = new UserRoleEntity(this, role);
     userRoles.remove(userRole);
     userRole.setUser(null);
   }
