@@ -12,15 +12,15 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ArticleUtils {
 
-  private final String REGEX_SPECIAL_CHARACTERS = "[&\\uFE30-\\uFFA0’”\\s?,.]+";
+    private final String REGEX_SPECIAL_CHARACTERS = "[&\\uFE30-\\uFFA0’”\\s?,.]+";
 
-  /**
-   * Replace special characters and transfer to lowercase.
-   *
-   * @param title the article slug
-   * @return formatted slug
-   */
-  public String toSlug(String title) {
-    return title.toLowerCase().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
-  }
+    /**
+     * Replace special characters and transfer to lowercase.
+     *
+     * @param title the article slug
+     * @return formatted slug
+     */
+    public String toSlug(String title) {
+        return title.toLowerCase().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
+    }
 }

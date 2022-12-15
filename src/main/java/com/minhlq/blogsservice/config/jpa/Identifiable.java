@@ -13,10 +13,10 @@ import java.io.Serializable;
 @FunctionalInterface
 public interface Identifiable<T extends Serializable> {
 
-  /**
-   * Return a serialized generic id to be used as primary keys for entities.
-   *
-   * @return id
-   */
-  T getId();
+    /**
+     * Return a serialized generic id to be used as primary keys for entities.
+     *
+     * @return id
+     */
+    T getId();
 }

@@ -1,7 +1,8 @@
 package com.minhlq.blogsservice.dto.response;
 
-import java.time.LocalDateTime;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * This class models the format of the comment response produced.
@@ -13,13 +14,13 @@ import lombok.Data;
 @Data
 public class CommentResponse {
 
-  private String id;
+    private String id;
 
-  private String body;
+    private String body;
 
-  private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
-  private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-  private ProfileResponse user;
+    private ProfileResponse user;
 }

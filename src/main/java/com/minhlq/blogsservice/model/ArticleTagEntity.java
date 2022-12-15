@@ -1,14 +1,15 @@
 package com.minhlq.blogsservice.model;
 
 import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
-import java.io.Serializable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * The article tag relation for the application.
@@ -25,5 +26,6 @@ import lombok.Setter;
 @Table(name = "articles_tags")
 public class ArticleTagEntity implements Serializable {
 
-  @EmbeddedId private ArticleTagKey id;
+    @EmbeddedId
+    private ArticleTagKey id;
 }

@@ -1,11 +1,12 @@
 package com.minhlq.blogsservice.model.unionkey;
 
-import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 /**
  * This class hold union key for article tag relation.
@@ -20,9 +21,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class ArticleTagKey implements Serializable {
 
-  @Column(nullable = false)
-  private Long articleId;
+    @Column(nullable = false)
+    private Long articleId;
 
-  @Column(nullable = false)
-  private Long tagId;
+    @Column(nullable = false)
+    private Long tagId;
 }

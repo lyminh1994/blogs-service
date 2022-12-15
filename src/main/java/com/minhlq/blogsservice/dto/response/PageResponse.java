@@ -1,7 +1,8 @@
 package com.minhlq.blogsservice.dto.response;
 
-import java.util.List;
 import lombok.Value;
+
+import java.util.List;
 
 /**
  * This class base for paging response produced.
@@ -13,7 +14,7 @@ import lombok.Value;
 @Value
 public class PageResponse<T> {
 
-  List<T> contents;
+    List<T> contents;
 
-  long totalElements;
+    long totalElements;
 }

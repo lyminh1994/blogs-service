@@ -16,8 +16,10 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface CommentMapper {
 
-  /** The mapper instance. */
-  CommentMapper MAPPER = Mappers.getMapper(CommentMapper.class);
+    /**
+     * The mapper instance.
+     */
+    CommentMapper MAPPER = Mappers.getMapper(CommentMapper.class);
 
-  CommentResponse toCommentResponse(CommentEntity comment);
+    CommentResponse toCommentResponse(CommentEntity comment);
 }

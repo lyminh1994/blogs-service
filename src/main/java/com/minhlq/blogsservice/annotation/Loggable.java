@@ -20,10 +20,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Loggable {
 
-  /**
-   * Log level config
-   *
-   * @return level
-   */
-  String level() default "info";
+    /**
+     * Log level config
+     *
+     * @return level
+     */
+    String level() default "info";
 }

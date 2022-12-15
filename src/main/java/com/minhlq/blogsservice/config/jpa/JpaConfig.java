@@ -1,12 +1,13 @@
 package com.minhlq.blogsservice.config.jpa;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import javax.persistence.EntityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManager;
 
 /**
  * This class holds JPA configurations for this application.
@@ -20,23 +21,23 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class JpaConfig {
 
-  /**
-   * AuditorAware bean used for auditing.
-   *
-   * @return Application implementation of AuditorAware.
-   */
-  @Bean
-  public AuditorAware<String> auditorAware() {
-    return new ApplicationAuditorAware();
-  }
+    /**
+     * AuditorAware bean used for auditing.
+     *
+     * @return Application implementation of AuditorAware.
+     */
+    @Bean
+    public AuditorAware<String> auditorAware() {
+        return new ApplicationAuditorAware();
+    }
 
-  /**
-   * JPAQueryFactory bean used for querydsl.
-   *
-   * @return the JPAQueryFactory
-   */
-  @Bean
-  public JPAQueryFactory queryFactory(EntityManager entityManager) {
-    return new JPAQueryFactory(entityManager);
-  }
+    /**
+     * JPAQueryFactory bean used for querydsl.
+     *
+     * @return the JPAQueryFactory
+     */
+    @Bean
+    public JPAQueryFactory queryFactory(EntityManager entityManager) {
+        return new JPAQueryFactory(entityManager);
+    }
 }

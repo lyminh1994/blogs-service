@@ -7,11 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FieldErrorResource {
 
-  private final String resource;
+    private final String resource;
 
-  private final String field;
+    private final String field;
 
-  private final String code;
+    private final String code;
 
-  private final String message;
+    private final String message;
 }

@@ -1,14 +1,15 @@
 package com.minhlq.blogsservice.model;
 
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
 
 /**
  * The user role model for the application.
@@ -24,11 +25,11 @@ import lombok.Setter;
 @Table(name = "roles")
 public class RoleEntity implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer id;
 
-  private String name;
+    private String name;
 
-  private String description;
+    private String description;
 }

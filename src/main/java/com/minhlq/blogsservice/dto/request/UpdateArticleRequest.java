@@ -17,9 +17,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateArticleRequest {
 
-  @DuplicatedArticleConstraint private String title = "";
+    @DuplicatedArticleConstraint
+    private String title = "";
 
-  private String body = "";
+    private String body = "";
 
-  private String description = "";
+    private String description = "";
 }

@@ -1,11 +1,12 @@
 package com.minhlq.blogsservice.service;
 
-import com.minhlq.blogsservice.payload.request.LoginRequest;
-import com.minhlq.blogsservice.payload.request.RegisterRequest;
+import com.minhlq.blogsservice.payload.request.SignInRequest;
+import com.minhlq.blogsservice.payload.request.SignUpRequest;
 import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
+import org.springframework.http.HttpHeaders;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 
 /**
  * This is the contract for the authentication service operations.
@@ -16,47 +17,47 @@ import org.springframework.http.HttpHeaders;
  */
 public interface AuthService {
 
-  /**
-   * Create the user with the register request instance given.
-   *
-   * @param registerRequest the register information
-   * @return the authentication response
-   */
-  AuthenticationResponse createUser(RegisterRequest registerRequest, HttpHeaders responseHeaders);
+    /**
+     * Create the user with the register request instance given.
+     *
+     * @param signUpBody the register information
+     * @return the authentication response
+     */
+    AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders);
 
-  /**
-   * Attempts to authenticate with the provided credentials. If successful, a JWT token is returned
-   * with some user details.
-   *
-   * @param refreshToken current refresh token
-   * @param loginRequest login params
-   * @param responseHeaders the response headers
-   * @return the authentication response
-   */
-  AuthenticationResponse login(
-      String refreshToken, LoginRequest loginRequest, HttpHeaders responseHeaders);
+    /**
+     * Attempts to authenticate with the provided credentials. If successful, a JWT token is returned
+     * with some user details.
+     *
+     * @param refreshToken    current refresh token
+     * @param signInBody      login params
+     * @param responseHeaders the response headers
+     * @return the authentication response
+     */
+    AuthenticationResponse signIn(
+            String refreshToken, SignInRequest signInBody, HttpHeaders responseHeaders);
 
-  /**
-   * Refreshes the current access token and refresh token accordingly.
-   *
-   * @param refreshToken current refresh token
-   * @param request the request
-   * @return the authentication response
-   */
-  AuthenticationResponse refreshAccessToken(String refreshToken, HttpServletRequest request);
+    /**
+     * Refreshes the current access token and refresh token accordingly.
+     *
+     * @param refreshToken current refresh token
+     * @param request      the request
+     * @return the authentication response
+     */
+    AuthenticationResponse refreshAccessToken(String refreshToken, HttpServletRequest request);
 
-  /**
-   * Logout the user from the system and clear all cookies from request and response.
-   *
-   * @param request the request
-   * @param response the response
-   */
-  void logout(HttpServletRequest request, HttpServletResponse response);
+    /**
+     * Logout the user from the system and clear all cookies from request and response.
+     *
+     * @param request  the request
+     * @param response the response
+     */
+    void signOut(HttpServletRequest request, HttpServletResponse response);
 
-  /**
-   * Verify account by verification token.
-   *
-   * @param verificationToken the token
-   */
-  void verificationAccount(String verificationToken);
+    /**
+     * Active account by verification token.
+     *
+     * @param verificationToken the token
+     */
+    void activeAccount(String verificationToken);
 }

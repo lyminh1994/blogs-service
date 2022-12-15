@@ -1,9 +1,10 @@
 package com.minhlq.blogsservice.config.security;
 
-import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * CORS configuration properties groups all properties prefixed with "cors.".
@@ -14,18 +15,18 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties("cors")
+@ConfigurationProperties(prefix = "cors")
 public class CorsConfigProperties {
 
-  private int maxAge;
+    private int maxAge;
 
-  private boolean allowCredentials;
+    private boolean allowCredentials;
 
-  private List<String> allowedOrigins;
+    private List<String> allowedOrigins;
 
-  private List<String> allowedMethods;
+    private List<String> allowedMethods;
 
-  private List<String> allowedHeaders;
+    private List<String> allowedHeaders;
 
-  private List<String> exposedHeaders;
+    private List<String> exposedHeaders;
 }

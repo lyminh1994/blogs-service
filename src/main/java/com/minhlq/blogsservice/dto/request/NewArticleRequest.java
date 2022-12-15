@@ -1,9 +1,10 @@
 package com.minhlq.blogsservice.dto.request;
 
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
-import java.util.List;
-import javax.validation.constraints.NotBlank;
 import lombok.Getter;
+
+import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * This class models the format of the add new article request accepted.
@@ -15,15 +16,15 @@ import lombok.Getter;
 @Getter
 public class NewArticleRequest {
 
-  @NotBlank(message = "Title can't be empty")
-  @DuplicatedArticleConstraint
-  private String title;
+    @NotBlank(message = "Title can't be empty")
+    @DuplicatedArticleConstraint
+    private String title;
 
-  @NotBlank(message = "Description can't be empty")
-  private String description;
+    @NotBlank(message = "Description can't be empty")
+    private String description;
 
-  @NotBlank(message = "Body can't be empty")
-  private String body;
+    @NotBlank(message = "Body can't be empty")
+    private String body;
 
-  private List<String> tagNames;
+    private List<String> tagNames;
 }

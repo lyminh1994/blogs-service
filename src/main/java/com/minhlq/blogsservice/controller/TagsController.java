@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.dto.response.TagResponse;
 import com.minhlq.blogsservice.service.TagService;
 import com.minhlq.blogsservice.util.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,25 +27,25 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Tags", description = "Blog Article Tags APIs")
 public class TagsController {
 
-  private final TagService tagService;
+    private final TagService tagService;
 
-  /**
-   * Get all tags name.
-   *
-   * @param pageNumber the page number
-   * @param pageSize the page size
-   * @param sort the sort fields
-   * @return paged tags name
-   */
-  @GetMapping
-  @SecurityRequirements
-  @Operation(summary = "Get tags", description = "Get all tags name")
-  public PageResponse<String> getTags(
-      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize,
-      @RequestParam(name = "sort", required = false) String[] sort) {
+    /**
+     * Get all tags name.
+     *
+     * @param pageNumber the page number
+     * @param pageSize   the page size
+     * @param sort       the sort fields
+     * @return paged tags name
+     */
+    @GetMapping
+    @SecurityRequirements
+    @Operation(summary = "Get tags", description = "Get all tags name")
+    public PageResponse<TagResponse> getTags(
+            @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(name = "sort", required = false) String[] sort) {
 
-    PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);
-    return tagService.getTags(pageRequest);
-  }
+        PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);
+        return tagService.getTags(pageRequest);
+    }
 }

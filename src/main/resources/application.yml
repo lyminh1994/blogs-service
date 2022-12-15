@@ -3,6 +3,8 @@ application:
   title: @project.name@
   version: @project.version@
   description: @project.description@
+  static-resource-location: /tmp/media/
+  static-resource-url: /media/**
 
 # Server configuration
 server:

@@ -1,7 +1,8 @@
 package com.minhlq.blogsservice.dto.request;
 
-import javax.validation.constraints.NotBlank;
 import lombok.Getter;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * This class models the format of the add new comment request accepted.
@@ -13,6 +14,6 @@ import lombok.Getter;
 @Getter
 public class NewCommentRequest {
 
-  @NotBlank(message = "Body can't be empty")
-  private String body;
+    @NotBlank(message = "Body can't be empty")
+    private String body;
 }

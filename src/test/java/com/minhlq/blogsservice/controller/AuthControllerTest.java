@@ -1,17 +1,11 @@
 package com.minhlq.blogsservice.controller;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogsservice.annotation.impl.validator.DuplicatedUsernameValidator;
-import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.payload.request.RegisterRequest;
+import com.minhlq.blogsservice.payload.request.SignUpRequest;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
-import java.util.Optional;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,63 +21,68 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @Import(DuplicatedUsernameValidator.class)
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
 
-  @MockBean private UserRepository userRepository;
+    private static final Faker FAKER = Faker.instance();
+    private static DuplicatedUsernameValidator validator;
+    @MockBean
+    private UserRepository userRepository;
+    @Mock
+    private AuthService authService;
+    @Mock
+    private CookieService cookieService;
+    @InjectMocks
+    private AuthController authController;
+    private MockMvc mockMvc;
+    private ObjectMapper mapper;
+    private String registerUrl;
+    private String loginUrl;
+    private String refreshTokenUrl;
+    private String logoutUrl;
+    private String verifyUrl;
 
-  @Mock private AuthService authService;
+    @BeforeEach
+    void setUp() {
+        this.mockMvc =
+                MockMvcBuilders.standaloneSetup(authController)
+                        .alwaysDo(MockMvcResultHandlers.print())
+                        .build();
 
-  @Mock private CookieService cookieService;
+        validator = new DuplicatedUsernameValidator(userRepository);
 
-  @InjectMocks private AuthController authController;
+        mapper = new ObjectMapper();
+        registerUrl = "";
+        loginUrl = "";
+        refreshTokenUrl = "";
+        logoutUrl = "";
+        verifyUrl = "";
+    }
 
-  private static final Faker FAKER = Faker.instance();
-  private static DuplicatedUsernameValidator validator;
+    @Test
+    void givenEmptyRegisterBody_whenCallRegister_thenReturnBadRequest() throws Exception {
+        mockMvc.perform(post(registerUrl)).andExpect(status().isBadRequest());
+    }
 
-  private MockMvc mockMvc;
-  private ObjectMapper mapper;
-  private String registerUrl;
-  private String loginUrl;
-  private String refreshTokenUrl;
-  private String logoutUrl;
-  private String verifyUrl;
+    @Test
+    void givenExistedUsername_whenCallRegister_thenReturnBadRequest() throws Exception {
+        given(userRepository.findByUsername(ArgumentMatchers.anyString())).willReturn(Optional.empty());
+        SignUpRequest signUpRequest = new SignUpRequest();
+        signUpRequest.setUsername(FAKER.name().username());
+        signUpRequest.setPassword(FAKER.internet().password());
 
-  @BeforeEach
-  void setUp() {
-    this.mockMvc =
-        MockMvcBuilders.standaloneSetup(authController)
-            .alwaysDo(MockMvcResultHandlers.print())
-            .build();
-
-    validator = new DuplicatedUsernameValidator(userRepository);
-
-    mapper = new ObjectMapper();
-    registerUrl = "";
-    loginUrl = "";
-    refreshTokenUrl = "";
-    logoutUrl = "";
-    verifyUrl = "";
-  }
-
-  @Test
-  void givenEmptyRegisterBody_whenCallRegister_thenReturnBadRequest() throws Exception {
-    mockMvc.perform(post(registerUrl)).andExpect(status().isBadRequest());
-  }
-
-  @Test
-  void givenExistedUsername_whenCallRegister_thenReturnBadRequest() throws Exception {
-    given(userRepository.findByUsername(ArgumentMatchers.anyString())).willReturn(Optional.empty());
-    RegisterRequest registerRequest = new RegisterRequest();
-    registerRequest.setUsername(FAKER.name().username());
-    registerRequest.setPassword(FAKER.internet().password());
-
-    mockMvc
-        .perform(
-            post(registerUrl)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(registerRequest)))
-        .andExpect(status().isBadRequest());
-  }
+        mockMvc
+                .perform(
+                        post(registerUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(signUpRequest)))
+                .andExpect(status().isBadRequest());
+    }
 }

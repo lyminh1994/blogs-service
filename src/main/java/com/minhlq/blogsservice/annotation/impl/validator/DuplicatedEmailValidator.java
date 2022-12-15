@@ -2,10 +2,11 @@ package com.minhlq.blogsservice.annotation.impl.validator;
 
 import com.minhlq.blogsservice.annotation.DuplicatedEmailConstraint;
 import com.minhlq.blogsservice.repository.UserRepository;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * The implement for DuplicatedEmailValidator annotation.
@@ -16,12 +17,12 @@ import org.apache.commons.lang3.StringUtils;
  */
 @RequiredArgsConstructor
 public class DuplicatedEmailValidator
-    implements ConstraintValidator<DuplicatedEmailConstraint, String> {
+        implements ConstraintValidator<DuplicatedEmailConstraint, String> {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @Override
-  public boolean isValid(String value, ConstraintValidatorContext context) {
-    return StringUtils.isBlank(value) || userRepository.findByEmail(value).isEmpty();
-  }
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return StringUtils.isBlank(value) || userRepository.findByEmail(value).isEmpty();
+    }
 }

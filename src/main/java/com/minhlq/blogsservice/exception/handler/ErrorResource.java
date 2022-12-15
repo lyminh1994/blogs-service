@@ -2,9 +2,10 @@ package com.minhlq.blogsservice.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -12,5 +13,5 @@ import lombok.Getter;
 @JsonSerialize(using = ErrorResourceSerializer.class)
 public class ErrorResource {
 
-  private final List<FieldErrorResource> fieldErrors;
+    private final List<FieldErrorResource> fieldErrors;
 }

@@ -1,10 +1,11 @@
 package com.minhlq.blogsservice.repository;
 
 import com.minhlq.blogsservice.model.UserEntity;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * Repository for the User.
@@ -15,14 +16,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-  @EntityGraph(
-      type = EntityGraphType.FETCH,
-      attributePaths = {"userRoles"})
-  Optional<UserEntity> findByUsername(String username);
+    @EntityGraph(
+            type = EntityGraphType.FETCH,
+            attributePaths = {"userRoles"})
+    Optional<UserEntity> findByUsername(String username);
 
-  Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
-  Optional<UserEntity> findByPhone(String phone);
+    Optional<UserEntity> findByPhone(String phone);
 
-  Optional<UserEntity> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
+    Optional<UserEntity> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
 }

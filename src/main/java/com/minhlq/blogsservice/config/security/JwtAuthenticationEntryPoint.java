@@ -1,14 +1,16 @@
 package com.minhlq.blogsservice.config.security;
 
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
  * This class implements AuthenticationEntryPoint interface. Then we override the commence method.
@@ -19,18 +21,18 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  * @since 1.0
  */
-@Log4j2
+@Slf4j
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-  @Override
-  public void commence(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      AuthenticationException authException)
-      throws IOException {
-    log.error("Unauthorized error: {}", authException.getMessage());
+    @Override
+    public void commence(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException authException)
+            throws IOException {
+        log.error("Unauthorized error: {}", authException.getMessage());
 
-    response.sendError(SC_UNAUTHORIZED, authException.getLocalizedMessage());
-  }
+        response.sendError(SC_UNAUTHORIZED, authException.getMessage());
+    }
 }

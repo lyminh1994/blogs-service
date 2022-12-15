@@ -18,7 +18,7 @@ import lombok.Getter;
 @UpdateUserConstraint
 public class UpdateUserDto {
 
-  private final UserPrincipal targetUser;
+    private final UserPrincipal targetUser;
 
-  private final UpdateUserRequest params;
+    private final UpdateUserRequest params;
 }

@@ -2,10 +2,11 @@ package com.minhlq.blogsservice.repository;
 
 import com.minhlq.blogsservice.model.ArticleEntity;
 import com.minhlq.blogsservice.model.CommentEntity;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * Repository for the Article comments.
@@ -16,7 +17,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
-  Page<CommentEntity> findByArticle(ArticleEntity article, Pageable pageable);
+    Page<CommentEntity> findByArticle(ArticleEntity article, Pageable pageable);
 
-  Optional<CommentEntity> findByIdAndArticle(Long id, ArticleEntity article);
+    Optional<CommentEntity> findByIdAndArticle(Long id, ArticleEntity article);
 }

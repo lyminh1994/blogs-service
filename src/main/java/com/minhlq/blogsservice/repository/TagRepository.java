@@ -1,11 +1,9 @@
 package com.minhlq.blogsservice.repository;
 
 import com.minhlq.blogsservice.model.TagEntity;
-import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 /**
  * Repository for the Tag.
@@ -16,8 +14,5 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface TagRepository extends JpaRepository<TagEntity, Long> {
 
-  Optional<TagEntity> findByName(String name);
-
-  @Query("SELECT T.name from TagEntity T")
-  Page<String> findNames(Pageable pageable);
+    Optional<TagEntity> findByName(String name);
 }

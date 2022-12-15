@@ -1,14 +1,15 @@
 package com.minhlq.blogsservice.model;
 
 import com.minhlq.blogsservice.model.unionkey.FollowKey;
-import java.io.Serializable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * The user follow model for the application.
@@ -25,5 +26,6 @@ import lombok.Setter;
 @Table(name = "follows")
 public class FollowEntity implements Serializable {
 
-  @EmbeddedId private FollowKey id;
+    @EmbeddedId
+    private FollowKey id;
 }

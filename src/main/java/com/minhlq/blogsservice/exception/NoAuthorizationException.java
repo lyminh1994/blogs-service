@@ -11,4 +11,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 1.0
  */
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class NoAuthorizationException extends RuntimeException {}
+public class NoAuthorizationException extends RuntimeException {
+}

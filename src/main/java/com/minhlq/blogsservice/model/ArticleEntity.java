@@ -1,8 +1,12 @@
 package com.minhlq.blogsservice.model;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,12 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * The article model for the application.
@@ -34,46 +35,46 @@ import lombok.ToString;
 @Table(name = "articles")
 public class ArticleEntity extends AbstractAuditEntity<Long> implements Serializable {
 
-  private String title;
+    private String title;
 
-  @Column(unique = true)
-  private String slug;
+    @Column(unique = true)
+    private String slug;
 
-  private String description;
+    private String description;
 
-  private String body;
+    private String body;
 
-  @ToString.Exclude
-  @ManyToOne(targetEntity = UserEntity.class)
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private UserEntity author;
+    @ToString.Exclude
+    @ManyToOne(targetEntity = UserEntity.class)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserEntity author;
 
-  @ToString.Exclude
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
-  private List<CommentEntity> comments;
+    @ToString.Exclude
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
+    private List<CommentEntity> comments;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof ArticleEntity) || !super.equals(o)) {
+            return false;
+        }
+
+        ArticleEntity article = (ArticleEntity) o;
+        return Objects.equals(getPublicId(), article.getPublicId())
+                && Objects.equals(getSlug(), article.getSlug());
     }
 
-    if (!(o instanceof ArticleEntity) || !super.equals(o)) {
-      return false;
+    @Override
+    protected boolean canEqual(Object other) {
+        return other instanceof ArticleEntity;
     }
 
-    ArticleEntity article = (ArticleEntity) o;
-    return Objects.equals(getPublicId(), article.getPublicId())
-        && Objects.equals(getSlug(), article.getSlug());
-  }
-
-  @Override
-  protected boolean canEqual(Object other) {
-    return other instanceof ArticleEntity;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), getPublicId(), getSlug());
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getPublicId(), getSlug());
+    }
 }

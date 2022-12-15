@@ -1,13 +1,14 @@
 package com.minhlq.blogsservice.service.impl;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAccessor;
-import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.stereotype.Service;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.Optional;
 
 /**
  * DateTimeProvider simply creating new clocked LocalDateTime instances for each method call. This
@@ -21,16 +22,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DateTimeProviderImpl implements DateTimeProvider {
 
-  private final Clock clock;
+    private final Clock clock;
 
-  /**
-   * Returns the current time to be used as modification or creation date.
-   *
-   * @return the current time
-   */
-  @NonNull
-  @Override
-  public Optional<TemporalAccessor> getNow() {
-    return Optional.of(LocalDateTime.now(clock));
-  }
+    /**
+     * Returns the current time to be used as modification or creation date.
+     *
+     * @return the current time
+     */
+    @NonNull
+    @Override
+    public Optional<TemporalAccessor> getNow() {
+        return Optional.of(LocalDateTime.now(clock));
+    }
 }
