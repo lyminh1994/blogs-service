@@ -23,7 +23,7 @@ public class TestHelper {
     public static final String ANONYMOUS_ROLE = "ROLE_ANONYMOUS";
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final Faker FAKER = Faker.instance();
+    public static final Faker FAKER = new Faker();
     public static final ObjectMapper objectMapper = new ObjectMapper();
     public static final String[] IGNORED_FIELDS = {
             "id", "createdAt", "createdBy", "updatedAt", "updatedBy"

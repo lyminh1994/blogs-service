@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
 
-    private static final Faker FAKER = Faker.instance();
+    private static final Faker FAKER = new Faker();
     private static DuplicatedUsernameValidator validator;
     @MockBean
     private UserRepository userRepository;

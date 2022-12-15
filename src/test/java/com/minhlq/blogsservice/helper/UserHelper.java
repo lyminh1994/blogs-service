@@ -25,7 +25,7 @@ public final class UserHelper {
     /**
      * The Constant FAKER.
      */
-    private static final Faker FAKER = Faker.instance();
+    private static final Faker FAKER = new Faker();
     /**
      * Minimum password length for the password generation.
      */
