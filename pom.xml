@@ -31,7 +31,6 @@
         <springdoc-openapi.version>1.6.13</springdoc-openapi.version>
         <datafaker.version>1.7.0</datafaker.version>
         <postgresql.version>42.5.1</postgresql.version>
-        <hibernate-envers.version>6.1.5.Final</hibernate-envers.version>
     </properties>
     <dependencies>
 
@@ -143,9 +142,8 @@
             <version>${querydsl.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.orm</groupId>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
-            <version>${hibernate-envers.version}</version>
         </dependency>
 
         <!-- Redis -->
