@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * A global exception handler for REST API.
@@ -69,12 +68,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return new ErrorResource(errors);
-    }
-
-    @ExceptionHandler({SecurityException.class})
-    @ResponseStatus(UNAUTHORIZED)
-    public String handleSecurityException(SecurityException ex) {
-        return ex.getMessage();
     }
 
     private String getParam(String s) {
