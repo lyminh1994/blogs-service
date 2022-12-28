@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
-    Page<CommentEntity> findByArticle(ArticleEntity article, Pageable pageable);
+  Page<CommentEntity> findByArticle(ArticleEntity article, Pageable pageable);
 
-    Optional<CommentEntity> findByIdAndArticle(Long id, ArticleEntity article);
+  Optional<CommentEntity> findByIdAndArticle(Long id, ArticleEntity article);
 }

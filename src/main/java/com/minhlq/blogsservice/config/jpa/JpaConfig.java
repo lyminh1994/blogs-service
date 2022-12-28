@@ -21,23 +21,23 @@ import javax.persistence.EntityManager;
 @EnableTransactionManagement
 public class JpaConfig {
 
-    /**
-     * AuditorAware bean used for auditing.
-     *
-     * @return Application implementation of AuditorAware.
-     */
-    @Bean
-    public AuditorAware<String> auditorAware() {
-        return new ApplicationAuditorAware();
-    }
+  /**
+   * AuditorAware bean used for auditing.
+   *
+   * @return Application implementation of AuditorAware.
+   */
+  @Bean
+  public AuditorAware<String> auditorAware() {
+    return new ApplicationAuditorAware();
+  }
 
-    /**
-     * JPAQueryFactory bean used for querydsl.
-     *
-     * @return the JPAQueryFactory
-     */
-    @Bean
-    public JPAQueryFactory queryFactory(EntityManager entityManager) {
-        return new JPAQueryFactory(entityManager);
-    }
+  /**
+   * JPAQueryFactory bean used for querydsl.
+   *
+   * @return the JPAQueryFactory
+   */
+  @Bean
+  public JPAQueryFactory queryFactory(EntityManager entityManager) {
+    return new JPAQueryFactory(entityManager);
+  }
 }

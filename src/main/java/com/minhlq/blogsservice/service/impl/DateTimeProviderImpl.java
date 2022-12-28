@@ -22,16 +22,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DateTimeProviderImpl implements DateTimeProvider {
 
-    private final Clock clock;
+  private final Clock clock;
 
-    /**
-     * Returns the current time to be used as modification or creation date.
-     *
-     * @return the current time
-     */
-    @NonNull
-    @Override
-    public Optional<TemporalAccessor> getNow() {
-        return Optional.of(LocalDateTime.now(clock));
-    }
+  /**
+   * Returns the current time to be used as modification or creation date.
+   *
+   * @return the current time
+   */
+  @NonNull
+  @Override
+  public Optional<TemporalAccessor> getNow() {
+    return Optional.of(LocalDateTime.now(clock));
+  }
 }

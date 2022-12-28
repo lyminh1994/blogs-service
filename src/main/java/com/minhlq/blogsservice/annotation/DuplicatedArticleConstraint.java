@@ -23,24 +23,24 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = DuplicatedArticleValidator.class)
 public @interface DuplicatedArticleConstraint {
 
-    /**
-     * Resolve a message in case of violation.
-     *
-     * @return the validation messages
-     */
-    String message() default "Article name already used";
+  /**
+   * Resolve a message in case of violation.
+   *
+   * @return the validation messages
+   */
+  String message() default "Article name already used";
 
-    /**
-     * Certain validation group that should be triggered.
-     *
-     * @return the class
-     */
-    Class<?>[] groups() default {};
+  /**
+   * Certain validation group that should be triggered.
+   *
+   * @return the class
+   */
+  Class<?>[] groups() default {};
 
-    /**
-     * Payload to be passed in this validation.
-     *
-     * @return the payload class
-     */
-    Class<? extends Payload>[] payload() default {};
+  /**
+   * Payload to be passed in this validation.
+   *
+   * @return the payload class
+   */
+  Class<? extends Payload>[] payload() default {};
 }

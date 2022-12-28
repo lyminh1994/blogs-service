@@ -30,73 +30,99 @@ import static org.springdoc.core.Constants.HEALTH_PATTERN;
 @Configuration
 public class OpenApiConfig {
 
-    /**
-     * Configures the actuator group.
-     *
-     * @return the GroupedOpenApi 3.0 bean
-     */
-    @Bean
-    @Profile("!prod")
-    public GroupedOpenApi actuatorApi(
-            @Value("${application.version}") String version,
-            OpenApiCustomiser actuatorOpenApiCustomiser,
-            OperationCustomizer actuatorCustomizer,
-            WebEndpointProperties endpointProperties) {
-        return GroupedOpenApi.builder()
-                .group("Actuator")
-                .pathsToMatch(endpointProperties.getBasePath() + ALL_PATTERN)
-                .addOpenApiCustomiser(actuatorOpenApiCustomiser)
-                .addOpenApiCustomiser(
-                        openApi -> openApi.info(new Info().title("Actuator APIs").version(version)))
-                .addOperationCustomizer(actuatorCustomizer)
-                .pathsToExclude(endpointProperties.getBasePath() + HEALTH_PATTERN)
-                .build();
-    }
+  /**
+   * Configures the actuator group.
+   *
+   * @return the GroupedOpenApi 3.0 bean
+   */
+  @Bean
+  @Profile("!prod")
+  public GroupedOpenApi actuatorApi(
+      @Value("${application.version}") String version,
+      OpenApiCustomiser actuatorOpenApiCustomiser,
+      OperationCustomizer actuatorCustomizer,
+      WebEndpointProperties endpointProperties) {
+    return GroupedOpenApi.builder()
+        .group("Actuator")
+        .pathsToMatch(endpointProperties.getBasePath() + ALL_PATTERN)
+        .addOpenApiCustomiser(actuatorOpenApiCustomiser)
+        .addOpenApiCustomiser(
+            openApi -> openApi.info(new Info().title("Actuator APIs").version(version)))
+        .addOperationCustomizer(actuatorCustomizer)
+        .pathsToExclude(endpointProperties.getBasePath() + HEALTH_PATTERN)
+        .build();
+  }
 
-    /**
-     * Configures the authentication group.
-     *
-     * @return the GroupedOpenApi 3.0 bean
-     */
-    @Bean
-    public GroupedOpenApi customOpenApi(
-            @Value("${application.title}") String name,
-            @Value("${application.version}") String version,
-            @Value("${application.description}") String description,
-            WebEndpointProperties endpointProperties) {
-        return GroupedOpenApi.builder()
-                .group("Blogs")
-                .addOpenApiCustomiser(
-                        openApi ->
-                                openApi.info(
-                                        new Info()
-                                                .title(StringUtils.capitalize(name))
-                                                .version(version)
-                                                .description(description)
-                                                .termsOfService("http://swagger.io/terms/")
-                                                .license(new License().name("Apache 2.0").url("http://springdoc.org"))))
-                .pathsToExclude(endpointProperties.getBasePath() + ALL_PATTERN, "/auth" + ALL_PATTERN)
-                .build();
-    }
+  /**
+   * Configures the authentication group.
+   *
+   * @return the GroupedOpenApi 3.0 bean
+   */
+  @Bean
+  public GroupedOpenApi authenticationOpenApi(
+      @Value("${application.title}") String name,
+      @Value("${application.version}") String version,
+      @Value("${application.description}") String description,
+      WebEndpointProperties endpointProperties) {
+    return GroupedOpenApi.builder()
+        .group("Authentication")
+        .addOpenApiCustomiser(
+            openApi ->
+                openApi.info(
+                    new Info()
+                        .title(StringUtils.capitalize(name))
+                        .version(version)
+                        .description(description)
+                        .termsOfService("http://swagger.io/terms/")
+                        .license(new License().name("Apache 2.0").url("http://springdoc.org"))))
+        .pathsToMatch(endpointProperties.getBasePath() + "/auth" + ALL_PATTERN)
+        .build();
+  }
 
-    /**
-     * Configures OpenAPI security JWT schema bean
-     *
-     * @return the {@link OpenAPI} bean
-     */
-    @Bean
-    public OpenAPI customizeOpenApiSecurity() {
-        final String bearerAuth = "bearerAuth";
-        return new OpenAPI()
-                .addSecurityItem(new SecurityRequirement().addList(bearerAuth))
-                .components(
-                        new Components()
-                                .addSecuritySchemes(
-                                        bearerAuth,
-                                        new SecurityScheme()
-                                                .name(bearerAuth)
-                                                .type(Type.HTTP)
-                                                .scheme("bearer")
-                                                .bearerFormat("JWT")));
-    }
+  /**
+   * Configures the general group.
+   *
+   * @return the GroupedOpenApi 3.0 bean
+   */
+  @Bean
+  public GroupedOpenApi generalOpenApi(
+      @Value("${application.title}") String name,
+      @Value("${application.version}") String version,
+      @Value("${application.description}") String description,
+      WebEndpointProperties endpointProperties) {
+    return GroupedOpenApi.builder()
+        .group("Blogs")
+        .addOpenApiCustomiser(
+            openApi ->
+                openApi.info(
+                    new Info()
+                        .title(StringUtils.capitalize(name))
+                        .version(version)
+                        .description(description)
+                        .termsOfService("http://swagger.io/terms/")
+                        .license(new License().name("Apache 2.0").url("http://springdoc.org"))))
+        .pathsToExclude(endpointProperties.getBasePath() + ALL_PATTERN, "/auth" + ALL_PATTERN)
+        .build();
+  }
+
+  /**
+   * Configures OpenAPI security JWT schema bean
+   *
+   * @return the {@link OpenAPI} bean
+   */
+  @Bean
+  public OpenAPI customizeOpenApiSecurity() {
+    final String bearerAuth = "bearerAuth";
+    return new OpenAPI()
+        .addSecurityItem(new SecurityRequirement().addList(bearerAuth))
+        .components(
+            new Components()
+                .addSecuritySchemes(
+                    bearerAuth,
+                    new SecurityScheme()
+                        .name(bearerAuth)
+                        .type(Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")));
+  }
 }

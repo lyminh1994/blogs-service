@@ -15,17 +15,17 @@ import java.time.LocalDate;
 @Data
 public class ProfileResponse {
 
-    private String publicId;
+  private String publicId;
 
-    private String name;
+  private String name;
 
-    private String phone;
+  private String phone;
 
-    private LocalDate birthday;
+  private LocalDate birthday;
 
-    private Gender gender;
+  private Gender gender;
 
-    private String profileImage;
+  private String profileImage;
 
-    private boolean following;
+  private boolean following;
 }

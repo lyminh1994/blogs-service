@@ -1,3 +1,4 @@
 FROM eclipse-temurin:11-alpine
-COPY target/blogs-service-1.0.jar app.jar
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

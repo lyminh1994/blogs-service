@@ -13,23 +13,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CacheConstants {
 
-    /**
-     * Constant for the cache key for the user.
-     */
-    public static final String USERS = "users";
+  /** Constant for the cache key for the user. */
+  public static final String USERS = "users";
 
-    /**
-     * Constant for the cache key for the roles
-     */
-    public static final String ROLE = "role";
+  /** Constant for the cache key for the roles */
+  public static final String ROLE = "role";
 
-    /**
-     * Constant for the cache key for the roles
-     */
-    public static final String ROLES = "roles";
+  /** Constant for the cache key for the roles */
+  public static final String ROLES = "roles";
 
-    /**
-     * Constant for the cache key for user details
-     */
-    public static final String USER_DETAILS = "userDetails";
+  /** Constant for the cache key for user details */
+  public static final String USER_DETAILS = "userDetails";
 }

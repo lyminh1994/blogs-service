@@ -14,7 +14,7 @@ import java.util.List;
 @Value
 public class PageResponse<T> {
 
-    List<T> contents;
+  List<T> contents;
 
-    long totalElements;
+  long totalElements;
 }

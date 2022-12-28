@@ -19,66 +19,66 @@ import org.springframework.stereotype.Component;
 @Component
 public class MethodLogger {
 
-    /**
-     * - visibility modifier is * (public, protected or private) - name is * (any name); - arguments
-     * are .. (any arguments); and - is annotated with @Loggable.
-     *
-     * @param joinPoint the joinPoint
-     * @return the log object
-     * @throws Throwable if an error occurs
-     */
-    @Around("execution(* *(..)) && @annotation(loggable)")
-    public Object log(final ProceedingJoinPoint joinPoint, final Loggable loggable) throws Throwable {
+  /**
+   * - visibility modifier is * (public, protected or private) - name is * (any name); - arguments
+   * are .. (any arguments); and - is annotated with @Loggable.
+   *
+   * @param joinPoint the joinPoint
+   * @return the log object
+   * @throws Throwable if an error occurs
+   */
+  @Around("execution(* *(..)) && @annotation(loggable)")
+  public Object log(final ProceedingJoinPoint joinPoint, final Loggable loggable) throws Throwable {
 
-        var method = joinPoint.toShortString();
-        var start = System.currentTimeMillis();
+    var method = joinPoint.toShortString();
+    var start = System.currentTimeMillis();
 
-        switchStartingLogger(loggable.level(), method, joinPoint.getArgs());
-        Object response = joinPoint.proceed();
-        switchFinishingLogger(loggable.level(), method, response, start);
+    switchStartingLogger(loggable.level(), method, joinPoint.getArgs());
+    Object response = joinPoint.proceed();
+    switchFinishingLogger(loggable.level(), method, response, start);
 
-        return response;
+    return response;
+  }
+
+  private void switchStartingLogger(final String level, final String method, final Object args) {
+    final String format = "=> Starting -  {} args: {}";
+
+    switch (level) {
+      case "warn":
+        log.warn(format, method, args);
+        break;
+      case "error":
+        log.error(format, method, args);
+        break;
+      case "debug":
+        log.debug(format, method, args);
+        break;
+      case "trace":
+        log.trace(format, method, args);
+        break;
+      default:
+        log.info(format, method, args);
     }
+  }
 
-    private void switchStartingLogger(final String level, final String method, final Object args) {
-        final String format = "=> Starting -  {} args: {}";
+  private void switchFinishingLogger(String level, String method, Object response, long start) {
+    final String format = "<= {} : {} - Finished, duration: {} ms";
 
-        switch (level) {
-            case "warn":
-                log.warn(format, method, args);
-                break;
-            case "error":
-                log.error(format, method, args);
-                break;
-            case "debug":
-                log.debug(format, method, args);
-                break;
-            case "trace":
-                log.trace(format, method, args);
-                break;
-            default:
-                log.info(format, method, args);
-        }
+    switch (level) {
+      case "warn":
+        log.warn(format, method, response, System.currentTimeMillis() - start);
+        break;
+      case "error":
+        log.error(format, method, response, System.currentTimeMillis() - start);
+        break;
+      case "debug":
+        log.debug(format, method, response, System.currentTimeMillis() - start);
+        break;
+      case "trace":
+        log.trace(format, method, response, System.currentTimeMillis() - start);
+        break;
+      default:
+        log.info(format, method, response, System.currentTimeMillis() - start);
     }
-
-    private void switchFinishingLogger(String level, String method, Object response, long start) {
-        final String format = "<= {} : {} - Finished, duration: {} ms";
-
-        switch (level) {
-            case "warn":
-                log.warn(format, method, response, System.currentTimeMillis() - start);
-                break;
-            case "error":
-                log.error(format, method, response, System.currentTimeMillis() - start);
-                break;
-            case "debug":
-                log.debug(format, method, response, System.currentTimeMillis() - start);
-                break;
-            case "trace":
-                log.trace(format, method, response, System.currentTimeMillis() - start);
-                break;
-            default:
-                log.info(format, method, response, System.currentTimeMillis() - start);
-        }
-    }
+  }
 }

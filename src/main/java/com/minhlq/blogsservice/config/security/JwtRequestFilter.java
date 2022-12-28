@@ -28,36 +28,36 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+  private final JwtService jwtService;
 
-    private final EncryptionService encryptionService;
+  private final EncryptionService encryptionService;
 
-    private final UserDetailsService userDetailsService;
+  private final UserDetailsService userDetailsService;
 
-    @Override
-    protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
-        // Get the token from the request header
-        String jwtToken = jwtService.getJwtToken(request, false);
+  @Override
+  protected void doFilterInternal(
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull FilterChain filterChain)
+      throws ServletException, IOException {
+    // Get the token from the request header
+    String jwtToken = jwtService.getJwtToken(request, false);
 
-        if (StringUtils.isBlank(jwtToken)) {
-            // if no Authorization token was found from the header, check the cookies.
-            jwtToken = jwtService.getJwtToken(request, true);
-        }
-
-        if (StringUtils.isNotBlank(jwtToken)) {
-            String accessToken = encryptionService.decrypt(jwtToken);
-
-            if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
-                String username = jwtService.getUsernameFromJwt(accessToken);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                SecurityUtils.authenticateUser(request, userDetails);
-            }
-        }
-
-        filterChain.doFilter(request, response);
+    if (StringUtils.isBlank(jwtToken)) {
+      // if no Authorization token was found from the header, check the cookies.
+      jwtToken = jwtService.getJwtToken(request, true);
     }
+
+    if (StringUtils.isNotBlank(jwtToken)) {
+      String accessToken = encryptionService.decrypt(jwtToken);
+
+      if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
+        String username = jwtService.getUsernameFromJwt(accessToken);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        SecurityUtils.authenticateUser(request, userDetails);
+      }
+    }
+
+    filterChain.doFilter(request, response);
+  }
 }

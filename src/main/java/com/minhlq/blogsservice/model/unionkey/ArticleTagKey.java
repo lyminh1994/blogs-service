@@ -21,9 +21,9 @@ import java.io.Serializable;
 @Embeddable
 public class ArticleTagKey implements Serializable {
 
-    @Column(nullable = false)
-    private Long articleId;
+  @Column(nullable = false)
+  private Long articleId;
 
-    @Column(nullable = false)
-    private Long tagId;
+  @Column(nullable = false)
+  private Long tagId;
 }

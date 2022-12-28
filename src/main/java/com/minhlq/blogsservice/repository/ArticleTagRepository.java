@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface ArticleTagRepository extends JpaRepository<ArticleTagEntity, ArticleTagKey> {
 
-    @Query("from ArticleTagEntity AT where AT.id.articleId = :articleId")
-    List<ArticleTagEntity> findByArticleId(Long articleId);
+  @Query("from ArticleTagEntity AT where AT.id.articleId = :articleId")
+  List<ArticleTagEntity> findByArticleId(Long articleId);
 }

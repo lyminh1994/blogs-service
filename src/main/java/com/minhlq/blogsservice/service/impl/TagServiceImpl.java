@@ -23,16 +23,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
-    private final TagRepository tagRepository;
+  private final TagRepository tagRepository;
 
-    @Override
-    public PageResponse<TagResponse> getTags(PageRequest pageRequest) {
-        Page<TagEntity> tags = tagRepository.findAll(pageRequest);
+  @Override
+  public PageResponse<TagResponse> getTags(PageRequest pageRequest) {
+    Page<TagEntity> tags = tagRepository.findAll(pageRequest);
 
-        return new PageResponse<>(
-                tags.stream()
-                        .map(entity -> TagResponse.builder().id(entity.getId()).name(entity.getName()).build())
-                        .collect(Collectors.toList()),
-                tags.getTotalElements());
-    }
+    return new PageResponse<>(
+        tags.stream()
+            .map(entity -> TagResponse.builder().id(entity.getId()).name(entity.getName()).build())
+            .collect(Collectors.toList()),
+        tags.getTotalElements());
+  }
 }

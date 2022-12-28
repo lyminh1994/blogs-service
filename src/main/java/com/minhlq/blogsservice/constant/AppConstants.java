@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AppConstants {
-}
+public final class AppConstants {}

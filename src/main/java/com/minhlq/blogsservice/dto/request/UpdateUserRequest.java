@@ -16,18 +16,17 @@ import java.time.LocalDate;
 @Getter
 public class UpdateUserRequest {
 
-    @Email(message = "Should be an email")
-    private String email;
+  @Email private String email;
 
-    private String firstName;
+  private String firstName;
 
-    private String lastName;
+  private String lastName;
 
-    private String phone;
+  private String phone;
 
-    private LocalDate birthday;
+  private LocalDate birthday;
 
-    private Gender gender;
+  private Gender gender;
 
-    private String profileImage;
+  private String profileImage;
 }

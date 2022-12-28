@@ -21,9 +21,9 @@ import java.io.Serializable;
 @Embeddable
 public class FollowKey implements Serializable {
 
-    @Column(nullable = false)
-    private Long userId;
+  @Column(nullable = false)
+  private Long userId;
 
-    @Column(nullable = false)
-    private Long followId;
+  @Column(nullable = false)
+  private Long followId;
 }

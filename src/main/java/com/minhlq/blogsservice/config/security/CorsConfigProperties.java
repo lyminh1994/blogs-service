@@ -18,15 +18,15 @@ import java.util.List;
 @ConfigurationProperties(prefix = "cors")
 public class CorsConfigProperties {
 
-    private int maxAge;
+  private int maxAge;
 
-    private boolean allowCredentials;
+  private boolean allowCredentials;
 
-    private List<String> allowedOrigins;
+  private List<String> allowedOrigins;
 
-    private List<String> allowedMethods;
+  private List<String> allowedMethods;
 
-    private List<String> allowedHeaders;
+  private List<String> allowedHeaders;
 
-    private List<String> exposedHeaders;
+  private List<String> exposedHeaders;
 }

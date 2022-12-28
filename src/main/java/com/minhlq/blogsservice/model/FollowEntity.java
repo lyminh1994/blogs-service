@@ -26,6 +26,5 @@ import java.io.Serializable;
 @Table(name = "follows")
 public class FollowEntity implements Serializable {
 
-    @EmbeddedId
-    private FollowKey id;
+  @EmbeddedId private FollowKey id;
 }

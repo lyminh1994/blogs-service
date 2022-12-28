@@ -1,61 +1,179 @@
-CREATE TABLE IF NOT EXISTS users
+create sequence hibernate_sequence;
+
+alter sequence hibernate_sequence owner to postgres;
+
+create table bank_statements
 (
-    id       SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE,
-    password VARCHAR(255),
-    email    VARCHAR(255) UNIQUE,
-    bio      TEXT,
-    image    VARCHAR(511)
+    id                  serial primary key,
+    transaction_date    date,
+    ref_no              varchar(50),
+    change              varchar(1),
+    debit               numeric,
+    credit              numeric,
+    balance             numeric,
+    transaction_details text,
+    amount              numeric
 );
-CREATE TABLE IF NOT EXISTS articles
+
+alter table bank_statements
+    owner to postgres;
+
+create table users
 (
-    id          SERIAL PRIMARY KEY,
-    user_id     INT,
-    slug        VARCHAR(255) UNIQUE,
-    title       VARCHAR(255),
-    description TEXT,
-    body        TEXT,
-    created_at  TIMESTAMP NOT NULL,
-    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    id                    serial primary key,
+    public_id             varchar(255) not null unique,
+    username              varchar(50)  not null unique,
+    email                 varchar(255) unique,
+    phone                 varchar(20) unique,
+    password              varchar(255),
+    first_name            varchar(255),
+    last_name             varchar(255),
+    gender                integer,
+    birthday              date,
+    profile_image         varchar(255),
+    verification_token    varchar(255),
+    enabled               boolean      not null,
+    failed_login_attempts integer      not null,
+    last_successful_login timestamp,
+    version               smallint     not null,
+    created_at            timestamp,
+    created_by            varchar(255) not null,
+    updated_at            timestamp,
+    updated_by            varchar(255)
 );
-CREATE TABLE IF NOT EXISTS tags
+
+alter table users
+    owner to postgres;
+
+create table roles
 (
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    id          serial primary key,
+    description varchar(255),
+    name        varchar(255)
 );
-CREATE TABLE IF NOT EXISTS comments
+
+alter table roles
+    owner to postgres;
+
+create table articles
 (
-    id         SERIAL PRIMARY KEY,
-    body       TEXT,
-    article_id INT,
-    user_id    INT,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (article_id) REFERENCES articles (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    id          serial primary key,
+    public_id   varchar(255) not null unique,
+    slug        varchar(255) unique,
+    title       varchar(255),
+    body        text,
+    description text,
+    version     smallint     not null,
+    created_at  timestamp,
+    created_by  varchar(255) not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    user_id     bigint references users
 );
-CREATE TABLE IF NOT EXISTS follows
+
+alter table articles
+    owner to postgres;
+
+create table tags
 (
-    user_id   INT NOT NULL,
-    follow_id INT NOT NULL,
-    PRIMARY KEY (user_id, follow_id),
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (follow_id) REFERENCES users (id)
+    id   serial primary key,
+    name varchar(255) not null
 );
-CREATE TABLE IF NOT EXISTS article_favorites
+
+alter table tags
+    owner to postgres;
+
+create table comments
 (
-    article_id INT NOT NULL,
-    user_id    INT NOT NULL,
-    PRIMARY KEY (article_id, user_id),
-    FOREIGN KEY (article_id) REFERENCES articles (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    id         serial primary key,
+    public_id  varchar(255) not null unique,
+    body       text,
+    version    smallint     not null,
+    created_at timestamp,
+    created_by varchar(255) not null,
+    updated_at timestamp,
+    updated_by varchar(255),
+    article_id bigint references articles,
+    user_id    bigint references users
 );
-CREATE TABLE IF NOT EXISTS article_tags
+
+alter table comments
+    owner to postgres;
+
+create table users_roles
 (
-    article_id INT NOT NULL,
-    tag_id     INT NOT NULL,
-    PRIMARY KEY (article_id, tag_id),
-    FOREIGN KEY (article_id) REFERENCES articles (id),
-    FOREIGN KEY (tag_id) REFERENCES tags (id)
+    id         serial primary key,
+    public_id  varchar(255) not null unique,
+    version    smallint     not null,
+    created_at timestamp,
+    created_by varchar(255) not null,
+    updated_at timestamp,
+    updated_by varchar(255),
+    role_id    bigint references roles,
+    user_id    bigint references users
 );
+
+alter table users_roles
+    owner to postgres;
+
+create table follows
+(
+    follow_id bigint not null,
+    user_id   bigint not null,
+    primary key (follow_id, user_id)
+);
+
+alter table follows
+    owner to postgres;
+
+create table articles_favorites
+(
+    article_id bigint not null references users,
+    user_id    bigint not null references users,
+    primary key (article_id, user_id)
+);
+
+alter table articles_favorites
+    owner to postgres;
+
+create table articles_tags
+(
+    article_id bigint not null references articles,
+    tag_id     bigint not null references tags,
+    primary key (article_id, tag_id)
+);
+
+alter table articles_tags
+    owner to postgres;
+
+create table revinfo
+(
+    rev      integer not null primary key,
+    revtstmp bigint
+);
+
+alter table revinfo
+    owner to postgres;
+
+create table users_aud
+(
+    id                 bigint  not null,
+    rev                integer not null references revinfo,
+    revtype            smallint,
+    birthday           date,
+    email              varchar(255),
+    enabled            boolean,
+    first_name         varchar(255),
+    gender             integer,
+    last_name          varchar(255),
+    password           varchar(255),
+    phone              varchar(255),
+    profile_image      varchar(255),
+    username           varchar(255),
+    verification_token varchar(255),
+    primary key (id, rev)
+);
+
+alter table users_aud
+    owner to postgres;
+

@@ -25,11 +25,11 @@ import java.io.Serializable;
 @Table(name = "roles")
 public class RoleEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Integer id;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 }

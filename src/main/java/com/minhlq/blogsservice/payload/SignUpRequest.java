@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.payload.request;
+package com.minhlq.blogsservice.payload;
 
 import com.minhlq.blogsservice.annotation.DuplicatedEmailConstraint;
 import com.minhlq.blogsservice.annotation.DuplicatedUsernameConstraint;
@@ -8,7 +8,6 @@ import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import static com.minhlq.blogsservice.constant.UserConstants.BLANK_EMAIL;
@@ -17,7 +16,6 @@ import static com.minhlq.blogsservice.constant.UserConstants.INVALID_EMAIL;
 import static com.minhlq.blogsservice.constant.UserConstants.INVALID_PASSWORD_SIZE;
 import static com.minhlq.blogsservice.constant.UserConstants.INVALID_USERNAME_SIZE;
 import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
-import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_INVALID_FORMAT;
 import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
 import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_EXISTED;
 
@@ -32,22 +30,19 @@ import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_EXISTED;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class SignUpRequest {
 
-    @EqualsAndHashCode.Include
-    @NotBlank(message = USERNAME_CANNOT_BLANK)
-    @Size(min = 3, max = 50, message = INVALID_USERNAME_SIZE)
-    @DuplicatedUsernameConstraint(message = USERNAME_EXISTED)
-    private String username;
+  @EqualsAndHashCode.Include
+  @NotBlank(message = USERNAME_CANNOT_BLANK)
+  @Size(min = 3, max = 50, message = INVALID_USERNAME_SIZE)
+  @DuplicatedUsernameConstraint(message = USERNAME_EXISTED)
+  private String username;
 
-    @ToString.Exclude
-    @NotBlank(message = PASSWORD_CANNOT_BLANK)
-    @Size(min = 4, message = INVALID_PASSWORD_SIZE)
-    @Pattern(
-            regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{4,}$",
-            message = PASSWORD_INVALID_FORMAT)
-    private String password;
+  @ToString.Exclude
+  @NotBlank(message = PASSWORD_CANNOT_BLANK)
+  @Size(min = 4, message = INVALID_PASSWORD_SIZE)
+  private String password;
 
-    @Email(message = INVALID_EMAIL)
-    @NotBlank(message = BLANK_EMAIL)
-    @DuplicatedEmailConstraint(message = EMAIL_ALREADY_EXIST)
-    private String email;
+  @Email(message = INVALID_EMAIL)
+  @NotBlank(message = BLANK_EMAIL)
+  @DuplicatedEmailConstraint(message = EMAIL_ALREADY_EXIST)
+  private String email;
 }

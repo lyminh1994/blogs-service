@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blogs-deployment
-  labels:  &DeploymentLabels
+  labels: &DeploymentLabels
     app: blogs-service
 spec:
   selector:
@@ -12,8 +12,8 @@ spec:
       labels: *DeploymentLabels
     spec:
       containers:
-      - name: blogs-service
-        image: blogs-service:latest
-        envFrom:
-          - configMapRef:
-              name: blogs-configmap
+        - name: blogs-service
+          image: blogs-service:latest
+          envFrom:
+            - configMapRef:
+                name: blogs-configmap

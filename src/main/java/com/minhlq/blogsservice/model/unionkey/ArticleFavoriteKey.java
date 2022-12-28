@@ -21,9 +21,9 @@ import java.io.Serializable;
 @Embeddable
 public class ArticleFavoriteKey implements Serializable {
 
-    @Column(nullable = false)
-    private Long articleId;
+  @Column(nullable = false)
+  private Long articleId;
 
-    @Column(nullable = false)
-    private Long userId;
+  @Column(nullable = false)
+  private Long userId;
 }

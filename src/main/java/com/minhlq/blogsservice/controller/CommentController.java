@@ -37,49 +37,49 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Tag(name = "Comments", description = "Blog Comments of Article APIs")
 public class CommentController {
 
-    private final CommentService commentService;
+  private final CommentService commentService;
 
-    /**
-     * Add comment to article by slug.
-     *
-     * @param slug              slug
-     * @param newCommentRequest comment details
-     * @return comment
-     */
-    @PostMapping
-    @ResponseStatus(CREATED)
-    @Operation(summary = "Create comment", description = "Create comment for article")
-    public CommentResponse createComment(
-            @PathVariable("slug") String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
-        return commentService.addCommentToArticle(slug, newCommentRequest);
-    }
+  /**
+   * Add comment to article by slug.
+   *
+   * @param slug slug
+   * @param newCommentRequest comment details
+   * @return comment
+   */
+  @PostMapping
+  @ResponseStatus(CREATED)
+  @Operation(summary = "Create comment", description = "Create comment for article")
+  public CommentResponse createComment(
+      @PathVariable("slug") String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
+    return commentService.addCommentToArticle(slug, newCommentRequest);
+  }
 
-    /**
-     * Get all comments of article by slug.
-     *
-     * @param slug slug
-     * @return comments
-     */
-    @GetMapping
-    @SecurityRequirements
-    @Operation(summary = "Get comments", description = "Get all comments by article slug")
-    public PageResponse<CommentResponse> getComments(
-            @PathVariable("slug") String slug,
-            @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize) {
-        return commentService.findArticleComments(slug, PageRequest.of(pageNumber, pageSize));
-    }
+  /**
+   * Get all comments of article by slug.
+   *
+   * @param slug slug
+   * @return comments
+   */
+  @GetMapping
+  @SecurityRequirements
+  @Operation(summary = "Get comments", description = "Get all comments by article slug")
+  public PageResponse<CommentResponse> getComments(
+      @PathVariable("slug") String slug,
+      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
+      @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize) {
+    return commentService.findArticleComments(slug, PageRequest.of(pageNumber, pageSize));
+  }
 
-    /**
-     * Delete comment of article.
-     *
-     * @param slug      slug
-     * @param commentId id
-     */
-    @DeleteMapping("/{id}")
-    @ResponseStatus(NO_CONTENT)
-    @Operation(summary = "Delete comment", description = "Delete comment of article")
-    public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
-        commentService.deleteCommentFromArticle(slug, commentId);
-    }
+  /**
+   * Delete comment of article.
+   *
+   * @param slug slug
+   * @param commentId id
+   */
+  @DeleteMapping("/{id}")
+  @ResponseStatus(NO_CONTENT)
+  @Operation(summary = "Delete comment", description = "Delete comment of article")
+  public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
+    commentService.deleteCommentFromArticle(slug, commentId);
+  }
 }

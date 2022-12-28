@@ -13,11 +13,11 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface TagService {
 
-    /**
-     * Get all tags name with paging params.
-     *
-     * @param pageRequest the paging params
-     * @return paging tags
-     */
-    PageResponse<TagResponse> getTags(PageRequest pageRequest);
+  /**
+   * Get all tags name with paging params.
+   *
+   * @param pageRequest the paging params
+   * @return paging tags
+   */
+  PageResponse<TagResponse> getTags(PageRequest pageRequest);
 }

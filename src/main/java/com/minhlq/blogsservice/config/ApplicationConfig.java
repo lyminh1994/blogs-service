@@ -18,24 +18,24 @@ import java.time.Clock;
 @Configuration
 public class ApplicationConfig {
 
-    /**
-     * A bean to be used by Clock.
-     *
-     * @return instance of Clock
-     */
-    @Bean
-    public Clock clock() {
-        return Clock.systemDefaultZone();
-    }
+  /**
+   * A bean to be used by Clock.
+   *
+   * @return instance of Clock
+   */
+  @Bean
+  public Clock clock() {
+    return Clock.systemDefaultZone();
+  }
 
-    /**
-     * A bean to be used by DateTimeProvider.
-     *
-     * @return instance of CurrentDateTimeProvider
-     */
-    @Bean
-    @Primary
-    public DateTimeProvider dateTimeProvider() {
-        return new DateTimeProviderImpl(clock());
-    }
+  /**
+   * A bean to be used by DateTimeProvider.
+   *
+   * @return instance of CurrentDateTimeProvider
+   */
+  @Bean
+  @Primary
+  public DateTimeProvider dateTimeProvider() {
+    return new DateTimeProviderImpl(clock());
+  }
 }

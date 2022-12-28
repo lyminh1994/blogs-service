@@ -25,23 +25,23 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
 
-    @Mock
-    TagRepository tagRepository;
+  @Mock TagRepository tagRepository;
 
-    @InjectMocks
-    TagServiceImpl tagService;
+  @InjectMocks TagServiceImpl tagService;
 
-    @Test
-    @DisplayName("Should get tags success")
-    void shouldGetTagsSuccess() {
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        List<TagEntity> contents = Arrays.asList(new TagEntity(1L, "tag1"), new TagEntity(2L, "tag2"), new TagEntity(3L, "tag3"));
-        long total = 3;
-        Page<TagEntity> tags = new PageImpl<>(contents, pageRequest, total);
-        when(tagRepository.findAll(pageRequest)).thenReturn(tags);
-        PageResponse<TagResponse> actualResponse = tagService.getTags(pageRequest);
+  @Test
+  @DisplayName("Should get tags success")
+  void shouldGetTagsSuccess() {
+    PageRequest pageRequest = PageRequest.of(0, 10);
+    List<TagEntity> contents =
+        Arrays.asList(
+            new TagEntity(1L, "tag1"), new TagEntity(2L, "tag2"), new TagEntity(3L, "tag3"));
+    long total = 3;
+    Page<TagEntity> tags = new PageImpl<>(contents, pageRequest, total);
+    when(tagRepository.findAll(pageRequest)).thenReturn(tags);
+    PageResponse<TagResponse> actualResponse = tagService.getTags(pageRequest);
 
-        assertNotNull(actualResponse.getContents());
-        assertEquals(total, actualResponse.getTotalElements());
-    }
+    assertNotNull(actualResponse.getContents());
+    assertEquals(total, actualResponse.getTotalElements());
+  }
 }

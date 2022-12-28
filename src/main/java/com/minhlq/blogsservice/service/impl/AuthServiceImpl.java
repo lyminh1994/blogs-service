@@ -4,10 +4,10 @@ import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.model.RoleEntity;
 import com.minhlq.blogsservice.model.UserEntity;
+import com.minhlq.blogsservice.payload.AuthenticationResponse;
+import com.minhlq.blogsservice.payload.SignInRequest;
+import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.payload.UserPrincipal;
-import com.minhlq.blogsservice.payload.request.SignInRequest;
-import com.minhlq.blogsservice.payload.request.SignUpRequest;
-import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
@@ -51,146 +51,146 @@ import static com.minhlq.blogsservice.constant.UserConstants.DAYS_TO_ALLOW_ACCOU
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    private final RoleService roleService;
+  private final RoleService roleService;
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
 
-    private final UserDetailsService userDetailsService;
+  private final UserDetailsService userDetailsService;
 
-    private final CookieService cookieService;
+  private final CookieService cookieService;
 
-    private final EncryptionService encryptionService;
+  private final EncryptionService encryptionService;
 
-    private final JwtService jwtService;
+  private final JwtService jwtService;
 
-    @Override
-    @Transactional
-    public AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders) {
-        RoleEntity role = roleService.findByName("ROLE_USER");
-        Duration ttl = Duration.ofDays(DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
+  @Override
+  @Transactional
+  public AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders) {
+    RoleEntity role = roleService.findByName("ROLE_USER");
+    Duration ttl = Duration.ofDays(DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
 
-        String verificationToken =
-                jwtService.createJwt(
-                        signUpBody.getUsername(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
+    String verificationToken =
+        jwtService.createJwt(
+            signUpBody.getUsername(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
 
-        UserEntity user = new UserEntity();
-        user.setUsername(signUpBody.getUsername());
-        user.setPassword(passwordEncoder.encode(signUpBody.getPassword()));
-        user.setEmail(signUpBody.getEmail());
-        user.setVerificationToken(encryptionService.encode(verificationToken));
-        user.addRole(role);
+    UserEntity user = new UserEntity();
+    user.setUsername(signUpBody.getUsername());
+    user.setPassword(passwordEncoder.encode(signUpBody.getPassword()));
+    user.setEmail(signUpBody.getEmail());
+    user.setVerificationToken(encryptionService.encode(verificationToken));
+    user.addRole(role);
 
-        UserEntity savedUser = userRepository.saveAndFlush(user);
-        UserPrincipal userDetails = UserPrincipal.buildUserDetails(savedUser);
-        SecurityUtils.authenticateUser(userDetails);
+    UserEntity savedUser = userRepository.saveAndFlush(user);
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(savedUser);
+    SecurityUtils.authenticateUser(userDetails);
 
-        String accessToken = updateCookies(savedUser.getUsername(), false, responseHeaders);
-        String encryptedAccessToken = encryptionService.encrypt(accessToken);
+    String accessToken = updateCookies(savedUser.getUsername(), false, responseHeaders);
+    String encryptedAccessToken = encryptionService.encrypt(accessToken);
 
-        return AuthenticationResponse.build(encryptedAccessToken, userDetails);
+    return AuthenticationResponse.build(encryptedAccessToken);
+  }
+
+  @Override
+  @Transactional
+  public AuthenticationResponse signIn(
+      String refreshToken, SignInRequest requestBody, HttpHeaders responseHeaders) {
+
+    String username = requestBody.getUsername();
+    // Authentication will fail if the credentials are invalid and throw exception.
+    SecurityUtils.authenticateUser(authenticationManager, username, requestBody.getPassword());
+
+    // Update user last successful login and reset failed login attempts
+    UserEntity user =
+        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    user.setLastSuccessfulLogin(LocalDateTime.now());
+    user.setFailedLoginAttempts(0);
+    userRepository.save(user);
+
+    boolean isRefreshTokenValid = false;
+    if (StringUtils.isNotEmpty(refreshToken)) {
+      String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
+      isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
     }
 
-    @Override
-    @Transactional
-    public AuthenticationResponse signIn(
-            String refreshToken, SignInRequest signInBody, HttpHeaders responseHeaders) {
+    // If the refresh token is valid, then we will not generate a new refresh token.
+    String accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
+    String encryptedAccessToken = encryptionService.encrypt(accessToken);
 
-        String username = signInBody.getUsername();
-        // Authentication will fail if the credentials are invalid and throw exception.
-        SecurityUtils.authenticateUser(authenticationManager, username, signInBody.getPassword());
+    return AuthenticationResponse.build(encryptedAccessToken);
+  }
 
-        // Update user last successful login and reset failed login attempts
-        UserEntity user =
-                userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
-        user.setLastSuccessfulLogin(LocalDateTime.now());
-        user.setFailedLoginAttempts(0);
-        userRepository.save(user);
+  @Override
+  public AuthenticationResponse refreshAccessToken(
+      String refreshToken, HttpServletRequest request) {
+    String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
+    boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
-        boolean isRefreshTokenValid = false;
-        if (StringUtils.isNotEmpty(refreshToken)) {
-            String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
-            isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
-        }
-
-        // If the refresh token is valid, then we will not generate a new refresh token.
-        String accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
-        String encryptedAccessToken = encryptionService.encrypt(accessToken);
-
-        return AuthenticationResponse.build(encryptedAccessToken);
+    if (!refreshTokenValid) {
+      throw new IllegalArgumentException(INVALID_TOKEN);
     }
 
-    @Override
-    public AuthenticationResponse refreshAccessToken(
-            String refreshToken, HttpServletRequest request) {
-        String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
-        boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
+    String username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if (!refreshTokenValid) {
-            throw new IllegalArgumentException(INVALID_TOKEN);
-        }
+    SecurityUtils.clearAuthentication();
+    SecurityUtils.validateUserDetailsStatus(userDetails);
+    SecurityUtils.authenticateUser(request, userDetails);
 
-        String username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    String accessToken = jwtService.createJwt(username);
+    String encryptedAccessToken = encryptionService.encrypt(accessToken);
 
-        SecurityUtils.clearAuthentication();
-        SecurityUtils.validateUserDetailsStatus(userDetails);
-        SecurityUtils.authenticateUser(request, userDetails);
+    return AuthenticationResponse.build(encryptedAccessToken);
+  }
 
-        String accessToken = jwtService.createJwt(username);
-        String encryptedAccessToken = encryptionService.encrypt(accessToken);
+  @Override
+  public void signOut(HttpServletRequest request, HttpServletResponse response) {
+    SecurityUtils.logout(request, response);
+    SecurityUtils.clearAuthentication();
+  }
 
-        return AuthenticationResponse.build(encryptedAccessToken);
+  @Override
+  @Transactional
+  public void activeAccount(String verificationToken) {
+    String decodedToken = encryptionService.decode(verificationToken);
+
+    if (StringUtils.isBlank(decodedToken) || !jwtService.isValidJwtToken(decodedToken)) {
+      throw new SecurityException(VERIFY_TOKEN_EXPIRED);
     }
 
-    @Override
-    public void signOut(HttpServletRequest request, HttpServletResponse response) {
-        SecurityUtils.logout(request, response);
-        SecurityUtils.clearAuthentication();
+    UserEntity user =
+        userRepository
+            .findByVerificationTokenAndEnabled(decodedToken, false)
+            .orElseThrow(ResourceNotFoundException::new);
+
+    user.setVerificationToken(null);
+    user.setEnabled(true);
+    userRepository.save(user);
+  }
+
+  /**
+   * Creates a refresh token if expired and adds it to the cookies.
+   *
+   * @param username the username
+   * @param isRefreshTokenValid if the refresh token is valid
+   * @param responseHeaders the http response headers
+   */
+  private String updateCookies(
+      String username, boolean isRefreshTokenValid, HttpHeaders responseHeaders) {
+    if (!isRefreshTokenValid) {
+      Duration refreshTokenMaxAge = Duration.ofDays(DEFAULT_TOKEN_DURATION);
+      String refreshToken =
+          jwtService.createJwt(
+              username, Date.from(Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds())));
+
+      String encryptedRefreshToken = encryptionService.encrypt(refreshToken);
+      cookieService.addCookieToHeaders(
+          responseHeaders, TokenType.REFRESH, encryptedRefreshToken, refreshTokenMaxAge);
     }
 
-    @Override
-    @Transactional
-    public void activeAccount(String verificationToken) {
-        String decodedToken = encryptionService.decode(verificationToken);
-
-        if (StringUtils.isBlank(decodedToken) || !jwtService.isValidJwtToken(decodedToken)) {
-            throw new SecurityException(VERIFY_TOKEN_EXPIRED);
-        }
-
-        UserEntity user =
-                userRepository
-                        .findByVerificationTokenAndEnabled(decodedToken, false)
-                        .orElseThrow(ResourceNotFoundException::new);
-
-        user.setVerificationToken(null);
-        user.setEnabled(true);
-        userRepository.save(user);
-    }
-
-    /**
-     * Creates a refresh token if expired and adds it to the cookies.
-     *
-     * @param username            the username
-     * @param isRefreshTokenValid if the refresh token is valid
-     * @param responseHeaders     the http response headers
-     */
-    private String updateCookies(
-            String username, boolean isRefreshTokenValid, HttpHeaders responseHeaders) {
-        if (!isRefreshTokenValid) {
-            Duration refreshTokenMaxAge = Duration.ofDays(DEFAULT_TOKEN_DURATION);
-            String refreshToken =
-                    jwtService.createJwt(
-                            username, Date.from(Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds())));
-
-            String encryptedRefreshToken = encryptionService.encrypt(refreshToken);
-            cookieService.addCookieToHeaders(
-                    responseHeaders, TokenType.REFRESH, encryptedRefreshToken, refreshTokenMaxAge);
-        }
-
-        return jwtService.createJwt(username);
-    }
+    return jwtService.createJwt(username);
+  }
 }

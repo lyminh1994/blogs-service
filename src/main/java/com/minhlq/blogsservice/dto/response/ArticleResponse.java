@@ -15,25 +15,25 @@ import java.util.List;
 @Data
 public class ArticleResponse {
 
-    private Long id;
+  private Long id;
 
-    private ProfileResponse author;
+  private ProfileResponse author;
 
-    private String slug;
+  private String slug;
 
-    private String title;
+  private String title;
 
-    private String description;
+  private String description;
 
-    private String body;
+  private String body;
 
-    private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
 
-    private boolean favorite;
+  private boolean favorite;
 
-    private long favoritesCount;
+  private long favoritesCount;
 
-    private List<String> tagNames;
+  private List<String> tagNames;
 }

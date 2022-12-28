@@ -26,6 +26,5 @@ import java.io.Serializable;
 @Table(name = "articles_tags")
 public class ArticleTagEntity implements Serializable {
 
-    @EmbeddedId
-    private ArticleTagKey id;
+  @EmbeddedId private ArticleTagKey id;
 }

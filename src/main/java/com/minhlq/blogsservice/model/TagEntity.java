@@ -28,14 +28,14 @@ import java.io.Serializable;
 @Table(name = "tags")
 public class TagEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    public TagEntity(String name) {
-        this.name = name;
-    }
+  public TagEntity(String name) {
+    this.name = name;
+  }
 }

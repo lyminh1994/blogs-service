@@ -29,104 +29,100 @@ import static org.springframework.http.HttpStatus.OK;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class JwtRequestFilterTest {
-    static final String encryptedToken = TestConstants.ENCRYPTED_TOKEN;
-    static final String validBearerToken = TestConstants.BEARER_AUTHENTICATION_TOKEN;
-    static final String invalidBearerToken = SecurityConstants.BEARER;
-    static final String API_AUTH_LOGIN = "/auth/login";
 
-    @Mock
-    JwtService jwtService;
+  static final String encryptedToken = TestConstants.ENCRYPTED_TOKEN;
+  static final String validBearerToken = TestConstants.BEARER_AUTHENTICATION_TOKEN;
+  static final String invalidBearerToken = SecurityConstants.BEARER;
+  static final String API_AUTH_LOGIN = "/auth/login";
 
-    @Mock
-    EncryptionService encryptionService;
+  @Mock JwtService jwtService;
 
-    @Mock
-    UserDetailsService userDetailsService;
+  @Mock EncryptionService encryptionService;
 
-    @Mock
-    MockFilterChain filterChain;
+  @Mock UserDetailsService userDetailsService;
 
-    @InjectMocks
-    JwtRequestFilter jwtAuthTokenFilter;
+  @Mock MockFilterChain filterChain;
 
-    MockHttpServletRequest request;
-    MockHttpServletResponse response;
+  @InjectMocks JwtRequestFilter jwtAuthTokenFilter;
 
-    @BeforeAll
-    void beforeAll() throws Exception {
-        try (AutoCloseable mocks = MockitoAnnotations.openMocks(this)) {
-            Assertions.assertNotNull(mocks);
+  MockHttpServletRequest request;
+  MockHttpServletResponse response;
 
-            UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-            given(userDetailsService.loadUserByUsername(anyString())).willReturn(userDetails);
+  @BeforeAll
+  void beforeAll() throws Exception {
+    try (AutoCloseable mocks = MockitoAnnotations.openMocks(this)) {
+      Assertions.assertNotNull(mocks);
 
-            request = new MockHttpServletRequest();
-            request.setRequestURI(API_AUTH_LOGIN);
+      UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
+      given(userDetailsService.loadUserByUsername(anyString())).willReturn(userDetails);
 
-            response = new MockHttpServletResponse();
-        }
+      request = new MockHttpServletRequest();
+      request.setRequestURI(API_AUTH_LOGIN);
+
+      response = new MockHttpServletResponse();
     }
+  }
 
-    @Test
-    void givenTokenInHeader_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
-        // given - precondition or setup
-        request.addHeader(AUTHORIZATION, encryptedToken);
+  @Test
+  void givenTokenInHeader_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
+    // given - precondition or setup
+    request.addHeader(AUTHORIZATION, encryptedToken);
 
-        given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
-        given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
-        given(jwtService.isValidJwtToken(anyString())).willReturn(true);
-        given(jwtService.getUsernameFromJwt(anyString())).willReturn("user");
+    given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
+    given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
+    given(jwtService.isValidJwtToken(anyString())).willReturn(true);
+    given(jwtService.getUsernameFromJwt(anyString())).willReturn("user");
 
-        // when - action or the behaviour that we are going test
-        jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
+    // when - action or the behaviour that we are going test
+    jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
-        // then - verify the output
-        Assertions.assertEquals(OK.value(), response.getStatus());
-    }
+    // then - verify the output
+    Assertions.assertEquals(OK.value(), response.getStatus());
+  }
 
-    @Test
-    void givenTokenInCookie_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
-        // given - precondition or setup
-        given(jwtService.getJwtToken(request, true)).willReturn(encryptedToken);
-        given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
+  @Test
+  void givenTokenInCookie_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
+    // given - precondition or setup
+    given(jwtService.getJwtToken(request, true)).willReturn(encryptedToken);
+    given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
 
-        // when - action or the behaviour that we are going test
-        jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
+    // when - action or the behaviour that we are going test
+    jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
-        // then - verify the output
-        Assertions.assertEquals(OK.value(), response.getStatus());
-    }
+    // then - verify the output
+    Assertions.assertEquals(OK.value(), response.getStatus());
+  }
 
-    @Test
-    void givenInvalidToken_whenDoFilterInternal_thenValidJwtTokenReturnFalse()
-            throws ServletException, IOException {
-        // given - precondition or setup
-        request.addHeader(AUTHORIZATION, encryptedToken);
+  @Test
+  void givenInvalidToken_whenDoFilterInternal_thenValidJwtTokenReturnFalse()
+      throws ServletException, IOException {
+    // given - precondition or setup
+    request.addHeader(AUTHORIZATION, encryptedToken);
 
-        given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
-        given(encryptionService.decrypt(anyString())).willReturn(invalidBearerToken);
-        given(jwtService.isValidJwtToken(anyString())).willReturn(false);
+    given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
+    given(encryptionService.decrypt(anyString())).willReturn(invalidBearerToken);
+    given(jwtService.isValidJwtToken(anyString())).willReturn(false);
 
-        // when - action or the behaviour that we are going test
-        jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
+    // when - action or the behaviour that we are going test
+    jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
-        // then - verify the output
-        Assertions.assertEquals(OK.value(), response.getStatus());
-    }
+    // then - verify the output
+    Assertions.assertEquals(OK.value(), response.getStatus());
+  }
 
-    @Test
-    void givenRawToken_whenDoFilterInternal_thenDecryptReturnNull()
-            throws ServletException, IOException {
-        // given - precondition or setup
-        request.addHeader(AUTHORIZATION, validBearerToken);
+  @Test
+  void givenRawToken_whenDoFilterInternal_thenDecryptReturnNull()
+      throws ServletException, IOException {
+    // given - precondition or setup
+    request.addHeader(AUTHORIZATION, validBearerToken);
 
-        given(jwtService.getJwtToken(request, false)).willReturn(validBearerToken);
-        given(encryptionService.decrypt(anyString())).willReturn(null);
+    given(jwtService.getJwtToken(request, false)).willReturn(validBearerToken);
+    given(encryptionService.decrypt(anyString())).willReturn(null);
 
-        // when - action or the behaviour that we are going test
-        jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
+    // when - action or the behaviour that we are going test
+    jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
-        // then - verify the output
-        Assertions.assertEquals(OK.value(), response.getStatus());
-    }
+    // then - verify the output
+    Assertions.assertEquals(OK.value(), response.getStatus());
+  }
 }

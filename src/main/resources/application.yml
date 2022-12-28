@@ -18,3 +18,5 @@ spring:
     active: dev
   application:
     name: blogs_service
+  banner:
+    location: classpath:static/banner.txt

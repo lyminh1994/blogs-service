@@ -15,6 +15,9 @@ import org.hibernate.envers.NotAudited;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -43,104 +46,106 @@ import java.util.Set;
 @Entity
 @Audited
 @Table(name = "users")
-public class UserEntity extends AbstractAuditEntity<Long> implements Serializable {
+public class UserEntity extends AbstractAuditEntity implements Serializable {
 
-    @Column(unique = true, nullable = false)
-    @NotBlank(message = UserConstants.USERNAME_CANNOT_BLANK)
-    @Size(min = 3, max = 50, message = UserConstants.INVALID_USERNAME_SIZE)
-    private String username;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    @JsonIgnore
-    @ToString.Exclude
-    @NotBlank(message = UserConstants.PASSWORD_CANNOT_BLANK)
-    private String password;
+  @Column(unique = true, nullable = false)
+  @NotBlank(message = UserConstants.USERNAME_CANNOT_BLANK)
+  @Size(min = 3, max = 50, message = UserConstants.INVALID_USERNAME_SIZE)
+  private String username;
 
-    @Column(unique = true)
-    @Email(message = UserConstants.INVALID_EMAIL)
-    private String email;
+  @JsonIgnore
+  @ToString.Exclude
+  @NotBlank(message = UserConstants.PASSWORD_CANNOT_BLANK)
+  private String password;
 
-    private String firstName;
+  @Column(unique = true)
+  @Email(message = UserConstants.INVALID_EMAIL)
+  private String email;
 
-    private String lastName;
+  private String firstName;
 
-    @Column(unique = true)
-    @Pattern(regexp = "^\\d", message = UserConstants.PHONE_MUST_BE_NUMBER)
-    private String phone;
+  private String lastName;
 
-    private LocalDate birthday;
+  @Column(unique = true)
+  @Pattern(regexp = "^\\d", message = UserConstants.PHONE_MUST_BE_NUMBER)
+  private String phone;
 
-    private Gender gender;
+  private LocalDate birthday;
 
-    private boolean enabled;
+  private Gender gender = Gender.FEMALE;
 
-    private String profileImage;
+  private boolean enabled;
 
-    private String verificationToken;
+  private String profileImage;
 
-    @NotAudited
-    private int failedLoginAttempts;
+  @NotAudited private String verificationToken;
 
-    @NotAudited
-    private LocalDateTime lastSuccessfulLogin;
+  @NotAudited private int failedLoginAttempts = 0;
 
-    @NotAudited
-    @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<UserRoleEntity> userRoles = new HashSet<>();
+  @NotAudited private LocalDateTime lastSuccessfulLogin = LocalDateTime.now();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof UserEntity) || !super.equals(o)) {
-            return false;
-        }
+  @NotAudited
+  @ToString.Exclude
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<UserRoleEntity> userRoles = new HashSet<>();
 
-        UserEntity user = (UserEntity) o;
-        return Objects.equals(getPublicId(), user.getPublicId())
-                && Objects.equals(getUsername(), user.getUsername())
-                && Objects.equals(getEmail(), user.getEmail());
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof UserEntity) || !super.equals(o)) {
+      return false;
     }
 
-    @Override
-    protected boolean canEqual(Object other) {
-        return other instanceof UserEntity;
-    }
+    UserEntity user = (UserEntity) o;
+    return Objects.equals(getPublicId(), user.getPublicId())
+        && Objects.equals(getUsername(), user.getUsername())
+        && Objects.equals(getEmail(), user.getEmail());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getPublicId(), getUsername(), getEmail());
-    }
+  @Override
+  protected boolean canEqual(Object other) {
+    return other instanceof UserEntity;
+  }
 
-    /**
-     * Add Role to this User.
-     *
-     * @param role the role
-     */
-    public void addRole(final RoleEntity role) {
-        UserRoleEntity userRole = new UserRoleEntity(this, role);
-        userRoles.add(new UserRoleEntity(this, role));
-        userRole.setUser(this);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getPublicId(), getUsername(), getEmail());
+  }
 
-    /**
-     * Remove Role from this User.
-     *
-     * @param role the role
-     */
-    public void removeRole(final RoleEntity role) {
-        UserRoleEntity userRole = new UserRoleEntity(this, role);
-        userRoles.remove(userRole);
-        userRole.setUser(null);
-    }
+  /**
+   * Add Role to this User.
+   *
+   * @param role the role
+   */
+  public void addRole(final RoleEntity role) {
+    UserRoleEntity userRole = new UserRoleEntity(this, role);
+    userRoles.add(new UserRoleEntity(this, role));
+    userRole.setUser(this);
+  }
 
-    /**
-     * Formulates the full name of the user.
-     *
-     * @return the full name of the user
-     */
-    public String getName() {
-        return StringUtils.trimToEmpty(StringUtils.join(firstName, StringUtils.SPACE, lastName));
-    }
+  /**
+   * Remove Role from this User.
+   *
+   * @param role the role
+   */
+  public void removeRole(final RoleEntity role) {
+    UserRoleEntity userRole = new UserRoleEntity(this, role);
+    userRoles.remove(userRole);
+    userRole.setUser(null);
+  }
+
+  /**
+   * Formulates the full name of the user.
+   *
+   * @return the full name of the user
+   */
+  public String getName() {
+    return StringUtils.trimToEmpty(StringUtils.join(firstName, StringUtils.SPACE, lastName));
+  }
 }

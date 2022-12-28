@@ -30,45 +30,45 @@ import static com.minhlq.blogsservice.constant.CacheConstants.ROLES;
 @Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository roleRepository;
+  private final RoleRepository roleRepository;
 
-    /**
-     * Create the roleEntity with the roleEntity instance given.
-     *
-     * @param role the roleEntity
-     * @return the persisted roleEntity with assigned id
-     */
-    @Override
-    @Transactional
-    @CachePut({ROLE, ROLES})
-    public RoleEntity save(RoleEntity role) {
-        Validate.notNull(role, "The role cannot be null");
+  /**
+   * Create the roleEntity with the roleEntity instance given.
+   *
+   * @param role the roleEntity
+   * @return the persisted roleEntity with assigned id
+   */
+  @Override
+  @Transactional
+  @CachePut({ROLE, ROLES})
+  public RoleEntity save(RoleEntity role) {
+    Validate.notNull(role, "The role cannot be null");
 
-        return roleRepository.save(role);
-    }
+    return roleRepository.save(role);
+  }
 
-    /**
-     * Retrieves the role with the specified name.
-     *
-     * @param name the name of the role to retrieve
-     * @return the role tuple that matches the id given
-     */
-    @Override
-    @Cacheable(value = ROLE, unless = "#result != null")
-    public RoleEntity findByName(String name) {
-        Validate.notNull(name, "Role name cannot be null");
+  /**
+   * Retrieves the role with the specified name.
+   *
+   * @param name the name of the role to retrieve
+   * @return the role tuple that matches the id given
+   */
+  @Override
+  @Cacheable(value = ROLE, unless = "#result != null")
+  public RoleEntity findByName(String name) {
+    Validate.notNull(name, "Role name cannot be null");
 
-        return roleRepository
-                .findByName(name)
-                .orElseThrow(
-                        () ->
-                                new ResourceNotFoundException(
-                                        MessageFormat.format("Role with name {0} do not existed in database", name)));
-    }
+    return roleRepository
+        .findByName(name)
+        .orElseThrow(
+            () ->
+                new ResourceNotFoundException(
+                    MessageFormat.format("Role with name {0} do not existed in database", name)));
+  }
 
-    @Override
-    @Cacheable(value = ROLES, unless = "!#result.isEmpty()")
-    public List<RoleEntity> findAll() {
-        return Collections.emptyList();
-    }
+  @Override
+  @Cacheable(value = ROLES, unless = "!#result.isEmpty()")
+  public List<RoleEntity> findAll() {
+    return Collections.emptyList();
+  }
 }

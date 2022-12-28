@@ -29,39 +29,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TagsController.class)
 class TagsControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-    @MockBean
-    TagService tagService;
-    @MockBean
-    JwtService jwtService;
-    @MockBean
-    UserDetailsService userDetailsService;
-    @MockBean
-    EncryptionService encryptionService;
 
-    @Test
-    @DisplayName("Should Get Tag Success GET request to endpoint - /tags")
-    void shouldGetTagSuccess() throws Exception {
-        // given - precondition or setup
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.unsorted());
-        TagResponse content1 = TagResponse.builder().id(1L).name("tag1").build();
-        TagResponse content2 = TagResponse.builder().id(2L).name("tag2").build();
-        List<TagResponse> expectedContents = Arrays.asList(content1, content2);
-        PageResponse<TagResponse> pageResponse =
-                new PageResponse<>(expectedContents, expectedContents.size());
-        given(tagService.getTags(pageRequest)).willReturn(pageResponse);
+  @Autowired MockMvc mockMvc;
+  @MockBean TagService tagService;
+  @MockBean JwtService jwtService;
+  @MockBean UserDetailsService userDetailsService;
+  @MockBean EncryptionService encryptionService;
 
-        // when - action or behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/tags?page-number=0&page-size=10"));
+  @Test
+  @DisplayName("Should Get Tag Success GET request to endpoint - /tags")
+  void shouldGetTagSuccess() throws Exception {
+    // given - precondition or setup
+    PageRequest pageRequest = PageRequest.of(0, 10, Sort.unsorted());
+    TagResponse content1 = TagResponse.builder().id(1L).name("tag1").build();
+    TagResponse content2 = TagResponse.builder().id(2L).name("tag2").build();
+    List<TagResponse> expectedContents = Arrays.asList(content1, content2);
+    PageResponse<TagResponse> pageResponse =
+        new PageResponse<>(expectedContents, expectedContents.size());
+    given(tagService.getTags(pageRequest)).willReturn(pageResponse);
 
-        // then - verify the result or output using assert statements
-        response
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.contents", is(expectedContents)))
-                .andExpect(jsonPath("$.contents[0]", is(expectedContents.get(0))))
-                .andExpect(jsonPath("$.contents[1]", is(expectedContents.get(1))))
-                .andExpect(jsonPath("$.total", is(expectedContents.size())));
-    }
+    // when - action or behaviour that we are going test
+    ResultActions response = mockMvc.perform(get("/tags?page-number=0&page-size=10"));
+
+    // then - verify the result or output using assert statements
+    response
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.contents", is(expectedContents)))
+        .andExpect(jsonPath("$.contents[0]", is(expectedContents.get(0))))
+        .andExpect(jsonPath("$.contents[1]", is(expectedContents.get(1))))
+        .andExpect(jsonPath("$.total", is(expectedContents.size())));
+  }
 }

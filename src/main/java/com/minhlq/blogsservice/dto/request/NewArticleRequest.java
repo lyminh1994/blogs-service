@@ -16,15 +16,11 @@ import java.util.List;
 @Getter
 public class NewArticleRequest {
 
-    @NotBlank(message = "Title can't be empty")
-    @DuplicatedArticleConstraint
-    private String title;
+  @NotBlank @DuplicatedArticleConstraint private String title;
 
-    @NotBlank(message = "Description can't be empty")
-    private String description;
+  @NotBlank private String description;
 
-    @NotBlank(message = "Body can't be empty")
-    private String body;
+  @NotBlank private String body;
 
-    private List<String> tagNames;
+  private List<String> tagNames;
 }

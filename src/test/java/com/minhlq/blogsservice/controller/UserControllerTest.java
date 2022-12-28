@@ -17,66 +17,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-    @MockBean
-    UserService userService;
-    @MockBean
-    JwtService jwtService;
-    @MockBean
-    UserDetailsService userDetailsService;
 
-    @WithUserDetails
-    @Test
-    @DisplayName("Should Get Current User With Token GET request to endpoint - /user")
-    void shouldGetCurrentUserWithToken() throws Exception {
-        // given - precondition or setup
-        // when - action or behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/user"));
+  @Autowired MockMvc mockMvc;
+  @MockBean UserService userService;
+  @MockBean JwtService jwtService;
+  @MockBean UserDetailsService userDetailsService;
 
-        // then - verify the result or output using assert statements
-        response.andDo(print());
-    }
+  @WithUserDetails
+  @Test
+  @DisplayName("Should Get Current User With Token GET request to endpoint - /user")
+  void shouldGetCurrentUserWithToken() throws Exception {
+    // given - precondition or setup
+    // when - action or behaviour that we are going test
+    ResultActions response = mockMvc.perform(get("/user"));
 
-    @Test
-    @DisplayName("Should Get 401 Without Token GET request to endpoint - /user")
-    void shouldGet401WithoutToken() {
-    }
+    // then - verify the result or output using assert statements
+    response.andDo(print());
+  }
 
-    @Test
-    @DisplayName("Should Get 401 With Invalid Token GET request to endpoint - /user")
-    void shouldGet401WithInvalidToken() {
-    }
+  @Test
+  @DisplayName("Should Get 401 Without Token GET request to endpoint - /user")
+  void shouldGet401WithoutToken() {}
 
-    @Test
-    @DisplayName("Should Update Current User Profile PUT request to endpoint - /user")
-    void shouldUpdateCurrentUserProfile() {
-    }
+  @Test
+  @DisplayName("Should Get 401 With Invalid Token GET request to endpoint - /user")
+  void shouldGet401WithInvalidToken() {}
 
-    @Test
-    @DisplayName(
-            "Should Get Error If Email Exists When Update User Profile PUT request to endpoint - /user")
-    void shouldGetErrorIfEmailExistsWhenUpdateUserProfile() {
-    }
+  @Test
+  @DisplayName("Should Update Current User Profile PUT request to endpoint - /user")
+  void shouldUpdateCurrentUserProfile() {}
 
-    @Test
-    @DisplayName("Should Get 401 If Not Login PUT request to endpoint - /user")
-    void shouldGet401IfNotLogin() {
-    }
+  @Test
+  @DisplayName(
+      "Should Get Error If Email Exists When Update User Profile PUT request to endpoint - /user")
+  void shouldGetErrorIfEmailExistsWhenUpdateUserProfile() {}
 
-    @Test
-    @DisplayName("Should Get User Profile Success GET request to endpoint - /profiles/{username}")
-    void shouldGetUserProfileSuccess() {
-    }
+  @Test
+  @DisplayName("Should Get 401 If Not Login PUT request to endpoint - /user")
+  void shouldGet401IfNotLogin() {}
 
-    @Test
-    @DisplayName("Should Follow User Success POST request to endpoint - /profiles/{username}/follow")
-    void shouldFollowUserSuccess() {
-    }
+  @Test
+  @DisplayName("Should Get User Profile Success GET request to endpoint - /profiles/{username}")
+  void shouldGetUserProfileSuccess() {}
 
-    @Test
-    @DisplayName(
-            "Should Unfollow User Success DELETE request to endpoint - /profiles/{username}/follow")
-    void shouldUnfollowUserSuccess() {
-    }
+  @Test
+  @DisplayName("Should Follow User Success POST request to endpoint - /profiles/{username}/follow")
+  void shouldFollowUserSuccess() {}
+
+  @Test
+  @DisplayName(
+      "Should Unfollow User Success DELETE request to endpoint - /profiles/{username}/follow")
+  void shouldUnfollowUserSuccess() {}
 }

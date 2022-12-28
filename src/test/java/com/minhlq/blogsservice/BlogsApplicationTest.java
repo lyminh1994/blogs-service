@@ -16,34 +16,31 @@ import java.util.Objects;
 @ExtendWith(MockitoExtension.class)
 class BlogsApplicationTest {
 
-    @Mock
-    private ConfigurableApplicationContext context;
+  @Mock private ConfigurableApplicationContext context;
 
-    @AfterEach
-    void tearDown() {
-        if (Objects.nonNull(context)) {
-            context.close();
-        }
+  @AfterEach
+  void tearDown() {
+    if (Objects.nonNull(context)) {
+      context.close();
     }
+  }
 
-    @Test
-    void testClassConstructor() {
-        Assertions.assertDoesNotThrow(BlogsApplication::new);
+  @Test
+  void testClassConstructor() {
+    Assertions.assertDoesNotThrow(BlogsApplication::new);
+  }
+
+  /** Test the main method with mocked application context. */
+  @Test
+  void contextLoads() {
+    try (MockedStatic<SpringApplication> mockStatic = Mockito.mockStatic(SpringApplication.class)) {
+      mockStatic
+          .when(() -> context = SpringApplication.run(BlogsApplication.class))
+          .thenReturn(context);
+
+      BlogsApplication.main(new String[] {});
+
+      mockStatic.verify(() -> context = SpringApplication.run(BlogsApplication.class));
     }
-
-    /**
-     * Test the main method with mocked application context.
-     */
-    @Test
-    void contextLoads() {
-        try (MockedStatic<SpringApplication> mockStatic = Mockito.mockStatic(SpringApplication.class)) {
-            mockStatic
-                    .when(() -> context = SpringApplication.run(BlogsApplication.class))
-                    .thenReturn(context);
-
-            BlogsApplication.main(new String[]{});
-
-            mockStatic.verify(() -> context = SpringApplication.run(BlogsApplication.class));
-        }
-    }
+  }
 }

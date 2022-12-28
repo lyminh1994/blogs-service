@@ -49,100 +49,102 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Service
 public class EncryptionServiceImpl implements EncryptionService {
 
-    private final SecureRandom random = new SecureRandom();
-    @Value("${encryption.secret.password}")
-    private String password;
-    @Value("${encryption.secret.salt}")
-    private String salt;
+  private final SecureRandom random = new SecureRandom();
 
-    @Override
-    public String encrypt(String text) {
-        try {
-            if (StringUtils.isBlank(text)) {
-                return null;
-            }
+  @Value("${encryption.secret.password}")
+  private String password;
 
-            byte[] iv = new byte[GCM_IV_LENGTH];
-            random.nextBytes(iv);
+  @Value("${encryption.secret.salt}")
+  private String salt;
 
-            Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
-            GCMParameterSpec ivSpec = new GCMParameterSpec(GCM_TAG_LENGTH * Byte.SIZE, iv);
-            cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPassword(), ivSpec);
+  @Override
+  public String encrypt(String text) {
+    try {
+      if (StringUtils.isBlank(text)) {
+        return null;
+      }
 
-            byte[] ciphertext = cipher.doFinal(text.getBytes(UTF_8));
-            byte[] encrypted = new byte[iv.length + ciphertext.length];
-            System.arraycopy(iv, 0, encrypted, 0, iv.length);
-            System.arraycopy(ciphertext, 0, encrypted, iv.length, ciphertext.length);
+      byte[] iv = new byte[GCM_IV_LENGTH];
+      random.nextBytes(iv);
 
-            return Base64.getEncoder().encodeToString(encrypted);
-        } catch (NoSuchAlgorithmException
-                 | IllegalArgumentException
-                 | InvalidKeyException
-                 | InvalidAlgorithmParameterException
-                 | IllegalBlockSizeException
-                 | BadPaddingException
-                 | NoSuchPaddingException e) {
-            log.debug(ENCRYPTING_DATA_ERROR, e);
-            throw new EncryptionException(e);
-        }
+      Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
+      GCMParameterSpec ivSpec = new GCMParameterSpec(GCM_TAG_LENGTH * Byte.SIZE, iv);
+      cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPassword(), ivSpec);
+
+      byte[] ciphertext = cipher.doFinal(text.getBytes(UTF_8));
+      byte[] encrypted = new byte[iv.length + ciphertext.length];
+      System.arraycopy(iv, 0, encrypted, 0, iv.length);
+      System.arraycopy(ciphertext, 0, encrypted, iv.length, ciphertext.length);
+
+      return Base64.getEncoder().encodeToString(encrypted);
+    } catch (NoSuchAlgorithmException
+        | IllegalArgumentException
+        | InvalidKeyException
+        | InvalidAlgorithmParameterException
+        | IllegalBlockSizeException
+        | BadPaddingException
+        | NoSuchPaddingException e) {
+      log.debug(ENCRYPTING_DATA_ERROR, e);
+      throw new EncryptionException(e);
+    }
+  }
+
+  @Override
+  public String decrypt(String encryptedText) {
+    try {
+      if (StringUtils.isBlank(encryptedText)) {
+        return null;
+      }
+
+      byte[] decoded = Base64.getDecoder().decode(encryptedText);
+      byte[] iv = Arrays.copyOfRange(decoded, 0, GCM_IV_LENGTH);
+
+      Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
+      GCMParameterSpec ivSpec = new GCMParameterSpec(GCM_TAG_LENGTH * Byte.SIZE, iv);
+      cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(), ivSpec);
+
+      byte[] ciphertext = cipher.doFinal(decoded, GCM_IV_LENGTH, decoded.length - GCM_IV_LENGTH);
+
+      return new String(ciphertext, UTF_8);
+    } catch (NoSuchAlgorithmException
+        | IllegalArgumentException
+        | InvalidKeyException
+        | InvalidAlgorithmParameterException
+        | IllegalBlockSizeException
+        | BadPaddingException
+        | NoSuchPaddingException e) {
+      log.debug(DECRYPTING_DATA_ERROR, e);
+      throw new EncryptionException(e);
+    }
+  }
+
+  @Override
+  public String encode(String text) {
+    if (StringUtils.isBlank(text)) {
+      return null;
     }
 
-    @Override
-    public String decrypt(String encryptedText) {
-        try {
-            if (StringUtils.isBlank(encryptedText)) {
-                return null;
-            }
+    return URLEncoder.encode(text, UTF_8);
+  }
 
-            byte[] decoded = Base64.getDecoder().decode(encryptedText);
-            byte[] iv = Arrays.copyOfRange(decoded, 0, GCM_IV_LENGTH);
-
-            Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
-            GCMParameterSpec ivSpec = new GCMParameterSpec(GCM_TAG_LENGTH * Byte.SIZE, iv);
-            cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(), ivSpec);
-
-            byte[] ciphertext = cipher.doFinal(decoded, GCM_IV_LENGTH, decoded.length - GCM_IV_LENGTH);
-
-            return new String(ciphertext, UTF_8);
-        } catch (NoSuchAlgorithmException
-                 | IllegalArgumentException
-                 | InvalidKeyException
-                 | InvalidAlgorithmParameterException
-                 | IllegalBlockSizeException
-                 | BadPaddingException
-                 | NoSuchPaddingException e) {
-            log.debug(DECRYPTING_DATA_ERROR, e);
-            throw new EncryptionException(e);
-        }
+  @Override
+  public String decode(String text) {
+    if (StringUtils.isBlank(text)) {
+      return null;
     }
 
-    @Override
-    public String encode(String text) {
-        if (StringUtils.isBlank(text)) {
-            return null;
-        }
+    return URLDecoder.decode(text, UTF_8).replaceAll("\\s+", "+");
+  }
 
-        return URLEncoder.encode(text, UTF_8);
+  private SecretKey getKeyFromPassword() {
+    try {
+      SecretKeyFactory factory = SecretKeyFactory.getInstance(DERIVATION_FUNCTION);
+      byte[] saltBytes = salt.getBytes(UTF_8);
+      KeySpec spec = new PBEKeySpec(password.toCharArray(), saltBytes, ITERATION_COUNT, KEY_LENGTH);
+
+      return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), AES_ALGORITHM);
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+      throw new EncryptionException(e);
     }
-
-    @Override
-    public String decode(String text) {
-        if (StringUtils.isBlank(text)) {
-            return null;
-        }
-
-        return URLDecoder.decode(text, UTF_8).replaceAll("\\s+", "+");
-    }
-
-    private SecretKey getKeyFromPassword() {
-        try {
-            SecretKeyFactory factory = SecretKeyFactory.getInstance(DERIVATION_FUNCTION);
-            byte[] saltBytes = salt.getBytes(UTF_8);
-            KeySpec spec = new PBEKeySpec(password.toCharArray(), saltBytes, ITERATION_COUNT, KEY_LENGTH);
-
-            return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), AES_ALGORITHM);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new EncryptionException(e);
-        }
-    }
+  }
 }

@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class TagResponse {
 
-    private Long id;
-    private String name;
+  private Long id;
+  private String name;
 }

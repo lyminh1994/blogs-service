@@ -13,5 +13,5 @@ import java.util.List;
 @JsonSerialize(using = ErrorResourceSerializer.class)
 public class ErrorResource {
 
-    private final List<FieldErrorResource> fieldErrors;
+  private final List<FieldErrorResource> fieldErrors;
 }

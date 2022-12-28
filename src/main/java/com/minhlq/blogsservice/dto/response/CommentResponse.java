@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @Data
 public class CommentResponse {
 
-    private String id;
+  private String id;
 
-    private String body;
+  private String body;
 
-    private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
 
-    private ProfileResponse user;
+  private ProfileResponse user;
 }

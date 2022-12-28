@@ -9,6 +9,9 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -29,39 +32,43 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "comments")
-public class CommentEntity extends AbstractAuditEntity<Long> implements Serializable {
+public class CommentEntity extends AbstractAuditEntity implements Serializable {
 
-    private String body;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
-    private ArticleEntity article;
+  private String body;
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = UserEntity.class)
-    private UserEntity user;
+  @ToString.Exclude
+  @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
+  private ArticleEntity article;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
+  @ToString.Exclude
+  @ManyToOne(targetEntity = UserEntity.class)
+  private UserEntity user;
 
-        if (!(o instanceof CommentEntity) || !super.equals(o)) {
-            return false;
-        }
-
-        CommentEntity comment = (CommentEntity) o;
-        return Objects.equals(getPublicId(), comment.getPublicId());
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
 
-    @Override
-    protected boolean canEqual(Object other) {
-        return other instanceof CommentEntity;
+    if (!(o instanceof CommentEntity) || !super.equals(o)) {
+      return false;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getPublicId());
-    }
+    CommentEntity comment = (CommentEntity) o;
+    return Objects.equals(getPublicId(), comment.getPublicId());
+  }
+
+  @Override
+  protected boolean canEqual(Object other) {
+    return other instanceof CommentEntity;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getPublicId());
+  }
 }

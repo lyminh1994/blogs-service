@@ -17,12 +17,12 @@ import javax.validation.ConstraintValidatorContext;
  */
 @RequiredArgsConstructor
 public class DuplicatedArticleValidator
-        implements ConstraintValidator<DuplicatedArticleConstraint, String> {
+    implements ConstraintValidator<DuplicatedArticleConstraint, String> {
 
-    private final ArticleService articleService;
+  private final ArticleService articleService;
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return StringUtils.isBlank(value) || articleService.isSlugExited(value);
-    }
+  @Override
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+    return StringUtils.isBlank(value) || articleService.isSlugExited(value);
+  }
 }

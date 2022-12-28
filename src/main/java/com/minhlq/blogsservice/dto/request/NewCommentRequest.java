@@ -14,6 +14,5 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class NewCommentRequest {
 
-    @NotBlank(message = "Body can't be empty")
-    private String body;
+  @NotBlank private String body;
 }

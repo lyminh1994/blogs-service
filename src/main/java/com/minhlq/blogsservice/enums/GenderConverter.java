@@ -7,24 +7,24 @@ import java.util.stream.Stream;
 @Converter(autoApply = true)
 public class GenderConverter implements AttributeConverter<Gender, Integer> {
 
-    @Override
-    public Integer convertToDatabaseColumn(Gender gender) {
-        if (gender == null) {
-            return null;
-        }
-
-        return gender.getCode();
+  @Override
+  public Integer convertToDatabaseColumn(Gender gender) {
+    if (gender == null) {
+      return null;
     }
 
-    @Override
-    public Gender convertToEntityAttribute(Integer code) {
-        if (code == null) {
-            return null;
-        }
+    return gender.getCode();
+  }
 
-        return Stream.of(Gender.values())
-                .filter(c -> c.getCode().equals(code))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+  @Override
+  public Gender convertToEntityAttribute(Integer code) {
+    if (code == null) {
+      return null;
     }
+
+    return Stream.of(Gender.values())
+        .filter(c -> c.getCode().equals(code))
+        .findFirst()
+        .orElseThrow(IllegalArgumentException::new);
+  }
 }

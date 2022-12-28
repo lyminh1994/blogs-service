@@ -13,26 +13,26 @@ import java.util.List;
  */
 public interface RoleService {
 
-    /**
-     * Create the role with the role instance given.
-     *
-     * @param role the role
-     * @return the persisted role with assigned id
-     */
-    RoleEntity save(final RoleEntity role);
+  /**
+   * Create the role with the role instance given.
+   *
+   * @param role the role
+   * @return the persisted role with assigned id
+   */
+  RoleEntity save(final RoleEntity role);
 
-    /**
-     * Retrieves the role with the specified name.
-     *
-     * @param name the name of the role to retrieve
-     * @return the role tuple that matches the id given
-     */
-    RoleEntity findByName(final String name);
+  /**
+   * Retrieves the role with the specified name.
+   *
+   * @param name the name of the role to retrieve
+   * @return the role tuple that matches the id given
+   */
+  RoleEntity findByName(final String name);
 
-    /**
-     * Find all role.
-     *
-     * @return list role
-     */
-    List<RoleEntity> findAll();
+  /**
+   * Find all role.
+   *
+   * @return list role
+   */
+  List<RoleEntity> findAll();
 }

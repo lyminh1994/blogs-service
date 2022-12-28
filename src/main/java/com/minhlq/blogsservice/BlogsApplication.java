@@ -13,12 +13,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BlogsApplication {
 
-    /**
-     * The application's entry point.
-     *
-     * @param args an array of command-line arguments for the application
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(BlogsApplication.class, args);
-    }
+  /**
+   * The application's entry point.
+   *
+   * @param args an array of command-line arguments for the application
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(BlogsApplication.class, args);
+  }
 }

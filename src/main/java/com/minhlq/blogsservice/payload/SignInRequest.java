@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.payload.request;
+package com.minhlq.blogsservice.payload;
 
 import lombok.Data;
 
@@ -17,9 +17,9 @@ import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLA
 @Data
 public final class SignInRequest {
 
-    @NotBlank(message = USERNAME_CANNOT_BLANK)
-    private String username;
+  @NotBlank(message = USERNAME_CANNOT_BLANK)
+  private String username;
 
-    @NotBlank(message = PASSWORD_CANNOT_BLANK)
-    private String password;
+  @NotBlank(message = PASSWORD_CANNOT_BLANK)
+  private String password;
 }

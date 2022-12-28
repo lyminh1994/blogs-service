@@ -17,12 +17,12 @@ import javax.validation.ConstraintValidatorContext;
  */
 @RequiredArgsConstructor
 public class DuplicatedUsernameValidator
-        implements ConstraintValidator<DuplicatedUsernameConstraint, String> {
+    implements ConstraintValidator<DuplicatedUsernameConstraint, String> {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return StringUtils.isBlank(value) || userRepository.findByUsername(value).isEmpty();
-    }
+  @Override
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+    return StringUtils.isBlank(value) || userRepository.findByUsername(value).isEmpty();
+  }
 }

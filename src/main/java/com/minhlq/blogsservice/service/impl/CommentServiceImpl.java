@@ -37,70 +37,70 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final ArticleRepository articleRepository;
+  private final ArticleRepository articleRepository;
 
-    private final CommentRepository commentRepository;
+  private final CommentRepository commentRepository;
 
-    private final FollowRepository followRepository;
+  private final FollowRepository followRepository;
 
-    @Override
-    public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
-        UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-        ArticleEntity article =
-                articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+  @Override
+  public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+    ArticleEntity article =
+        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-        CommentEntity savedComment =
-                commentRepository.saveAndFlush(
-                        CommentEntity.builder()
-                                .body(newCommentRequest.getBody())
-                                .article(article)
-                                .user(UserMapper.MAPPER.toUser(currentUser))
-                                .build());
+    CommentEntity savedComment =
+        commentRepository.saveAndFlush(
+            CommentEntity.builder()
+                .body(newCommentRequest.getBody())
+                .article(article)
+                .user(UserMapper.MAPPER.toUser(currentUser))
+                .build());
 
-        return CommentMapper.MAPPER.toCommentResponse(savedComment);
+    return CommentMapper.MAPPER.toCommentResponse(savedComment);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest) {
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+    ArticleEntity article =
+        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+
+    Page<CommentEntity> comments = commentRepository.findByArticle(article, pageRequest);
+
+    List<CommentResponse> contents =
+        comments.getContent().stream()
+            .map(
+                comment -> {
+                  CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
+                  if (currentUser != null) {
+                    FollowKey followId =
+                        new FollowKey(currentUser.getId(), comment.getUser().getId());
+                    response.getUser().setFollowing(followRepository.existsById(followId));
+                  }
+
+                  return response;
+                })
+            .collect(Collectors.toList());
+
+    return new PageResponse<>(contents, comments.getTotalElements());
+  }
+
+  @Override
+  public void deleteCommentFromArticle(String slug, Long commentId) {
+    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+    ArticleEntity article =
+        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    CommentEntity comment =
+        commentRepository
+            .findByIdAndArticle(commentId, article)
+            .orElseThrow(ResourceNotFoundException::new);
+    if (!currentUser.getId().equals(article.getAuthor().getId())
+        || !currentUser.getId().equals(comment.getUser().getId())) {
+      throw new NoAuthorizationException();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest) {
-        UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-        ArticleEntity article =
-                articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-
-        Page<CommentEntity> comments = commentRepository.findByArticle(article, pageRequest);
-
-        List<CommentResponse> contents =
-                comments.getContent().stream()
-                        .map(
-                                comment -> {
-                                    CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
-                                    if (currentUser != null) {
-                                        FollowKey followId =
-                                                new FollowKey(currentUser.getId(), comment.getUser().getId());
-                                        response.getUser().setFollowing(followRepository.existsById(followId));
-                                    }
-
-                                    return response;
-                                })
-                        .collect(Collectors.toList());
-
-        return new PageResponse<>(contents, comments.getTotalElements());
-    }
-
-    @Override
-    public void deleteCommentFromArticle(String slug, Long commentId) {
-        UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-        ArticleEntity article =
-                articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-        CommentEntity comment =
-                commentRepository
-                        .findByIdAndArticle(commentId, article)
-                        .orElseThrow(ResourceNotFoundException::new);
-        if (!currentUser.getId().equals(article.getAuthor().getId())
-                || !currentUser.getId().equals(comment.getUser().getId())) {
-            throw new NoAuthorizationException();
-        }
-
-        commentRepository.delete(comment);
-    }
+    commentRepository.delete(comment);
+  }
 }

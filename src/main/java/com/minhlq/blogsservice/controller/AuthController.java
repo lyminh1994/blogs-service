@@ -1,9 +1,9 @@
 package com.minhlq.blogsservice.controller;
 
 import com.minhlq.blogsservice.enums.TokenType;
-import com.minhlq.blogsservice.payload.request.SignInRequest;
-import com.minhlq.blogsservice.payload.request.SignUpRequest;
-import com.minhlq.blogsservice.payload.response.AuthenticationResponse;
+import com.minhlq.blogsservice.payload.AuthenticationResponse;
+import com.minhlq.blogsservice.payload.SignInRequest;
+import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
 import com.minhlq.blogsservice.util.SecurityUtils;
@@ -43,94 +43,94 @@ import javax.validation.Valid;
 @Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    private final CookieService cookieService;
+  private final CookieService cookieService;
 
-    /**
-     * Creates a new user and return JWT token.
-     *
-     * @param signUpBody the register
-     * @return the jwt token details
-     */
-    @PostMapping("/sign-up")
-    @Operation(summary = "Sign up", description = "Create new account")
-    public ResponseEntity<AuthenticationResponse> signUp(
-            @Valid @RequestBody SignUpRequest signUpBody) {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        AuthenticationResponse result = authService.createUser(signUpBody, responseHeaders);
+  /**
+   * Creates a new user and return JWT token.
+   *
+   * @param signUpBody the register
+   * @return the jwt token details
+   */
+  @PostMapping("/sign-up")
+  @Operation(summary = "Sign up", description = "Create new account")
+  public ResponseEntity<AuthenticationResponse> signUp(
+      @Valid @RequestBody SignUpRequest signUpBody) {
+    HttpHeaders responseHeaders = new HttpHeaders();
+    AuthenticationResponse result = authService.createUser(signUpBody, responseHeaders);
 
-        return ResponseEntity.status(HttpStatus.CREATED).headers(responseHeaders).body(result);
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).headers(responseHeaders).body(result);
+  }
 
-    /**
-     * Attempts to authenticate with the provided credentials. If successful, a JWT token is returned
-     * with some user details.
-     *
-     * <p>A refresh token is generated and returned as a cookie.
-     *
-     * @param signInBody the login request
-     * @param request    The request
-     * @return the jwt token details
-     */
-    @PostMapping("/sign-in")
-    @Operation(
-            summary = "Sign in",
-            description = "Authentication account and return access information",
-            requestBody =
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content =
-                    @Content(
-                            examples =
-                            @ExampleObject(
-                                    value = "{\"username\": \"user\",\"password\": \"Minh@759407\"}"))))
-    public ResponseEntity<AuthenticationResponse> signIn(
-            @Valid @RequestBody SignInRequest signInBody, HttpServletRequest request) {
-        String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
+  /**
+   * Attempts to authenticate with the provided credentials. If successful, a JWT token is returned
+   * with some user details.
+   *
+   * <p>A refresh token is generated and returned as a cookie.
+   *
+   * @param requestBody the login request
+   * @param request The request
+   * @return the jwt token details
+   */
+  @PostMapping("/sign-in")
+  @Operation(
+      summary = "Sign in",
+      description = "Authentication account and return access information",
+      requestBody =
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+              content =
+                  @Content(
+                      examples =
+                          @ExampleObject(
+                              value = "{\"username\": \"user\",\"password\": \"Minh@759407\"}"))))
+  public ResponseEntity<AuthenticationResponse> signIn(
+      @Valid @RequestBody SignInRequest requestBody, HttpServletRequest request) {
+    String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
 
-        HttpHeaders responseHeaders = new HttpHeaders();
-        AuthenticationResponse result = authService.signIn(refreshToken, signInBody, responseHeaders);
-        return ResponseEntity.ok().headers(responseHeaders).body(result);
-    }
+    HttpHeaders responseHeaders = new HttpHeaders();
+    AuthenticationResponse result = authService.signIn(refreshToken, requestBody, responseHeaders);
+    return ResponseEntity.ok().headers(responseHeaders).body(result);
+  }
 
-    /**
-     * Refreshes the current access token and refresh token accordingly.
-     *
-     * @param request The request
-     * @return the jwt token details
-     */
-    @GetMapping("/refresh-token")
-    @Operation(
-            summary = "Refresh access token",
-            description = "Create and return new access information")
-    public AuthenticationResponse refreshToken(HttpServletRequest request) {
-        String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
+  /**
+   * Refreshes the current access token and refresh token accordingly.
+   *
+   * @param request The request
+   * @return the jwt token details
+   */
+  @GetMapping("/refresh-token")
+  @Operation(
+      summary = "Refresh access token",
+      description = "Create and return new access information")
+  public AuthenticationResponse refreshToken(HttpServletRequest request) {
+    String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
 
-        return authService.refreshAccessToken(refreshToken, request);
-    }
+    return authService.refreshAccessToken(refreshToken, request);
+  }
 
-    /**
-     * Logout the user from the system and clear all cookies from request and response.
-     *
-     * @param request  the http request
-     * @param response the http response
-     */
-    @DeleteMapping("/sign-out")
-    @Operation(summary = "Sign out", description = "Sign out and clear cookie of user browser")
-    public ResponseEntity<Void> signOut(HttpServletRequest request, HttpServletResponse response) {
-        HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
-        authService.signOut(request, response);
-        return ResponseEntity.noContent().headers(responseHeaders).build();
-    }
+  /**
+   * Logout the user from the system and clear all cookies from request and response.
+   *
+   * @param request the http request
+   * @param response the http response
+   */
+  @DeleteMapping("/sign-out")
+  @Operation(summary = "Sign out", description = "Sign out and clear cookie of user browser")
+  public ResponseEntity<Void> signOut(HttpServletRequest request, HttpServletResponse response) {
+    HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
+    authService.signOut(request, response);
+    return ResponseEntity.noContent().headers(responseHeaders).build();
+  }
 
-    /**
-     * Verify account by verification token.
-     *
-     * @param verificationToken the token
-     */
-    @GetMapping("/verify/{token}")
-    @Operation(summary = "Verify account", description = "Active account by provided token")
-    public void verify(@PathVariable(value = "token") String verificationToken) {
-        authService.activeAccount(verificationToken);
-    }
+  /**
+   * Verify account by verification token.
+   *
+   * @param verificationToken the token
+   */
+  @GetMapping("/verify/{token}")
+  @Operation(summary = "Verify account", description = "Active account by provided token")
+  public void verify(@PathVariable(value = "token") String verificationToken) {
+    authService.activeAccount(verificationToken);
+  }
 }

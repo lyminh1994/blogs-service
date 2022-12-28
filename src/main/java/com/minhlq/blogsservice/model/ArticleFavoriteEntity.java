@@ -26,6 +26,5 @@ import java.io.Serializable;
 @Table(name = "articles_favorites")
 public class ArticleFavoriteEntity implements Serializable {
 
-    @EmbeddedId
-    private ArticleFavoriteKey id;
+  @EmbeddedId private ArticleFavoriteKey id;
 }

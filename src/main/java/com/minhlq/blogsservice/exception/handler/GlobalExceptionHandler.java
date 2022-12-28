@@ -32,50 +32,50 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @NonNull
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            @NonNull MethodArgumentNotValidException ex,
-            @NonNull HttpHeaders headers,
-            @NonNull HttpStatus status,
-            @NonNull WebRequest request) {
-        List<FieldErrorResource> fieldErrorResources =
-                ex.getBindingResult().getFieldErrors().stream()
-                        .map(
-                                fieldError ->
-                                        new FieldErrorResource(
-                                                fieldError.getObjectName(),
-                                                fieldError.getField(),
-                                                fieldError.getCode(),
-                                                fieldError.getDefaultMessage()))
-                        .collect(Collectors.toList());
-
-        return ResponseEntity.status(BAD_REQUEST).body(new ErrorResource(fieldErrorResources));
-    }
-
-    @ExceptionHandler({ConstraintViolationException.class})
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorResource handleConstraintViolation(ConstraintViolationException ex) {
-        List<FieldErrorResource> errors = new ArrayList<>();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            FieldErrorResource fieldErrorResource =
+  @NonNull
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      @NonNull MethodArgumentNotValidException ex,
+      @NonNull HttpHeaders headers,
+      @NonNull HttpStatus status,
+      @NonNull WebRequest request) {
+    List<FieldErrorResource> fieldErrorResources =
+        ex.getBindingResult().getFieldErrors().stream()
+            .map(
+                fieldError ->
                     new FieldErrorResource(
-                            violation.getRootBeanClass().getName(),
-                            getParam(violation.getPropertyPath().toString()),
-                            violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),
-                            violation.getMessage());
-            errors.add(fieldErrorResource);
-        }
+                        fieldError.getObjectName(),
+                        fieldError.getField(),
+                        fieldError.getCode(),
+                        fieldError.getDefaultMessage()))
+            .collect(Collectors.toList());
 
-        return new ErrorResource(errors);
+    return ResponseEntity.status(BAD_REQUEST).body(new ErrorResource(fieldErrorResources));
+  }
+
+  @ExceptionHandler({ConstraintViolationException.class})
+  @ResponseStatus(BAD_REQUEST)
+  public ErrorResource handleConstraintViolation(ConstraintViolationException ex) {
+    List<FieldErrorResource> errors = new ArrayList<>();
+    for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+      FieldErrorResource fieldErrorResource =
+          new FieldErrorResource(
+              violation.getRootBeanClass().getName(),
+              getParam(violation.getPropertyPath().toString()),
+              violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),
+              violation.getMessage());
+      errors.add(fieldErrorResource);
     }
 
-    private String getParam(String s) {
-        String[] splits = s.split("\\.");
-        if (splits.length == 1) {
-            return s;
-        }
+    return new ErrorResource(errors);
+  }
 
-        return String.join(".", Arrays.copyOfRange(splits, 2, splits.length));
+  private String getParam(String s) {
+    String[] splits = s.split("\\.");
+    if (splits.length == 1) {
+      return s;
     }
+
+    return String.join(".", Arrays.copyOfRange(splits, 2, splits.length));
+  }
 }

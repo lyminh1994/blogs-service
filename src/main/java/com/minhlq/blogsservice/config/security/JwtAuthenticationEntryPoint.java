@@ -29,18 +29,22 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 @RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    @Override
-    public void commence(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException authException)
-            throws IOException {
-        log.error("Unauthorized error: {}", authException.getMessage());
+  @Override
+  public void commence(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      AuthenticationException authException)
+      throws IOException {
+    log.error("Unauthorized error: {}", authException.getMessage());
 
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(SC_UNAUTHORIZED);
-        response.getWriter().write(objectMapper.writeValueAsString(Collections.singletonMap("errors", authException.getLocalizedMessage())));
-    }
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setStatus(SC_UNAUTHORIZED);
+    response
+        .getWriter()
+        .write(
+            objectMapper.writeValueAsString(
+                Collections.singletonMap("errors", authException.getLocalizedMessage())));
+  }
 }

@@ -9,6 +9,9 @@ import lombok.ToString;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -28,40 +31,49 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "users_roles")
-public class UserRoleEntity extends AbstractAuditEntity<Long> implements Serializable {
+public class UserRoleEntity extends AbstractAuditEntity implements Serializable {
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    private UserEntity user;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    @ToString.Exclude
-    @ManyToOne(
-            targetEntity = RoleEntity.class,
-            cascade = {CascadeType.MERGE},
-            fetch = FetchType.LAZY)
-    private RoleEntity role;
+  @ToString.Exclude
+  @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+  private UserEntity user;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof UserRoleEntity) || !super.equals(o)) {
-            return false;
-        }
+  @ToString.Exclude
+  @ManyToOne(
+      targetEntity = RoleEntity.class,
+      cascade = {CascadeType.MERGE},
+      fetch = FetchType.LAZY)
+  private RoleEntity role;
 
-        UserRoleEntity userRole = (UserRoleEntity) o;
-        return Objects.equals(getUser(), userRole.getUser())
-                && Objects.equals(getRole(), userRole.getRole());
+  public UserRoleEntity(UserEntity user, RoleEntity role) {
+    this.user = user;
+    this.role = role;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof UserRoleEntity) || !super.equals(o)) {
+      return false;
     }
 
-    @Override
-    protected boolean canEqual(Object other) {
-        return other instanceof UserRoleEntity;
-    }
+    UserRoleEntity userRole = (UserRoleEntity) o;
+    return Objects.equals(getUser(), userRole.getUser())
+        && Objects.equals(getRole(), userRole.getRole());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getUser(), getRole());
-    }
+  @Override
+  protected boolean canEqual(Object other) {
+    return other instanceof UserRoleEntity;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getUser(), getRole());
+  }
 }

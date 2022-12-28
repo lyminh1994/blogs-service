@@ -17,12 +17,12 @@ import javax.validation.ConstraintValidatorContext;
  */
 @RequiredArgsConstructor
 public class DuplicatedEmailValidator
-        implements ConstraintValidator<DuplicatedEmailConstraint, String> {
+    implements ConstraintValidator<DuplicatedEmailConstraint, String> {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return StringUtils.isBlank(value) || userRepository.findByEmail(value).isEmpty();
-    }
+  @Override
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+    return StringUtils.isBlank(value) || userRepository.findByEmail(value).isEmpty();
+  }
 }

@@ -17,25 +17,23 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface UserMapper {
 
-    /**
-     * The mapper instance.
-     */
-    UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
+  /** The mapper instance. */
+  UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
-    /**
-     * Convert and populate a userDetails to user entity object.
-     *
-     * @param userDetails the user details
-     * @return the User
-     */
-    UserEntity toUser(UserPrincipal userDetails);
+  /**
+   * Convert and populate a userDetails to user entity object.
+   *
+   * @param userDetails the user details
+   * @return the User
+   */
+  UserEntity toUser(UserPrincipal userDetails);
 
-    /**
-     * Convert and populate a user to userProfile object.
-     *
-     * @param user      the user
-     * @param following is following user
-     * @return the profile
-     */
-    ProfileResponse toProfileResponse(UserEntity user, boolean following);
+  /**
+   * Convert and populate a user to userProfile object.
+   *
+   * @param user the user
+   * @param following is following user
+   * @return the profile
+   */
+  ProfileResponse toProfileResponse(UserEntity user, boolean following);
 }

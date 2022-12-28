@@ -19,42 +19,42 @@ import java.util.Objects;
  */
 @RequiredArgsConstructor
 public class UpdateUserValidator
-        implements ConstraintValidator<UpdateUserConstraint, UpdateUserDto> {
+    implements ConstraintValidator<UpdateUserConstraint, UpdateUserDto> {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public boolean isValid(UpdateUserDto value, ConstraintValidatorContext context) {
-        final String inputEmail = value.getParams().getEmail();
-        final String inputPhone = value.getParams().getPhone();
-        final UserPrincipal targetUser = value.getTargetUser();
+  @Override
+  public boolean isValid(UpdateUserDto value, ConstraintValidatorContext context) {
+    final String inputEmail = value.getParams().getEmail();
+    final String inputPhone = value.getParams().getPhone();
+    final UserPrincipal targetUser = value.getTargetUser();
 
-        boolean isEmailValid =
-                userRepository
-                        .findByEmail(inputEmail)
-                        .map(user -> Objects.equals(user.getId(), targetUser.getId()))
-                        .orElse(true);
-        if (!isEmailValid) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate("email already using by another user")
-                    .addPropertyNode("email")
-                    .addConstraintViolation();
-        }
-
-        boolean isPhoneValid =
-                userRepository
-                        .findByPhone(inputPhone)
-                        .map(user -> Objects.equals(user.getId(), targetUser.getId()))
-                        .orElse(true);
-        if (!isPhoneValid) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate("phone number already using by another user")
-                    .addPropertyNode("phone")
-                    .addConstraintViolation();
-        }
-
-        return isEmailValid || isPhoneValid;
+    boolean isEmailValid =
+        userRepository
+            .findByEmail(inputEmail)
+            .map(user -> Objects.equals(user.getId(), targetUser.getId()))
+            .orElse(true);
+    if (!isEmailValid) {
+      context.disableDefaultConstraintViolation();
+      context
+          .buildConstraintViolationWithTemplate("email already using by another user")
+          .addPropertyNode("email")
+          .addConstraintViolation();
     }
+
+    boolean isPhoneValid =
+        userRepository
+            .findByPhone(inputPhone)
+            .map(user -> Objects.equals(user.getId(), targetUser.getId()))
+            .orElse(true);
+    if (!isPhoneValid) {
+      context.disableDefaultConstraintViolation();
+      context
+          .buildConstraintViolationWithTemplate("phone number already using by another user")
+          .addPropertyNode("phone")
+          .addConstraintViolation();
+    }
+
+    return isEmailValid || isPhoneValid;
+  }
 }

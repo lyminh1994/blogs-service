@@ -18,12 +18,10 @@ import java.util.List;
 @Mapper
 public interface ArticleMapper {
 
-    /**
-     * The mapper instance.
-     */
-    ArticleMapper MAPPER = Mappers.getMapper(ArticleMapper.class);
+  /** The mapper instance. */
+  ArticleMapper MAPPER = Mappers.getMapper(ArticleMapper.class);
 
-    ArticleResponse toArticleResponse(ArticleEntity article, List<String> tagNames);
+  ArticleResponse toArticleResponse(ArticleEntity article, List<String> tagNames);
 
-    ArticleResponse toArticleResponse(ArticleEntity article);
+  ArticleResponse toArticleResponse(ArticleEntity article);
 }

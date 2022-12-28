@@ -16,14 +16,14 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    @EntityGraph(
-            type = EntityGraphType.FETCH,
-            attributePaths = {"userRoles"})
-    Optional<UserEntity> findByUsername(String username);
+  @EntityGraph(
+      type = EntityGraphType.FETCH,
+      attributePaths = {"userRoles"})
+  Optional<UserEntity> findByUsername(String username);
 
-    Optional<UserEntity> findByEmail(String email);
+  Optional<UserEntity> findByEmail(String email);
 
-    Optional<UserEntity> findByPhone(String phone);
+  Optional<UserEntity> findByPhone(String phone);
 
-    Optional<UserEntity> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
+  Optional<UserEntity> findByVerificationTokenAndEnabled(String verificationToken, boolean enabled);
 }
