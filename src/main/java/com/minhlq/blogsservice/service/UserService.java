@@ -60,8 +60,8 @@ public interface UserService {
   /**
    * Update current user password
    *
-   * @param currentUser
-   * @param updatePasswordRequest
+   * @param currentUser Current user
+   * @param updatePasswordRequest Update password params
    */
   void updatePassword(UserPrincipal currentUser, UpdatePasswordRequest updatePasswordRequest);
 }

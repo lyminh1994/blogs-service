@@ -128,9 +128,9 @@ public class AuthController {
    *
    * @param verificationToken the token
    */
-  @GetMapping("/verify/{token}")
-  @Operation(summary = "Verify account", description = "Active account by provided token")
-  public void verify(@PathVariable(value = "token") String verificationToken) {
+  @GetMapping("/verify/{verify-token}")
+  @Operation(summary = "Verify account", description = "Active account by provided token in email")
+  public void verify(@PathVariable(value = "verify-token") String verificationToken) {
     authService.activeAccount(verificationToken);
   }
 }

@@ -50,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError.getDefaultMessage()))
             .collect(Collectors.toList());
 
-    return ResponseEntity.status(BAD_REQUEST).body(new ErrorResource(fieldErrorResources));
+    return ResponseEntity.badRequest().body(new ErrorResource(fieldErrorResources));
   }
 
   @ExceptionHandler({ConstraintViolationException.class})
