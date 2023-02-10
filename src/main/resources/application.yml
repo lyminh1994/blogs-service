@@ -1,44 +1,22 @@
+# Application configuration
+application:
+  title: @project.name@
+  version: @project.version@
+  description: @project.description@
+  static-resource-location: /tmp/media/
+  static-resource-url: /media/**
+
+# Server configuration
 server:
   port: 8080
   servlet:
     context-path: /
+
+# Spring configuration
 spring:
+  profiles:
+    active: dev
   application:
     name: blogs_service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: Root@1234
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      auto-commit: true
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
-      idle-timeout: 30000
-      max-lifetime: 60000
-      minimum-idle: 5
-      maximum-pool-size: 30
-      pool-name: blogs-pool
-  jpa:
-    show-sql: true
-    open-in-view: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-  jackson:
-    property-naming-strategy: SNAKE_CASE
-jwt:
-  secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
-  session-time: 3600000
-springdoc:
-  version: "@project.version@"
-  description: "@project.description@"
-logging:
-  level:
-    com.minhlq.blogsservice: DEBUG
-    org.springframework.web: ERROR
-    org.hibernate.SQL: INFO
-    org.hibernate.type: TRACE
+  banner:
+    location: classpath:static/banner.txt

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogs-deployment
+  labels: &DeploymentLabels
+    app: blogs-service
+spec:
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      containers:
+        - name: blogs-service
+          image: blogs-service:latest
+          envFrom:
+            - configMapRef:
+                name: blogs-configmap

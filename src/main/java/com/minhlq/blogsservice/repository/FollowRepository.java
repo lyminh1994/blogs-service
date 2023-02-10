@@ -1,22 +1,21 @@
 package com.minhlq.blogsservice.repository;
 
-import com.minhlq.blogsservice.model.Follow;
+import com.minhlq.blogsservice.model.FollowEntity;
 import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Set;
 
-public interface FollowRepository extends JpaRepository<Follow, FollowKey> {
+/**
+ * Repository for the User following.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
+public interface FollowRepository extends JpaRepository<FollowEntity, FollowKey> {
 
-  @Query(value = "select count(1) from follows f where f.user_id = ? and f.follow_id = ?", nativeQuery = true)
-  boolean isUserFollowing(Long userId, Long followId);
-
-  @Query(value = "select f.follow_id from follows f where f.user_id = ? and f.user_id in (?)", nativeQuery = true)
-  Set<Long> followingAuthors(Long userId, List<Long> ids);
-
-  @Query(value = "select f.follow_id from follows f where f.user_id = ?", nativeQuery = true)
-  List<Long> followedUsers(Long userId);
-
+  @Query("select F.id.followId from FollowEntity F where F.id.userId = :userId")
+  Set<Long> findByUserId(Long userId);
 }

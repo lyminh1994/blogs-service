@@ -1,29 +1,32 @@
 package com.minhlq.blogsservice.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.minhlq.blogsservice.enums.Gender;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import java.time.LocalDate;
 
+/**
+ * This class models the format of the update user request accepted.
+ *
+ * @author Minh Lys
+ * @version 1.0
+ * @since 1.0
+ */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class UpdateUserRequest {
 
-  @Builder.Default
-  @Email(message = "should be an email")
-  private final String email = "";
+  @Email private String email;
 
-  @Builder.Default
-  private final String password = "";
+  private String firstName;
 
-  @Builder.Default
-  private final String bio = "";
+  private String lastName;
 
-  @Builder.Default
-  private final String image = "";
+  private String phone;
 
+  private LocalDate birthday;
+
+  private Gender gender;
+
+  private String profileImage;
 }
