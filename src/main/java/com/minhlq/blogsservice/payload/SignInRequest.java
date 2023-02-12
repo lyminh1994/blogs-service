@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.payload;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
 import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;

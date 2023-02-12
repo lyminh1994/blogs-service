@@ -41,7 +41,7 @@ class TagServiceTest {
     when(tagRepository.findAll(pageRequest)).thenReturn(tags);
     PageResponse<TagResponse> actualResponse = tagService.getTags(pageRequest);
 
-    assertNotNull(actualResponse.getContents());
-    assertEquals(total, actualResponse.getTotalElements());
+    assertNotNull(actualResponse.contents());
+    assertEquals(total, actualResponse.totalElements());
   }
 }

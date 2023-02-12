@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;

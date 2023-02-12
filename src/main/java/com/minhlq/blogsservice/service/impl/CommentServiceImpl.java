@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This is implement for the comment service operations.
@@ -52,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     CommentEntity savedComment =
         commentRepository.saveAndFlush(
             CommentEntity.builder()
-                .body(newCommentRequest.getBody())
+                .body(newCommentRequest.body())
                 .article(article)
                 .user(UserMapper.MAPPER.toUser(currentUser))
                 .build());
@@ -82,7 +81,7 @@ public class CommentServiceImpl implements CommentService {
 
                   return response;
                 })
-            .collect(Collectors.toList());
+            .toList();
 
     return new PageResponse<>(contents, comments.getTotalElements());
   }

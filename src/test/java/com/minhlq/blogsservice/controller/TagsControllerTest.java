@@ -41,8 +41,8 @@ class TagsControllerTest {
   void shouldGetTagSuccess() throws Exception {
     // given - precondition or setup
     PageRequest pageRequest = PageRequest.of(0, 10, Sort.unsorted());
-    TagResponse content1 = TagResponse.builder().id(1L).name("tag1").build();
-    TagResponse content2 = TagResponse.builder().id(2L).name("tag2").build();
+    TagResponse content1 = new TagResponse(1L, "tag1");
+    TagResponse content2 = new TagResponse(2L, "tag2");
     List<TagResponse> expectedContents = Arrays.asList(content1, content2);
     PageResponse<TagResponse> pageResponse =
         new PageResponse<>(expectedContents, expectedContents.size());

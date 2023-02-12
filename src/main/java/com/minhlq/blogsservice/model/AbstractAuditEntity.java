@@ -8,12 +8,12 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.Version;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -62,11 +62,10 @@ public class AbstractAuditEntity {
       return true;
     }
 
-    if (!(o instanceof AbstractAuditEntity)) {
+    if (!(o instanceof AbstractAuditEntity that)) {
       return false;
     }
 
-    AbstractAuditEntity that = (AbstractAuditEntity) o;
     if (!that.canEqual(this)) {
       return false;
     }

@@ -7,7 +7,7 @@ import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * This UserService interface is the contract for the user service operations.

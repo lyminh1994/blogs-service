@@ -44,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * The article service implementation.
@@ -79,13 +78,13 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.saveAndFlush(
             ArticleEntity.builder()
                 .author(author)
-                .slug(ArticleUtils.toSlug(createRequest.getTitle()))
-                .title(createRequest.getTitle())
-                .description(createRequest.getDescription())
-                .body(createRequest.getBody())
+                .slug(ArticleUtils.toSlug(createRequest.title()))
+                .title(createRequest.title())
+                .description(createRequest.description())
+                .body(createRequest.body())
                 .build());
 
-    List<String> tagNames = createRequest.getTagNames();
+    List<String> tagNames = createRequest.tagNames();
     if (CollectionUtils.isNotEmpty(tagNames)) {
       List<ArticleTagEntity> articleTags =
           tagNames.stream()
@@ -101,7 +100,7 @@ public class ArticleServiceImpl implements ArticleService {
 
                     return new ArticleTagEntity(articleTagId);
                   })
-              .collect(Collectors.toList());
+              .toList();
 
       articleTagRepository.saveAll(articleTags);
     }
@@ -145,27 +144,27 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     JPAQuery<?> query =
-        queryFactory
-            .from(qArticle)
-            .leftJoin(qArticleTag)
-            .on(qArticle.id.eq(qArticleTag.id.articleId))
-            .leftJoin(qTag)
-            .on(qTag.id.eq(qArticleTag.id.tagId))
-            .leftJoin(qArticleFavorite)
-            .on(qArticleFavorite.id.articleId.eq(qArticle.id))
-            .leftJoin(qUser)
-            .on(qUser.id.eq(qArticleFavorite.id.userId))
-            .where(conditions);
+    queryFactory
+        .from(qArticle)
+        .leftJoin(qArticleTag)
+        .on(qArticle.id.eq(qArticleTag.id.articleId))
+        .leftJoin(qTag)
+        .on(qTag.id.eq(qArticleTag.id.tagId))
+        .leftJoin(qArticleFavorite)
+        .on(qArticleFavorite.id.articleId.eq(qArticle.id))
+        .leftJoin(qUser)
+        .on(qUser.id.eq(qArticleFavorite.id.userId))
+        .where(conditions);
 
     long totalElements = query.select(qArticle.countDistinct()).fetchFirst();
 
-    List<ArticleEntity> articles =
-        query
-            .distinct()
-            .select(qArticle)
-            .offset(pageRequest.getOffset())
-            .limit(pageRequest.getPageSize())
-            .fetch();
+    List<ArticleEntity> articles = Collections.emptyList();
+    query
+    .distinct()
+    .select(qArticle)
+    .offset(pageRequest.getOffset())
+    .limit(pageRequest.getPageSize())
+    .fetch();
 
     List<ArticleResponse> contents = getArticleResponses(articles);
 
@@ -193,10 +192,10 @@ public class ArticleServiceImpl implements ArticleService {
                     throw new NoAuthorizationException();
                   }
 
-                  currentArticle.setSlug(ArticleUtils.toSlug(updateRequest.getTitle()));
-                  currentArticle.setTitle(updateRequest.getTitle());
-                  currentArticle.setDescription(updateRequest.getDescription());
-                  currentArticle.setBody(updateRequest.getBody());
+                  currentArticle.setSlug(ArticleUtils.toSlug(updateRequest.title()));
+                  currentArticle.setTitle(updateRequest.title());
+                  currentArticle.setDescription(updateRequest.description());
+                  currentArticle.setBody(updateRequest.body());
 
                   return articleRepository.save(currentArticle);
                 })
@@ -307,8 +306,6 @@ public class ArticleServiceImpl implements ArticleService {
    */
   private List<ArticleResponse> getArticleResponses(List<ArticleEntity> articles) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    return articles.stream()
-        .map(article -> getArticleResponse(currentUser, article))
-        .collect(Collectors.toList());
+    return articles.stream().map(article -> getArticleResponse(currentUser, article)).toList();
   }
 }

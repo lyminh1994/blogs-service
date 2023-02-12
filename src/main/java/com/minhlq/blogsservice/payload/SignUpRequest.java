@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import static com.minhlq.blogsservice.constant.UserConstants.BLANK_EMAIL;
 import static com.minhlq.blogsservice.constant.UserConstants.EMAIL_ALREADY_EXIST;

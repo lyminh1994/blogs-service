@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,7 +30,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
   private final PasswordEncoder passwordEncoder;
@@ -77,14 +77,14 @@ public class SecurityConfig {
     http.cors().and().csrf().disable();
     http.httpBasic().disable().formLogin().disable().logout().disable();
 
-    http.authorizeRequests()
-        .antMatchers(OPTIONS)
+    http.authorizeHttpRequests()
+        .requestMatchers(OPTIONS)
         .permitAll()
-        .antMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
+        .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
         .permitAll()
-        .antMatchers(GET, "/articles/feeds")
+        .requestMatchers(GET, "/articles/feeds")
         .authenticated()
-        .antMatchers(GET, "/articles/**", "/user/{username}", "/tags")
+        .requestMatchers(GET, "/articles/**", "/user/{username}", "/tags")
         .permitAll()
         .anyRequest()
         .authenticated();

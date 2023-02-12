@@ -1,8 +1,10 @@
 package com.minhlq.blogsservice.exception.handler;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,12 +14,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -32,12 +31,11 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @NonNull
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      @NonNull MethodArgumentNotValidException ex,
+      MethodArgumentNotValidException ex,
       @NonNull HttpHeaders headers,
-      @NonNull HttpStatus status,
+      @NonNull HttpStatusCode status,
       @NonNull WebRequest request) {
     List<FieldErrorResource> fieldErrorResources =
         ex.getBindingResult().getFieldErrors().stream()
@@ -48,7 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError.getField(),
                         fieldError.getCode(),
                         fieldError.getDefaultMessage()))
-            .collect(Collectors.toList());
+            .toList();
 
     return ResponseEntity.badRequest().body(new ErrorResource(fieldErrorResources));
   }

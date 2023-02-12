@@ -11,7 +11,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
@@ -20,6 +19,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -81,9 +81,9 @@ public class EncryptionServiceImpl implements EncryptionService {
         | IllegalArgumentException
         | InvalidKeyException
         | InvalidAlgorithmParameterException
+        | NoSuchPaddingException
         | IllegalBlockSizeException
-        | BadPaddingException
-        | NoSuchPaddingException e) {
+        | BadPaddingException e) {
       log.debug(ENCRYPTING_DATA_ERROR, e);
       throw new EncryptionException(e);
     }
@@ -136,7 +136,7 @@ public class EncryptionServiceImpl implements EncryptionService {
     return URLDecoder.decode(text, UTF_8).replaceAll("\\s+", "+");
   }
 
-  private SecretKey getKeyFromPassword() {
+  private Key getKeyFromPassword() {
     try {
       SecretKeyFactory factory = SecretKeyFactory.getInstance(DERIVATION_FUNCTION);
       byte[] saltBytes = salt.getBytes(UTF_8);

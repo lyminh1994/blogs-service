@@ -44,20 +44,11 @@ public class MethodLogger {
     final String format = "=> Starting -  {} args: {}";
 
     switch (level) {
-      case "warn":
-        log.warn(format, method, args);
-        break;
-      case "error":
-        log.error(format, method, args);
-        break;
-      case "debug":
-        log.debug(format, method, args);
-        break;
-      case "trace":
-        log.trace(format, method, args);
-        break;
-      default:
-        log.info(format, method, args);
+      case "warn" -> log.warn(format, method, args);
+      case "error" -> log.error(format, method, args);
+      case "debug" -> log.debug(format, method, args);
+      case "trace" -> log.trace(format, method, args);
+      default -> log.info(format, method, args);
     }
   }
 
@@ -65,20 +56,11 @@ public class MethodLogger {
     final String format = "<= {} : {} - Finished, duration: {} ms";
 
     switch (level) {
-      case "warn":
-        log.warn(format, method, response, System.currentTimeMillis() - start);
-        break;
-      case "error":
-        log.error(format, method, response, System.currentTimeMillis() - start);
-        break;
-      case "debug":
-        log.debug(format, method, response, System.currentTimeMillis() - start);
-        break;
-      case "trace":
-        log.trace(format, method, response, System.currentTimeMillis() - start);
-        break;
-      default:
-        log.info(format, method, response, System.currentTimeMillis() - start);
+      case "warn" -> log.warn(format, method, response, System.currentTimeMillis() - start);
+      case "error" -> log.error(format, method, response, System.currentTimeMillis() - start);
+      case "debug" -> log.debug(format, method, response, System.currentTimeMillis() - start);
+      case "trace" -> log.trace(format, method, response, System.currentTimeMillis() - start);
+      default -> log.info(format, method, response, System.currentTimeMillis() - start);
     }
   }
 }

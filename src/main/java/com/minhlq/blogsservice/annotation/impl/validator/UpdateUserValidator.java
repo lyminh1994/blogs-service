@@ -6,8 +6,8 @@ import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.util.Objects;
 
 /**
@@ -25,9 +25,9 @@ public class UpdateUserValidator
 
   @Override
   public boolean isValid(UpdateUserDto value, ConstraintValidatorContext context) {
-    final String inputEmail = value.getParams().getEmail();
-    final String inputPhone = value.getParams().getPhone();
-    final UserPrincipal targetUser = value.getTargetUser();
+    final String inputEmail = value.params().email();
+    final String inputPhone = value.params().phone();
+    final UserPrincipal targetUser = value.targetUser();
 
     boolean isEmailValid =
         userRepository

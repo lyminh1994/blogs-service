@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 /**
  * This is implement for the tag service operations.
  *
@@ -31,8 +29,8 @@ public class TagServiceImpl implements TagService {
 
     return new PageResponse<>(
         tags.stream()
-            .map(entity -> TagResponse.builder().id(entity.getId()).name(entity.getName()).build())
-            .collect(Collectors.toList()),
+            .map(entity -> new TagResponse(entity.getId(), entity.getName()))
+            .toList(),
         tags.getTotalElements());
   }
 }

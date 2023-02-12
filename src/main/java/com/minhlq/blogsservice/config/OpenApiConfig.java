@@ -6,19 +6,19 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import static org.springdoc.core.Constants.ALL_PATTERN;
-import static org.springdoc.core.Constants.HEALTH_PATTERN;
+import static org.springdoc.core.utils.Constants.ALL_PATTERN;
+import static org.springdoc.core.utils.Constants.HEALTH_PATTERN;
 
 /**
  * This class holds Open Api 3 configurations for this application.
@@ -28,7 +28,10 @@ import static org.springdoc.core.Constants.HEALTH_PATTERN;
  * @since 1.0
  */
 @Configuration
+@RequiredArgsConstructor
 public class OpenApiConfig {
+
+  private final OperationCustomizer actuatorCustomizer;
 
   /**
    * Configures the actuator group.
@@ -39,14 +42,13 @@ public class OpenApiConfig {
   @Profile("!prod")
   public GroupedOpenApi actuatorApi(
       @Value("${application.version}") String version,
-      OpenApiCustomiser actuatorOpenApiCustomiser,
-      OperationCustomizer actuatorCustomizer,
+      OpenApiCustomizer actuatorOpenApiCustomizer,
       WebEndpointProperties endpointProperties) {
     return GroupedOpenApi.builder()
         .group("Actuator")
         .pathsToMatch(endpointProperties.getBasePath() + ALL_PATTERN)
-        .addOpenApiCustomiser(actuatorOpenApiCustomiser)
-        .addOpenApiCustomiser(
+        .addOpenApiCustomizer(actuatorOpenApiCustomizer)
+        .addOpenApiCustomizer(
             openApi -> openApi.info(new Info().title("Actuator APIs").version(version)))
         .addOperationCustomizer(actuatorCustomizer)
         .pathsToExclude(endpointProperties.getBasePath() + HEALTH_PATTERN)
@@ -62,11 +64,10 @@ public class OpenApiConfig {
   public GroupedOpenApi authenticationOpenApi(
       @Value("${application.title}") String name,
       @Value("${application.version}") String version,
-      @Value("${application.description}") String description,
-      WebEndpointProperties endpointProperties) {
+      @Value("${application.description}") String description) {
     return GroupedOpenApi.builder()
         .group("Authentication")
-        .addOpenApiCustomiser(
+        .addOpenApiCustomizer(
             openApi ->
                 openApi.info(
                     new Info()
@@ -92,7 +93,7 @@ public class OpenApiConfig {
       WebEndpointProperties endpointProperties) {
     return GroupedOpenApi.builder()
         .group("Blogs")
-        .addOpenApiCustomiser(
+        .addOpenApiCustomizer(
             openApi ->
                 openApi.info(
                     new Info()
@@ -121,7 +122,7 @@ public class OpenApiConfig {
                     bearerAuth,
                     new SecurityScheme()
                         .name(bearerAuth)
-                        .type(Type.HTTP)
+                        .type(SecurityScheme.Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT")));
   }

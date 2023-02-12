@@ -1,9 +1,8 @@
 package com.minhlq.blogsservice.dto.request;
 
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -13,14 +12,8 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-@Getter
-public class NewArticleRequest {
-
-  @NotBlank @DuplicatedArticleConstraint private String title;
-
-  @NotBlank private String description;
-
-  @NotBlank private String body;
-
-  private List<String> tagNames;
-}
+public record NewArticleRequest(
+    @NotBlank @DuplicatedArticleConstraint String title,
+    @NotBlank String description,
+    @NotBlank String body,
+    List<String> tagNames) {}

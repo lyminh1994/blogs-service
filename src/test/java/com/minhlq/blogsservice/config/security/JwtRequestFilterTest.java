@@ -6,6 +6,7 @@ import com.minhlq.blogsservice.helper.UserHelper;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;

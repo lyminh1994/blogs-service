@@ -41,17 +41,17 @@ public class UserServiceImpl implements UserService {
   public UserPrincipal updateUser(UpdateUserDto updateUserDto) {
     UserEntity updatedUser =
         userRepository
-            .findById(updateUserDto.getTargetUser().getId())
+            .findById(updateUserDto.targetUser().getId())
             .map(
                 currentUser -> {
-                  UpdateUserRequest params = updateUserDto.getParams();
-                  currentUser.setEmail(params.getEmail());
-                  currentUser.setFirstName(params.getFirstName());
-                  currentUser.setLastName(params.getLastName());
-                  currentUser.setPhone(params.getPhone());
-                  currentUser.setBirthday(params.getBirthday());
-                  currentUser.setGender(params.getGender());
-                  currentUser.setProfileImage(params.getProfileImage());
+                  UpdateUserRequest params = updateUserDto.params();
+                  currentUser.setEmail(params.email());
+                  currentUser.setFirstName(params.firstName());
+                  currentUser.setLastName(params.lastName());
+                  currentUser.setPhone(params.phone());
+                  currentUser.setBirthday(params.birthday());
+                  currentUser.setGender(params.gender());
+                  currentUser.setProfileImage(params.profileImage());
 
                   return userRepository.saveAndFlush(currentUser);
                 })
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         .findById(currentUser.getId())
         .ifPresent(
             user -> {
-              String password = passwordEncoder.encode(updatePasswordRequest.getNewPassword());
+              String password = passwordEncoder.encode(updatePasswordRequest.newPassword());
               user.setPassword(password);
               userRepository.saveAndFlush(user);
             });

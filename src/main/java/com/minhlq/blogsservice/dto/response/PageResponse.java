@@ -1,7 +1,5 @@
 package com.minhlq.blogsservice.dto.response;
 
-import lombok.Value;
-
 import java.util.List;
 
 /**
@@ -11,10 +9,4 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-@Value
-public class PageResponse<T> {
-
-  List<T> contents;
-
-  long totalElements;
-}
+public record PageResponse<T>(List<T> contents, long totalElements) {}

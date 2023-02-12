@@ -5,8 +5,8 @@ import com.minhlq.blogsservice.payload.SignInRequest;
 import com.minhlq.blogsservice.payload.SignUpRequest;
 import org.springframework.http.HttpHeaders;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This is the contract for the authentication service operations.
