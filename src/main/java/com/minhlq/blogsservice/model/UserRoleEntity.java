@@ -1,11 +1,5 @@
 package com.minhlq.blogsservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.Objects;
 
 /**
@@ -24,14 +21,11 @@ import java.util.Objects;
  * @version 1.0
  * @since 1.0
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString(callSuper = true)
 @Entity
 @Table(name = "users_roles")
-public class UserRoleEntity extends AbstractAuditEntity implements Serializable {
+public class UserRoleEntity extends AbstractAuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)

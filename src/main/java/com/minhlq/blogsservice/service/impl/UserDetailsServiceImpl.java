@@ -44,7 +44,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
    *     GrantedAuthority
    */
   @Override
-  // @Cacheable(value = CacheConstants.USER_DETAILS, key = "{ #root.methodName, #username }")
   public UserDetails loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
       throw new UsernameNotFoundException(USERNAME_CANNOT_BLANK);

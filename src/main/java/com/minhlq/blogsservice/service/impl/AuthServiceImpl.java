@@ -15,6 +15,8 @@ import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
 import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.util.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,8 +28,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -75,12 +75,12 @@ public class AuthServiceImpl implements AuthService {
 
     String verificationToken =
         jwtService.createJwt(
-            signUpBody.getUsername(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
+            signUpBody.username(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
 
     UserEntity user = new UserEntity();
-    user.setUsername(signUpBody.getUsername());
-    user.setPassword(passwordEncoder.encode(signUpBody.getPassword()));
-    user.setEmail(signUpBody.getEmail());
+    user.setUsername(signUpBody.username());
+    user.setPassword(passwordEncoder.encode(signUpBody.password()));
+    user.setEmail(signUpBody.email());
     user.setVerificationToken(encryptionService.encode(verificationToken));
     user.addRole(role);
 
@@ -99,9 +99,9 @@ public class AuthServiceImpl implements AuthService {
   public AuthenticationResponse signIn(
       String refreshToken, SignInRequest requestBody, HttpHeaders responseHeaders) {
 
-    String username = requestBody.getUsername();
+    String username = requestBody.username();
     // Authentication will fail if the credentials are invalid and throw exception.
-    SecurityUtils.authenticateUser(authenticationManager, username, requestBody.getPassword());
+    SecurityUtils.authenticateUser(authenticationManager, username, requestBody.password());
 
     // Update user last successful login and reset failed login attempts
     UserEntity user =

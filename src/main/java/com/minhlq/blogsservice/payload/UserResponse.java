@@ -1,8 +1,6 @@
 package com.minhlq.blogsservice.payload;
 
 import com.minhlq.blogsservice.enums.Gender;
-import lombok.Builder;
-import lombok.Data;
 import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -18,41 +16,28 @@ import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_MUST_N
  * @version 1.0
  * @since 1.0
  */
-@Data
-@Builder
-public final class UserResponse {
-
-  private String publicId;
-
-  private String email;
-
-  private String firstName;
-
-  private String lastName;
-
-  private String phone;
-
-  private LocalDate birthday;
-
-  private Gender gender;
-
-  private String profileImage;
-
-  private Collection<? extends GrantedAuthority> authorities;
-
+public record UserResponse(
+    String publicId,
+    String email,
+    String firstName,
+    String lastName,
+    String phone,
+    LocalDate birthday,
+    Gender gender,
+    String profileImage,
+    Collection<? extends GrantedAuthority> authorities) {
   public static UserResponse getUserResponse(final UserPrincipal userDetails) {
     Validate.notNull(userDetails, USER_DETAILS_MUST_NOT_BE_NULL);
 
-    return UserResponse.builder()
-        .publicId(userDetails.getPublicId())
-        .email(userDetails.getEmail())
-        .firstName(userDetails.getFirstName())
-        .lastName(userDetails.getLastName())
-        .phone(userDetails.getPhone())
-        .birthday(userDetails.getBirthday())
-        .gender(userDetails.getGender())
-        .profileImage(userDetails.getProfileImage())
-        .authorities(userDetails.getAuthorities())
-        .build();
+    return new UserResponse(
+        userDetails.getPublicId(),
+        userDetails.getEmail(),
+        userDetails.getFirstName(),
+        userDetails.getLastName(),
+        userDetails.getPhone(),
+        userDetails.getBirthday(),
+        userDetails.getGender(),
+        userDetails.getProfileImage(),
+        userDetails.getAuthorities());
   }
 }

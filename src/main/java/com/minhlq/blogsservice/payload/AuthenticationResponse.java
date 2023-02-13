@@ -1,7 +1,5 @@
 package com.minhlq.blogsservice.payload;
 
-import lombok.Data;
-
 import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
 
 /**
@@ -11,12 +9,7 @@ import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
  * @version 1.0
  * @since 1.0
  */
-@Data
-public final class AuthenticationResponse {
-
-  private final String type;
-
-  private final String accessToken;
+public record AuthenticationResponse(String type, String accessToken) {
 
   /**
    * Build authentication response object from the specified userDetails.

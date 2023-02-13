@@ -2,6 +2,7 @@ package com.minhlq.blogsservice.enums;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+
 import java.util.stream.Stream;
 
 @Converter(autoApply = true)
@@ -23,7 +24,7 @@ public class GenderConverter implements AttributeConverter<Gender, Integer> {
     }
 
     return Stream.of(Gender.values())
-        .filter(c -> c.getCode().equals(code))
+        .filter(gender -> gender.getCode().equals(code))
         .findFirst()
         .orElseThrow(IllegalArgumentException::new);
   }

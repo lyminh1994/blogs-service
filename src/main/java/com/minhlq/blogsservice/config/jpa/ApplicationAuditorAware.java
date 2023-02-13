@@ -32,15 +32,13 @@ public final class ApplicationAuditorAware implements AuditorAware<String> {
 
     // Check if there is a user logged in.
     // If so, use the logged-in user as the current auditor.
-    // spring injects an anonymousUser if there is no
-    // authentication and authorization
+    // spring injects an anonymousUser if there is no authentication and authorization
     Authentication authentication = SecurityUtils.getAuthentication();
     if (SecurityUtils.isAuthenticated(authentication)) {
       return Optional.ofNullable(authentication.getName());
     }
 
-    // If there is no authentication,
-    // then the system will be used as the current auditor.
+    // If there is no authentication, then the system will be used as the current auditor.
     return Optional.of(DEFAULT_AUDITOR);
   }
 }

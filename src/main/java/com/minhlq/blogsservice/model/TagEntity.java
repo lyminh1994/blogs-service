@@ -1,17 +1,14 @@
 package com.minhlq.blogsservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The tag model for the application.
@@ -20,13 +17,12 @@ import java.io.Serializable;
  * @version 1.0
  * @since 1.0
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "tags")
-public class TagEntity implements Serializable {
+public class TagEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)

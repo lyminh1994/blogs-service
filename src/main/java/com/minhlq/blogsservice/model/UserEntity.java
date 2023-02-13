@@ -3,15 +3,6 @@ package com.minhlq.blogsservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +15,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.io.Serializable;
+import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -38,15 +34,11 @@ import java.util.Set;
  * @version 1.0
  * @since 1.0
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString(callSuper = true)
+@Data
 @Entity
 @Audited
 @Table(name = "users")
-public class UserEntity extends AbstractAuditEntity implements Serializable {
+public class UserEntity extends AbstractAuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)

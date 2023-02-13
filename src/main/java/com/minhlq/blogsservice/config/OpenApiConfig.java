@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import static org.springdoc.core.utils.Constants.ALL_PATTERN;
-import static org.springdoc.core.utils.Constants.HEALTH_PATTERN;
 
 /**
  * This class holds Open Api 3 configurations for this application.
@@ -30,6 +29,10 @@ import static org.springdoc.core.utils.Constants.HEALTH_PATTERN;
 @Configuration
 @RequiredArgsConstructor
 public class OpenApiConfig {
+
+  public static final String TERMS_OF_SERVICE = "https://swagger.io/terms/";
+  public static final String LICENSE_NAME = "Apache 2.0";
+  public static final String LICENSE_URL = "https://springdoc.org";
 
   private final OperationCustomizer actuatorCustomizer;
 
@@ -51,7 +54,7 @@ public class OpenApiConfig {
         .addOpenApiCustomizer(
             openApi -> openApi.info(new Info().title("Actuator APIs").version(version)))
         .addOperationCustomizer(actuatorCustomizer)
-        .pathsToExclude(endpointProperties.getBasePath() + HEALTH_PATTERN)
+        // .pathsToExclude(endpointProperties.getBasePath() + HEALTH_PATTERN)
         .build();
   }
 
@@ -74,8 +77,8 @@ public class OpenApiConfig {
                         .title(StringUtils.capitalize(name))
                         .version(version)
                         .description(description)
-                        .termsOfService("http://swagger.io/terms/")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org"))))
+                        .termsOfService(TERMS_OF_SERVICE)
+                        .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
         .pathsToMatch("/auth" + ALL_PATTERN)
         .build();
   }
@@ -100,8 +103,8 @@ public class OpenApiConfig {
                         .title(StringUtils.capitalize(name))
                         .version(version)
                         .description(description)
-                        .termsOfService("http://swagger.io/terms/")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org"))))
+                        .termsOfService(TERMS_OF_SERVICE)
+                        .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
         .pathsToExclude(endpointProperties.getBasePath() + ALL_PATTERN, "/auth" + ALL_PATTERN)
         .build();
   }

@@ -2,10 +2,6 @@ package com.minhlq.blogsservice.payload;
 
 import com.minhlq.blogsservice.annotation.DuplicatedEmailConstraint;
 import com.minhlq.blogsservice.annotation.DuplicatedUsernameConstraint;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,23 +22,14 @@ import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_EXISTED;
  * @version 1.0
  * @since 1.0
  */
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public final class SignUpRequest {
-
-  @EqualsAndHashCode.Include
-  @NotBlank(message = USERNAME_CANNOT_BLANK)
-  @Size(min = 3, max = 50, message = INVALID_USERNAME_SIZE)
-  @DuplicatedUsernameConstraint(message = USERNAME_EXISTED)
-  private String username;
-
-  @ToString.Exclude
-  @NotBlank(message = PASSWORD_CANNOT_BLANK)
-  @Size(min = 4, message = INVALID_PASSWORD_SIZE)
-  private String password;
-
-  @Email(message = INVALID_EMAIL)
-  @NotBlank(message = BLANK_EMAIL)
-  @DuplicatedEmailConstraint(message = EMAIL_ALREADY_EXIST)
-  private String email;
-}
+public record SignUpRequest(
+    @NotBlank(message = USERNAME_CANNOT_BLANK)
+        @Size(min = 3, max = 50, message = INVALID_USERNAME_SIZE)
+        @DuplicatedUsernameConstraint(message = USERNAME_EXISTED)
+        String username,
+    @NotBlank(message = PASSWORD_CANNOT_BLANK) @Size(min = 8, message = INVALID_PASSWORD_SIZE)
+        String password,
+    @Email(message = INVALID_EMAIL)
+        @NotBlank(message = BLANK_EMAIL)
+        @DuplicatedEmailConstraint(message = EMAIL_ALREADY_EXIST)
+        String email) {}

@@ -54,7 +54,7 @@ public final class UserConstants {
   public static final String COULD_NOT_CREATE_USER = "Could not create user";
   public static final String COULD_NOT_VERIFY_USER = "Could not verify user";
   public static final String EMAIL_ALREADY_EXIST =
-      "Email {0} already exist and nothing will be done";
+      "Email {email} already exist! Please choose another";
   public static final String USER_NOT_FOUND = "User with username: \"{0}\" not found";
   public static final String USERNAME_EXISTED = "Username already exist";
   public static final String USER_EXIST_BUT_NOT_ENABLED =

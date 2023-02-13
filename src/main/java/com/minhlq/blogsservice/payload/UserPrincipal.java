@@ -2,9 +2,11 @@ package com.minhlq.blogsservice.payload;
 
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +31,8 @@ import static com.minhlq.blogsservice.constant.UserConstants.USER_MUST_NOT_BE_NU
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class UserPrincipal implements UserDetails {
 
@@ -54,7 +60,7 @@ public final class UserPrincipal implements UserDetails {
 
   private int failedLoginAttempts;
 
-  private LocalDateTime lastSuccessfulLogin;
+  private Date lastSuccessfulLogin;
 
   private boolean enabled;
 
@@ -100,7 +106,7 @@ public final class UserPrincipal implements UserDetails {
         .gender(user.getGender())
         .profileImage(user.getProfileImage())
         .failedLoginAttempts(user.getFailedLoginAttempts())
-        .lastSuccessfulLogin(user.getLastSuccessfulLogin())
+        .lastSuccessfulLogin(Date.from(user.getLastSuccessfulLogin().toInstant(ZoneOffset.UTC)))
         .enabled(user.isEnabled())
         .accountNonExpired(!isAccountExpired)
         .accountNonLocked(!isAccountLocked)
