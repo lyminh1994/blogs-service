@@ -3,6 +3,7 @@ package com.minhlq.blogsservice.util;
 import com.minhlq.blogsservice.helper.TestHelper;
 import com.minhlq.blogsservice.helper.UserHelper;
 import com.minhlq.blogsservice.payload.UserPrincipal;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,6 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 class SecurityUtilsTest {
 

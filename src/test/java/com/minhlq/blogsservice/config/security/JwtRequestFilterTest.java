@@ -1,12 +1,11 @@
 package com.minhlq.blogsservice.config.security;
 
-import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.constant.TestConstants;
 import com.minhlq.blogsservice.helper.UserHelper;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
-import net.datafaker.Faker;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,26 +14,25 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import jakarta.servlet.ServletException;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.OK;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class JwtRequestFilterTest {
 
   static final String encryptedToken = TestConstants.ENCRYPTED_TOKEN;
   static final String validBearerToken = TestConstants.BEARER_AUTHENTICATION_TOKEN;
-  static final String invalidBearerToken = SecurityConstants.BEARER;
-  static final String API_AUTH_LOGIN = "/auth/login";
+  static final String invalidBearerToken = TestConstants.INVALID_TOKEN;
+  static final String API_AUTH_LOGIN = "/auth/sign-in";
 
   @Mock JwtService jwtService;
 
@@ -67,7 +65,7 @@ class JwtRequestFilterTest {
   @Test
   void givenTokenInHeader_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
     // given - precondition or setup
-    request.addHeader(AUTHORIZATION, encryptedToken);
+    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
 
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
@@ -78,7 +76,7 @@ class JwtRequestFilterTest {
     jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
     // then - verify the output
-    Assertions.assertEquals(OK.value(), response.getStatus());
+    assertEquals(200, response.getStatus());
   }
 
   @Test
@@ -91,14 +89,14 @@ class JwtRequestFilterTest {
     jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
     // then - verify the output
-    Assertions.assertEquals(OK.value(), response.getStatus());
+    assertEquals(200, response.getStatus());
   }
 
   @Test
   void givenInvalidToken_whenDoFilterInternal_thenValidJwtTokenReturnFalse()
       throws ServletException, IOException {
     // given - precondition or setup
-    request.addHeader(AUTHORIZATION, encryptedToken);
+    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
 
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(invalidBearerToken);
@@ -108,14 +106,14 @@ class JwtRequestFilterTest {
     jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
     // then - verify the output
-    Assertions.assertEquals(OK.value(), response.getStatus());
+    assertEquals(200, response.getStatus());
   }
 
   @Test
   void givenRawToken_whenDoFilterInternal_thenDecryptReturnNull()
       throws ServletException, IOException {
     // given - precondition or setup
-    request.addHeader(AUTHORIZATION, validBearerToken);
+    request.addHeader(HttpHeaders.AUTHORIZATION, validBearerToken);
 
     given(jwtService.getJwtToken(request, false)).willReturn(validBearerToken);
     given(encryptionService.decrypt(anyString())).willReturn(null);
@@ -124,6 +122,6 @@ class JwtRequestFilterTest {
     jwtAuthTokenFilter.doFilterInternal(request, response, filterChain);
 
     // then - verify the output
-    Assertions.assertEquals(OK.value(), response.getStatus());
+    assertEquals(200, response.getStatus());
   }
 }

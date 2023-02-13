@@ -16,4 +16,6 @@ public final class TestConstants {
       "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMDAxIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.aLAFz9x6OF4BSpUQxIKWn39sDp8Cr9ZEeVqcMTdwtBsEZwdCKyR2lkjo_2BzcOJz96N7Qdx7t7VUXerKShnbxg";
 
   public static final String BEARER_AUTHENTICATION_TOKEN = BEARER + SPACE + AUTHENTICATION_TOKEN;
+
+  public static final String INVALID_TOKEN = BEARER;
 }
