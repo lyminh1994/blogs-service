@@ -56,12 +56,4 @@ public interface UserService {
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
   ProfileResponse unFollowByUsername(String username);
-
-  /**
-   * Update current user password
-   *
-   * @param currentUser Current user
-   * @param updatePasswordRequest Update password params
-   */
-  void updatePassword(UserPrincipal currentUser, UpdatePasswordRequest updatePasswordRequest);
 }

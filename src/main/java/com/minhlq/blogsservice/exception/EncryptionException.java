@@ -3,6 +3,8 @@ package com.minhlq.blogsservice.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.io.Serial;
+
 /**
  * Handles all encryption exceptions for the application.
  *
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "exception.message")
 public class EncryptionException extends RuntimeException {
 
+  @Serial
   private static final long serialVersionUID = 4518149233942557017L;
 
   /**

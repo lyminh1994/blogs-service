@@ -15,7 +15,6 @@ import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +33,6 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
 
   private final FollowRepository followRepository;
-
-  private final PasswordEncoder passwordEncoder;
 
   @Override
   public UserPrincipal updateUser(UpdateUserDto updateUserDto) {
@@ -109,18 +106,5 @@ public class UserServiceImpl implements UserService {
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);
             })
         .orElseThrow(ResourceNotFoundException::new);
-  }
-
-  @Override
-  public void updatePassword(
-      UserPrincipal currentUser, UpdatePasswordRequest updatePasswordRequest) {
-    userRepository
-        .findById(currentUser.getId())
-        .ifPresent(
-            user -> {
-              String password = passwordEncoder.encode(updatePasswordRequest.newPassword());
-              user.setPassword(password);
-              userRepository.saveAndFlush(user);
-            });
   }
 }

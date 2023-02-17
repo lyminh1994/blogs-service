@@ -3,6 +3,8 @@ package com.minhlq.blogsservice.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.io.Serial;
+
 /**
  * Responsible for user not found exception specifically.
  *
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 
+  @Serial
   private static final long serialVersionUID = -4687893464037108903L;
 
   public ResourceNotFoundException() {

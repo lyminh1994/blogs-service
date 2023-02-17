@@ -1,3 +1,5 @@
 package com.minhlq.blogsservice.dto.request;
 
-public record UpdatePasswordRequest(String currentPassword, String newPassword) {}
+import com.minhlq.blogsservice.annotation.UpdatePasswordConstraint;
+
+public record UpdatePasswordRequest(@UpdatePasswordConstraint String currentPassword, String newPassword) {}
