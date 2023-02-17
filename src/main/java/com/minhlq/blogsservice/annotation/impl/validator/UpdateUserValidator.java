@@ -4,10 +4,10 @@ import com.minhlq.blogsservice.annotation.UpdateUserConstraint;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Objects;
 
 /**
@@ -55,6 +55,6 @@ public class UpdateUserValidator
           .addConstraintViolation();
     }
 
-    return isEmailValid || isPhoneValid;
+    return isEmailValid && isPhoneValid;
   }
 }

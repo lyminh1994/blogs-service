@@ -2,7 +2,6 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
-import com.minhlq.blogsservice.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
@@ -35,7 +34,7 @@ public class UserServiceImpl implements UserService {
   private final FollowRepository followRepository;
 
   @Override
-  public UserPrincipal updateUser(UpdateUserDto updateUserDto) {
+  public UserPrincipal updateUserDetails(UpdateUserDto updateUserDto) {
     UserEntity updatedUser =
         userRepository
             .findById(updateUserDto.targetUser().getId())

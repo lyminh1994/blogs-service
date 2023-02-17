@@ -76,21 +76,17 @@ public class SecurityConfig {
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     http.cors().and().csrf().disable();
     http.httpBasic().disable().formLogin().disable().logout().disable();
-
+    // @formatter:off
     http.authorizeHttpRequests()
-        .requestMatchers(OPTIONS)
-        .permitAll()
-        .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
-        .permitAll()
-        .requestMatchers(GET, "/articles/feeds")
-        .authenticated()
-        .requestMatchers(GET, "/articles/**", "/user/{username}", "/tags")
-        .permitAll()
-        .anyRequest()
-        .authenticated();
+        .requestMatchers(OPTIONS).permitAll()
+        .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0])).permitAll()
+        .requestMatchers(GET, "/articles/feeds").authenticated()
+        .requestMatchers(GET, "/articles/**", "/user/{username}", "/tags").permitAll()
+        .anyRequest().authenticated();
+    // @formatter:on
 
     http.sessionManagement()
-        .sessionCreationPolicy(STATELESS)
+            .sessionCreationPolicy(STATELESS)
         .and()
         .exceptionHandling()
         .authenticationEntryPoint(unauthorizedHandler);

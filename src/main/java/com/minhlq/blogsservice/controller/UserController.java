@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
-
 /**
  * This controller handles all requests relating to user.
  *
@@ -65,7 +63,7 @@ public class UserController {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
 
     UpdateUserDto updateUser = new UpdateUserDto(currentUser, updateUserRequest);
-    UserPrincipal userDetails = userService.updateUser(updateUser);
+    UserPrincipal userDetails = userService.updateUserDetails(updateUser);
 
     // Authenticate user with the updated profile.
     SecurityUtils.authenticateUser(userDetails);

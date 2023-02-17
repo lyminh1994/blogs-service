@@ -1,13 +1,11 @@
 package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.dto.UpdateUserDto;
-import com.minhlq.blogsservice.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
-import org.springframework.validation.annotation.Validated;
-
 import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * This UserService interface is the contract for the user service operations.
@@ -26,7 +24,7 @@ public interface UserService {
    * @return the updated user
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  UserPrincipal updateUser(@Valid UpdateUserDto updateUserDto);
+  UserPrincipal updateUserDetails(@Valid UpdateUserDto updateUserDto);
 
   /**
    * Returns a user profile for the given username or throw exception if a user could not be found.
