@@ -256,7 +256,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public boolean isSlugExited(String slug) {
-    return articleRepository.findBySlug(ArticleUtils.toSlug(slug)).isEmpty();
+    return articleRepository.findBySlug(ArticleUtils.toSlug(slug)).isPresent();
   }
 
   /**

@@ -84,7 +84,7 @@ public interface ArticleService {
   ArticleResponse unFavoriteArticle(String slug);
 
   /**
-   * Check article slug has exited in table article *
+   * Check article slug has exited in table articles
    *
    * @param slug article slug
    * @return is exited

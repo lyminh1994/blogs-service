@@ -2,11 +2,10 @@ package com.minhlq.blogsservice.annotation.impl.validator;
 
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
 import com.minhlq.blogsservice.service.ArticleService;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The implement for DuplicatedArticleConstraint annotation.
@@ -23,6 +22,10 @@ public class DuplicatedArticleValidator
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    return StringUtils.isBlank(value) || articleService.isSlugExited(value);
+    if (StringUtils.isBlank(value)) {
+      return true;
+    }
+
+    return !articleService.isSlugExited(value);
   }
 }
