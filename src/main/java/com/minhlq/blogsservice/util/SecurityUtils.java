@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +26,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 import static com.minhlq.blogsservice.constant.ErrorConstants.UNAUTHORIZED_ACCESS;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_CREDENTIALS_EXPIRED_MESSAGE;
 import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_DEBUG_MESSAGE;
 import static com.minhlq.blogsservice.constant.UserConstants.USER_DISABLED_MESSAGE;
 import static com.minhlq.blogsservice.constant.UserConstants.USER_EXPIRED_MESSAGE;
@@ -185,9 +183,6 @@ public class SecurityUtils {
     }
     if (!userDetails.isAccountNonExpired()) {
       throw new AccountExpiredException(USER_EXPIRED_MESSAGE);
-    }
-    if (!userDetails.isCredentialsNonExpired()) {
-      throw new CredentialsExpiredException(USER_CREDENTIALS_EXPIRED_MESSAGE);
     }
   }
 
