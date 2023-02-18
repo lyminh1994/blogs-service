@@ -28,7 +28,7 @@ public @interface DuplicatedUsernameConstraint {
    *
    * @return the validation messages
    */
-  String message() default "Username has been used";
+  String message() default "Username {username} has been used! Please choose another.";
 
   /**
    * Certain validation group that should be triggered.

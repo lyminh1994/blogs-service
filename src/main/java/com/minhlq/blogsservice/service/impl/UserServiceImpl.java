@@ -99,4 +99,14 @@ public class UserServiceImpl implements UserService {
             })
         .orElseThrow(ResourceNotFoundException::new);
   }
+
+  @Override
+  public boolean isUsernameExisted(String username) {
+    return userRepository.findByUsername(username).isPresent();
+  }
+
+  @Override
+  public boolean isEmailExisted(String email) {
+    return userRepository.findByEmail(email).isPresent();
+  }
 }

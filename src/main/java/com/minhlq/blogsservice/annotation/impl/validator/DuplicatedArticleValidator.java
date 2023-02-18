@@ -22,10 +22,6 @@ public class DuplicatedArticleValidator
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    if (StringUtils.isBlank(value)) {
-      return true;
-    }
-
-    return !articleService.isSlugExited(value);
+    return StringUtils.isBlank(value) || !articleService.isSlugExited(value);
   }
 }

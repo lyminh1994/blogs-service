@@ -54,4 +54,8 @@ public interface UserService {
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
   ProfileResponse unFollowByUsername(String username);
+
+  boolean isUsernameExisted(String username);
+
+  boolean isEmailExisted(String email);
 }
