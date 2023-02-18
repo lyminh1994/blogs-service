@@ -144,27 +144,27 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     JPAQuery<?> query =
-    queryFactory
-        .from(qArticle)
-        .leftJoin(qArticleTag)
-        .on(qArticle.id.eq(qArticleTag.id.articleId))
-        .leftJoin(qTag)
-        .on(qTag.id.eq(qArticleTag.id.tagId))
-        .leftJoin(qArticleFavorite)
-        .on(qArticleFavorite.id.articleId.eq(qArticle.id))
-        .leftJoin(qUser)
-        .on(qUser.id.eq(qArticleFavorite.id.userId))
-        .where(conditions);
+        queryFactory
+            .from(qArticle)
+            .leftJoin(qArticleTag)
+            .on(qArticle.id.eq(qArticleTag.id.articleId))
+            .leftJoin(qTag)
+            .on(qTag.id.eq(qArticleTag.id.tagId))
+            .leftJoin(qArticleFavorite)
+            .on(qArticleFavorite.id.articleId.eq(qArticle.id))
+            .leftJoin(qUser)
+            .on(qUser.id.eq(qArticleFavorite.id.userId))
+            .where(conditions);
 
     long totalElements = query.select(qArticle.countDistinct()).fetchFirst();
 
     List<ArticleEntity> articles = Collections.emptyList();
     query
-    .distinct()
-    .select(qArticle)
-    .offset(pageRequest.getOffset())
-    .limit(pageRequest.getPageSize())
-    .fetch();
+        .distinct()
+        .select(qArticle)
+        .offset(pageRequest.getOffset())
+        .limit(pageRequest.getPageSize())
+        .fetch();
 
     List<ArticleResponse> contents = getArticleResponses(articles);
 
@@ -245,8 +245,7 @@ public class ArticleServiceImpl implements ArticleService {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    ArticleFavoriteKey articleFavorite =
-        new ArticleFavoriteKey(article.getId(), currentUser.id());
+    ArticleFavoriteKey articleFavorite = new ArticleFavoriteKey(article.getId(), currentUser.id());
     articleFavoriteRepository
         .findById(articleFavorite)
         .ifPresent(articleFavoriteRepository::delete);
