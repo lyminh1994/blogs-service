@@ -6,14 +6,12 @@ import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
 import jakarta.servlet.ServletException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -23,8 +21,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class JwtRequestFilterTest {
@@ -32,7 +32,6 @@ class JwtRequestFilterTest {
   static final String encryptedToken = TestConstants.ENCRYPTED_TOKEN;
   static final String validBearerToken = TestConstants.BEARER_AUTHENTICATION_TOKEN;
   static final String invalidBearerToken = TestConstants.INVALID_TOKEN;
-  static final String API_AUTH_LOGIN = "/auth/sign-in";
 
   @Mock JwtService jwtService;
 
@@ -48,25 +47,22 @@ class JwtRequestFilterTest {
   MockHttpServletResponse response;
 
   @BeforeAll
-  void beforeAll() throws Exception {
-    try (AutoCloseable mocks = MockitoAnnotations.openMocks(this)) {
-      Assertions.assertNotNull(mocks);
+  void beforeAll() {
+    AutoCloseable mocks = openMocks(this);
+    assertNotNull(mocks);
 
-      UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-      given(userDetailsService.loadUserByUsername(anyString())).willReturn(userDetails);
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
+    given(userDetailsService.loadUserByUsername(anyString())).willReturn(userDetails);
 
-      request = new MockHttpServletRequest();
-      request.setRequestURI(API_AUTH_LOGIN);
+    request = new MockHttpServletRequest();
+    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
 
-      response = new MockHttpServletResponse();
-    }
+    response = new MockHttpServletResponse();
   }
 
   @Test
   void givenTokenInHeader_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
     // given - precondition or setup
-    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
-
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
     given(jwtService.isValidJwtToken(anyString())).willReturn(true);
@@ -96,8 +92,6 @@ class JwtRequestFilterTest {
   void givenInvalidToken_whenDoFilterInternal_thenValidJwtTokenReturnFalse()
       throws ServletException, IOException {
     // given - precondition or setup
-    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
-
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(invalidBearerToken);
     given(jwtService.isValidJwtToken(anyString())).willReturn(false);
@@ -112,9 +106,9 @@ class JwtRequestFilterTest {
   @Test
   void givenRawToken_whenDoFilterInternal_thenDecryptReturnNull()
       throws ServletException, IOException {
-    // given - precondition or setup
     request.addHeader(HttpHeaders.AUTHORIZATION, validBearerToken);
 
+    // given - precondition or setup
     given(jwtService.getJwtToken(request, false)).willReturn(validBearerToken);
     given(encryptionService.decrypt(anyString())).willReturn(null);
 
