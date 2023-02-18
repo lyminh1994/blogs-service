@@ -40,11 +40,9 @@ class UserServiceTest {
   @DisplayName("Should create user success")
   void shouldCreateUserSuccess() {
     // given - precondition or setup
-    SignUpRequest signUpRequest = new SignUpRequest();
-    signUpRequest.setUsername("user01");
-    signUpRequest.setPassword("pass");
+    SignUpRequest signUpRequest = new SignUpRequest("user01", "pass", "email@gmail.com");
     given(userRepository.save(user)).willReturn(user);
-    given(passwordEncoder.encode(signUpRequest.getPassword())).willReturn("encode-pass");
+    given(passwordEncoder.encode(signUpRequest.password())).willReturn("encode-pass");
 
     // when -  action or the behaviour that we are going test
     AuthenticationResponse savedUser = authService.createUser(signUpRequest, new HttpHeaders());

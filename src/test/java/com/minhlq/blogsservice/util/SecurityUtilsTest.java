@@ -2,20 +2,29 @@ package com.minhlq.blogsservice.util;
 
 import com.minhlq.blogsservice.helper.TestHelper;
 import com.minhlq.blogsservice.helper.UserHelper;
+import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.platform.commons.util.ReflectionUtils;
-import org.mockito.Mockito;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
+
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 class SecurityUtilsTest {
 
@@ -25,131 +34,127 @@ class SecurityUtilsTest {
   }
 
   @Test
-  void callingConstructorShouldThrowException() {
-    Assertions.assertThrows(
+  void whenCallingConstructor_thenThrowUnsupportedOperationException() {
+    assertThrows(
         UnsupportedOperationException.class,
         () -> ReflectionUtils.newInstance(SecurityUtils.class));
   }
 
   @Test
-  void testingIsUserAuthenticatedNull() {
-    Assertions.assertFalse(SecurityUtils.isAuthenticated(null));
+  void givenAuthenticatedIsNull_whenIsAuthenticated_thenReturnFalse() {
+    assertFalse(SecurityUtils.isAuthenticated(null));
   }
 
   @Test
-  void testingIsUserAuthenticatedNotAuthenticated() {
+  void givenNotAuthenticated_whenIsAuthenticated_thenReturnFalse() {
     Authentication authentication = SecurityUtils.getAuthentication();
-    Assertions.assertAll(
+    assertAll(
         () -> {
-          Assertions.assertFalse(SecurityUtils.isAuthenticated());
-          Assertions.assertFalse(SecurityUtils.isAuthenticated(authentication));
+          assertFalse(SecurityUtils.isAuthenticated());
+          assertFalse(SecurityUtils.isAuthenticated(authentication));
         });
   }
 
   @Test
-  void testingIsUserAuthenticatedAsAnonymous() {
-    TestHelper.setAuthentication(TestHelper.ANONYMOUS_USER, TestHelper.ANONYMOUS_ROLE);
-    Assertions.assertFalse(SecurityUtils.isAuthenticated());
+  void givenAnonymousUser_whenIsAuthenticated_thenReturnFalse() {
+    TestHelper.setAuthentication(TestHelper.ANONYMOUS_USER, TestHelper.ROLE_ANONYMOUS);
+    assertFalse(SecurityUtils.isAuthenticated());
   }
 
   @Test
-  void testingIsUserAuthenticatedAuthenticated(TestInfo testInfo) {
+  void givenValidUser_whenIsAuthenticated_thenReturnTrue(TestInfo testInfo) {
     TestHelper.setAuthentication(testInfo.getDisplayName(), TestHelper.ROLE_USER);
-    Assertions.assertTrue(SecurityUtils.isAuthenticated());
+    assertTrue(SecurityUtils.isAuthenticated());
   }
 
   @Test
-  void testUserDisabledThrowsException() {
+  void givenDisabledUser_whenValidateUserDetailsStatus_thenThrowsDisabledException() {
     UserPrincipal userPrincipal = UserPrincipal.buildUserDetails(UserHelper.createUser());
-    Assertions.assertThrows(
+    assertThrows(
         DisabledException.class, () -> SecurityUtils.validateUserDetailsStatus(userPrincipal));
   }
 
   @Test
-  void testUserEnabledDoesNotTrowsException() {
-    Assertions.assertDoesNotThrow(
+  void givenEnabledUser_whenValidateUserDetailsStatus_thenDoesNotThrowsException() {
+    assertDoesNotThrow(
         () ->
             SecurityUtils.validateUserDetailsStatus(
                 UserPrincipal.buildUserDetails(UserHelper.createUser(true))));
   }
 
   @Test
-  void testUserAccountLockedTrowsException() {
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-    userDetails.setAccountNonLocked(false);
+  void givenUserFailedLoginAttemptsIs7_whenValidateUserDetailsStatus_thenThrowsLockedException() {
+    UserEntity user = UserHelper.createUser(true);
+    user.setFailedLoginAttempts(7);
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
 
-    Assertions.assertThrows(
-        LockedException.class, () -> SecurityUtils.validateUserDetailsStatus(userDetails));
+    assertThrows(LockedException.class, () -> SecurityUtils.validateUserDetailsStatus(userDetails));
   }
 
   @Test
-  void testUserAccountExpiredTrowsException() {
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-    userDetails.setAccountNonExpired(false);
+  void
+      givenUserLastSuccessfulLoginPlus31_whenValidateUserDetailsStatus_thenThrowsAccountExpiredException() {
+    UserEntity user = UserHelper.createUser(true);
+    user.setLastSuccessfulLogin(LocalDateTime.now().plusDays(31));
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
 
-    Assertions.assertThrows(
+    assertThrows(
         AccountExpiredException.class, () -> SecurityUtils.validateUserDetailsStatus(userDetails));
   }
 
   @Test
-  void testUserCredentialsExpiredTrowsException() {
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-    userDetails.setCredentialsNonExpired(false);
-
-    Assertions.assertThrows(
-        CredentialsExpiredException.class,
-        () -> SecurityUtils.validateUserDetailsStatus(userDetails));
-  }
-
-  @Test
-  void getAuthorizedUserDetailsWithoutAuthenticationReturnsNull() {
+  void givenWithoutAuthentication_whenGetAuthorizedUserDetails_thenReturnNull() {
     SecurityUtils.clearAuthentication();
-    Assertions.assertNull(SecurityUtils.getAuthenticatedUserDetails());
+    assertNull(SecurityUtils.getAuthenticatedUserDetails());
   }
 
   @Test
-  void authenticateUserWithNullUserDetails() {
-    AuthenticationManager authManager = Mockito.mock(AuthenticationManager.class);
+  void givenAuthenticateUserWithNullUserDetails_whenAuthenticateUser_thenDoesNotThrowException() {
+    AuthenticationManager authManager = mock(AuthenticationManager.class);
 
-    Assertions.assertAll(
+    assertAll(
         () -> {
-          Assertions.assertNotNull(authManager);
-          Assertions.assertDoesNotThrow(() -> SecurityUtils.authenticateUser(null));
+          assertNotNull(authManager);
+          assertDoesNotThrow(() -> SecurityUtils.authenticateUser(null));
         });
   }
 
   @Test
-  void authenticateUserWithUserDetails() {
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-
+  void givenAuthenticateUserWithUserDetails_whenIsAuthenticated_thenReturnTrue() {
+    UserEntity user = UserHelper.createUser(true);
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
     SecurityUtils.authenticateUser(userDetails);
 
-    Assertions.assertTrue(SecurityUtils.isAuthenticated());
+    assertTrue(SecurityUtils.isAuthenticated());
   }
 
   @Test
-  void authenticateUserWithNullHttpServletRequestAndUserDetails() {
+  void
+      givenAuthenticateUserWithNullHttpServletRequestAndUserDetails_whenIsAuthenticated_thenReturnFalse() {
     SecurityUtils.authenticateUser(null, null);
 
-    Assertions.assertFalse(SecurityUtils.isAuthenticated());
+    assertFalse(SecurityUtils.isAuthenticated());
   }
 
   @Test
-  void authenticateUserWithNullHttpServletRequest() {
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
+  void givenAuthenticateUserWithNullHttpServletRequest_whenIsAuthenticated_thenReturnFalse() {
+    UserEntity user = UserHelper.createUser(true);
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
 
     SecurityUtils.authenticateUser(null, userDetails);
 
-    Assertions.assertFalse(SecurityUtils.isAuthenticated());
+    assertFalse(SecurityUtils.isAuthenticated());
   }
 
   @Test
-  void authenticateUserWithHttpServletRequestAndUserDetails() {
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
-    HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
+  void
+      givenAuthenticateUserWithHttpServletRequestAndUserDetails_whenIsAuthenticated_thenReturnTrue() {
+    UserEntity user = UserHelper.createUser(true);
+    UserPrincipal userDetails = UserPrincipal.buildUserDetails(user);
+    HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
     SecurityUtils.authenticateUser(httpServletRequest, userDetails);
 
-    Assertions.assertTrue(SecurityUtils.isAuthenticated());
+    assertTrue(SecurityUtils.isAuthenticated());
   }
 }

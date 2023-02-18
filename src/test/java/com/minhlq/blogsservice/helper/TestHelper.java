@@ -3,13 +3,13 @@ package com.minhlq.blogsservice.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
-import net.datafaker.Faker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.IOException;
@@ -20,10 +20,9 @@ import java.util.List;
 public class TestHelper {
 
   public static final String ANONYMOUS_USER = "anonymousUser";
-  public static final String ANONYMOUS_ROLE = "ROLE_ANONYMOUS";
+  public static final String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
   public static final String ROLE_USER = "ROLE_USER";
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
-  public static final Faker FAKER = new Faker();
   public static final ObjectMapper objectMapper = new ObjectMapper();
   public static final String[] IGNORED_FIELDS = {
     "id", "createdAt", "createdBy", "updatedAt", "updatedBy"
@@ -60,11 +59,7 @@ public class TestHelper {
     Authentication auth;
     if (username.equals(ANONYMOUS_USER)) {
       UserDetails user =
-          org.springframework.security.core.userdetails.User.builder()
-              .username(username)
-              .password(username)
-              .authorities(authorities)
-              .build();
+          User.builder().username(username).password(username).authorities(authorities).build();
 
       auth = new AnonymousAuthenticationToken(username, user, authorities);
     } else {
@@ -73,6 +68,7 @@ public class TestHelper {
 
       auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
+
     SecurityContextHolder.getContext().setAuthentication(auth);
   }
 

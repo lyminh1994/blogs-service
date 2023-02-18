@@ -34,11 +34,8 @@ class JwtRequestFilterTest {
   static final String invalidBearerToken = TestConstants.INVALID_TOKEN;
 
   @Mock JwtService jwtService;
-
   @Mock EncryptionService encryptionService;
-
   @Mock UserDetailsService userDetailsService;
-
   @Mock MockFilterChain filterChain;
 
   @InjectMocks JwtRequestFilter jwtAuthTokenFilter;

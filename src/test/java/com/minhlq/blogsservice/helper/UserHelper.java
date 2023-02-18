@@ -2,6 +2,7 @@ package com.minhlq.blogsservice.helper;
 
 import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.UserConstants;
+import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.model.UserRoleEntity;
 import net.datafaker.Faker;
@@ -95,6 +96,11 @@ public final class UserHelper {
   public static UserEntity createUser(
       String username, String password, String email, boolean enabled) {
     UserEntity user = new UserEntity();
+    user.setId(FAKER.random().nextLong());
+    user.setBirthday(FAKER.date().birthday().toLocalDateTime().toLocalDate());
+    user.setGender(Gender.MALE);
+    user.setProfileImage(FAKER.avatar().image());
+    user.setPublicId(FAKER.internet().uuid());
     user.setUsername(username);
     user.setPassword(password);
     user.setEmail(email);

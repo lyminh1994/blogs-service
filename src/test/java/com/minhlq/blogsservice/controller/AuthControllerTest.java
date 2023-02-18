@@ -6,6 +6,7 @@ import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
+import com.minhlq.blogsservice.service.UserService;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ class AuthControllerTest {
   private static final Faker FAKER = new Faker();
   private static DuplicatedUsernameValidator validator;
   @MockBean private UserRepository userRepository;
+  @Mock private UserService userService;
   @Mock private AuthService authService;
   @Mock private CookieService cookieService;
   @InjectMocks private AuthController authController;
@@ -52,7 +54,7 @@ class AuthControllerTest {
             .alwaysDo(MockMvcResultHandlers.print())
             .build();
 
-    validator = new DuplicatedUsernameValidator(userRepository);
+    validator = new DuplicatedUsernameValidator(userService);
 
     mapper = new ObjectMapper();
     registerUrl = "";
@@ -70,9 +72,9 @@ class AuthControllerTest {
   @Test
   void givenExistedUsername_whenCallRegister_thenReturnBadRequest() throws Exception {
     given(userRepository.findByUsername(ArgumentMatchers.anyString())).willReturn(Optional.empty());
-    SignUpRequest signUpRequest = new SignUpRequest();
-    signUpRequest.setUsername(FAKER.name().username());
-    signUpRequest.setPassword(FAKER.internet().password());
+    SignUpRequest signUpRequest =
+        new SignUpRequest(
+            FAKER.name().username(), FAKER.internet().password(), FAKER.internet().emailAddress());
 
     mockMvc
         .perform(
