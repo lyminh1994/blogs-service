@@ -2,11 +2,6 @@ package com.minhlq.blogsservice.payload;
 
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,9 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,48 +22,61 @@ import static com.minhlq.blogsservice.constant.UserConstants.USER_MUST_NOT_BE_NU
  * @version 1.0
  * @since 1.0
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public final class UserPrincipal implements UserDetails {
+public record UserPrincipal(
+    Long id,
+    String publicId,
+    String username,
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    String phone,
+    LocalDate birthday,
+    Gender gender,
+    String profileImage,
+    int failedLoginAttempts,
+    LocalDateTime lastSuccessfulLogin,
+    boolean enabled,
+    boolean accountNonExpired,
+    boolean accountNonLocked,
+    boolean credentialsNonExpired,
+    Collection<? extends GrantedAuthority> authorities)
+    implements UserDetails {
 
-  private Long id;
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return authorities;
+  }
 
-  @EqualsAndHashCode.Include private String publicId;
+  @Override
+  public String getPassword() {
+    return password;
+  }
 
-  @EqualsAndHashCode.Include private String username;
+  @Override
+  public String getUsername() {
+    return username;
+  }
 
-  @EqualsAndHashCode.Include private String email;
+  @Override
+  public boolean isAccountNonExpired() {
+    return accountNonExpired;
+  }
 
-  private String password;
+  @Override
+  public boolean isAccountNonLocked() {
+    return accountNonLocked;
+  }
 
-  private String firstName;
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return credentialsNonExpired;
+  }
 
-  private String lastName;
-
-  @EqualsAndHashCode.Include private String phone;
-
-  private LocalDate birthday;
-
-  private Gender gender;
-
-  private String profileImage;
-
-  private int failedLoginAttempts;
-
-  private Date lastSuccessfulLogin;
-
-  private boolean enabled;
-
-  private boolean accountNonExpired;
-
-  private boolean accountNonLocked;
-
-  private boolean credentialsNonExpired;
-
-  private Collection<? extends GrantedAuthority> authorities;
+  @Override
+  public boolean isEnabled() {
+    return enabled;
+  }
 
   /**
    * Builds userDetails object from the specified user.
@@ -93,25 +99,24 @@ public final class UserPrincipal implements UserDetails {
 
     boolean isAccountLocked = user.getFailedLoginAttempts() > 5;
 
-    return UserPrincipal.builder()
-        .id(user.getId())
-        .publicId(user.getPublicId())
-        .username(user.getUsername())
-        .email(user.getEmail())
-        .password(user.getPassword())
-        .firstName(user.getFirstName())
-        .lastName(user.getLastName())
-        .phone(user.getPhone())
-        .birthday(user.getBirthday())
-        .gender(user.getGender())
-        .profileImage(user.getProfileImage())
-        .failedLoginAttempts(user.getFailedLoginAttempts())
-        .lastSuccessfulLogin(Date.from(user.getLastSuccessfulLogin().toInstant(ZoneOffset.UTC)))
-        .enabled(user.isEnabled())
-        .accountNonExpired(!isAccountExpired)
-        .accountNonLocked(!isAccountLocked)
-        .credentialsNonExpired(true)
-        .authorities(authorities)
-        .build();
+    return new UserPrincipal(
+        user.getId(),
+        user.getPublicId(),
+        user.getUsername(),
+        user.getEmail(),
+        user.getPassword(),
+        user.getFirstName(),
+        user.getLastName(),
+        user.getPhone(),
+        user.getBirthday(),
+        user.getGender(),
+        user.getProfileImage(),
+        user.getFailedLoginAttempts(),
+        user.getLastSuccessfulLogin(),
+        user.isEnabled(),
+        !isAccountExpired,
+        !isAccountLocked,
+        true,
+        authorities);
   }
 }

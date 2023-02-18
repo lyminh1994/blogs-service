@@ -111,7 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Set<Long> followedUsers = followRepository.findByUserId(currentUser.getId());
+    Set<Long> followedUsers = followRepository.findByUserId(currentUser.id());
     if (CollectionUtils.isEmpty(followedUsers)) {
       return new PageResponse<>(Collections.emptyList(), 0);
     }
@@ -188,7 +188,7 @@ public class ArticleServiceImpl implements ArticleService {
             .findBySlug(slug)
             .map(
                 currentArticle -> {
-                  if (!currentUser.getId().equals(currentArticle.getAuthor().getId())) {
+                  if (!currentUser.id().equals(currentArticle.getAuthor().getId())) {
                     throw new NoAuthorizationException();
                   }
 
@@ -210,7 +210,7 @@ public class ArticleServiceImpl implements ArticleService {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    if (!currentUser.getId().equals(article.getAuthor().getId())) {
+    if (!currentUser.id().equals(article.getAuthor().getId())) {
       throw new NoAuthorizationException();
     }
 
@@ -231,7 +231,7 @@ public class ArticleServiceImpl implements ArticleService {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavoriteKey =
-        new ArticleFavoriteKey(article.getId(), currentUser.getId());
+        new ArticleFavoriteKey(article.getId(), currentUser.id());
     if (articleFavoriteRepository.findById(articleFavoriteKey).isEmpty()) {
       articleFavoriteRepository.save(new ArticleFavoriteEntity(articleFavoriteKey));
     }
@@ -246,7 +246,7 @@ public class ArticleServiceImpl implements ArticleService {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavorite =
-        new ArticleFavoriteKey(article.getId(), currentUser.getId());
+        new ArticleFavoriteKey(article.getId(), currentUser.id());
     articleFavoriteRepository
         .findById(articleFavorite)
         .ifPresent(articleFavoriteRepository::delete);
@@ -269,11 +269,11 @@ public class ArticleServiceImpl implements ArticleService {
   private ArticleResponse getArticleResponse(UserPrincipal currentUser, ArticleEntity article) {
     ArticleResponse result = ArticleMapper.MAPPER.toArticleResponse(article);
     if (currentUser != null) {
-      FollowKey followId = new FollowKey(currentUser.getId(), article.getAuthor().getId());
+      FollowKey followId = new FollowKey(currentUser.id(), article.getAuthor().getId());
       result.getAuthor().setFollowing(followRepository.existsById(followId));
 
       ArticleFavoriteKey articleFavoriteId =
-          new ArticleFavoriteKey(article.getId(), currentUser.getId());
+          new ArticleFavoriteKey(article.getId(), currentUser.id());
       result.setFavorite(articleFavoriteRepository.existsById(articleFavoriteId));
     }
 

@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
   public UserPrincipal updateUserDetails(UpdateUserDto updateUserDto) {
     UserEntity updatedUser =
         userRepository
-            .findById(updateUserDto.targetUser().getId())
+            .findById(updateUserDto.targetUser().id())
             .map(
                 currentUser -> {
                   UpdateUserRequest params = updateUserDto.params();
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
               boolean following =
                   currentUser != null
                       && followRepository
-                          .findById(new FollowKey(currentUser.getId(), targetUser.getId()))
+                          .findById(new FollowKey(currentUser.id(), targetUser.getId()))
                           .isPresent();
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, following);
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followId = new FollowKey(currentUser.getId(), targetUser.getId());
+              FollowKey followId = new FollowKey(currentUser.id(), targetUser.getId());
               if (!followRepository.existsById(followId)) {
                 followRepository.save(new FollowEntity(followId));
               }
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followId = new FollowKey(currentUser.getId(), targetUser.getId());
+              FollowKey followId = new FollowKey(currentUser.id(), targetUser.getId());
               followRepository.findById(followId).ifPresent(followRepository::delete);
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);

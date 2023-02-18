@@ -30,14 +30,14 @@ public record UserResponse(
     Validate.notNull(userDetails, USER_DETAILS_MUST_NOT_BE_NULL);
 
     return new UserResponse(
-        userDetails.getPublicId(),
-        userDetails.getEmail(),
-        userDetails.getFirstName(),
-        userDetails.getLastName(),
-        userDetails.getPhone(),
-        userDetails.getBirthday(),
-        userDetails.getGender(),
-        userDetails.getProfileImage(),
-        userDetails.getAuthorities());
+        userDetails.publicId(),
+        userDetails.email(),
+        userDetails.firstName(),
+        userDetails.lastName(),
+        userDetails.phone(),
+        userDetails.birthday(),
+        userDetails.gender(),
+        userDetails.profileImage(),
+        userDetails.authorities());
   }
 }

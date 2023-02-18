@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
                   CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
                   if (currentUser != null) {
                     FollowKey followId =
-                        new FollowKey(currentUser.getId(), comment.getUser().getId());
+                        new FollowKey(currentUser.id(), comment.getUser().getId());
                     response.getUser().setFollowing(followRepository.existsById(followId));
                   }
 
@@ -95,8 +95,8 @@ public class CommentServiceImpl implements CommentService {
         commentRepository
             .findByIdAndArticle(commentId, article)
             .orElseThrow(ResourceNotFoundException::new);
-    if (!currentUser.getId().equals(article.getAuthor().getId())
-        || !currentUser.getId().equals(comment.getUser().getId())) {
+    if (!currentUser.id().equals(article.getAuthor().getId())
+        || !currentUser.id().equals(comment.getUser().getId())) {
       throw new NoAuthorizationException();
     }
 

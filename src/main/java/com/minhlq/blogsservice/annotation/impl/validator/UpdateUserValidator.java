@@ -32,7 +32,7 @@ public class UpdateUserValidator
     boolean isEmailValid =
         userRepository
             .findByEmail(inputEmail)
-            .map(user -> Objects.equals(user.getId(), targetUser.getId()))
+            .map(user -> Objects.equals(user.getId(), targetUser.id()))
             .orElse(true);
     if (!isEmailValid) {
       context.disableDefaultConstraintViolation();
@@ -45,7 +45,7 @@ public class UpdateUserValidator
     boolean isPhoneValid =
         userRepository
             .findByPhone(inputPhone)
-            .map(user -> Objects.equals(user.getId(), targetUser.getId()))
+            .map(user -> Objects.equals(user.getId(), targetUser.id()))
             .orElse(true);
     if (!isPhoneValid) {
       context.disableDefaultConstraintViolation();
