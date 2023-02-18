@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.exception.handler;
 
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -9,16 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * A global exception handler for REST API.
@@ -52,23 +47,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler({ConstraintViolationException.class})
-  @ResponseStatus(BAD_REQUEST)
-  public ErrorResource handleConstraintViolation(ConstraintViolationException ex) {
-    List<FieldErrorResource> errors = new ArrayList<>();
-    for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-      FieldErrorResource fieldErrorResource =
-          new FieldErrorResource(
-              violation.getRootBeanClass().getName(),
-              getParam(violation.getPropertyPath().toString()),
-              violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),
-              violation.getMessage());
-      errors.add(fieldErrorResource);
-    }
+  public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+    List<FieldErrorResource> fieldErrorResources =
+        ex.getConstraintViolations().stream()
+            .map(
+                violation ->
+                    new FieldErrorResource(
+                        violation.getRootBeanClass().getName(),
+                        getParam(violation.getPropertyPath().toString()),
+                        violation
+                            .getConstraintDescriptor()
+                            .getAnnotation()
+                            .annotationType()
+                            .getSimpleName(),
+                        violation.getMessage()))
+            .toList();
 
-    return new ErrorResource(errors);
+    return ResponseEntity.badRequest().body(new ErrorResource(fieldErrorResources));
   }
 
   private String getParam(String s) {
+    log.debug("Error param: {}", s);
     String[] splits = s.split("\\.");
     if (splits.length == 1) {
       return s;
