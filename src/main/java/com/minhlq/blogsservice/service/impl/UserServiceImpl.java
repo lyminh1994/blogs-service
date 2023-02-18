@@ -2,7 +2,6 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
-import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.model.FollowEntity;
@@ -40,16 +39,10 @@ public class UserServiceImpl implements UserService {
             .findById(updateUserDto.targetUser().id())
             .map(
                 currentUser -> {
-                  UpdateUserRequest params = updateUserDto.params();
-                  currentUser.setEmail(params.email());
-                  currentUser.setFirstName(params.firstName());
-                  currentUser.setLastName(params.lastName());
-                  currentUser.setPhone(params.phone());
-                  currentUser.setBirthday(params.birthday());
-                  currentUser.setGender(params.gender());
-                  currentUser.setProfileImage(params.profileImage());
+                  UserEntity updateUser =
+                      UserMapper.MAPPER.toUser(currentUser, updateUserDto.params());
 
-                  return userRepository.saveAndFlush(currentUser);
+                  return userRepository.saveAndFlush(updateUser);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
