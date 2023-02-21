@@ -40,8 +40,8 @@ class JwtRequestFilterTest {
 
   @InjectMocks JwtRequestFilter jwtAuthTokenFilter;
 
-  MockHttpServletRequest request;
-  MockHttpServletResponse response;
+  MockHttpServletRequest request = new MockHttpServletRequest();
+  MockHttpServletResponse response = new MockHttpServletResponse();
 
   @BeforeAll
   void beforeAll() {
@@ -50,15 +50,12 @@ class JwtRequestFilterTest {
 
     UserPrincipal userDetails = UserPrincipal.buildUserDetails(UserHelper.createUser(true));
     given(userDetailsService.loadUserByUsername(anyString())).willReturn(userDetails);
-
-    request = new MockHttpServletRequest();
-    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
-
-    response = new MockHttpServletResponse();
   }
 
   @Test
   void givenTokenInHeader_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
+    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
+
     // given - precondition or setup
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
@@ -74,6 +71,8 @@ class JwtRequestFilterTest {
 
   @Test
   void givenTokenInCookie_whenDoFilterInternal_thenReturnOK() throws ServletException, IOException {
+    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
+
     // given - precondition or setup
     given(jwtService.getJwtToken(request, true)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(validBearerToken);
@@ -88,6 +87,8 @@ class JwtRequestFilterTest {
   @Test
   void givenInvalidToken_whenDoFilterInternal_thenValidJwtTokenReturnFalse()
       throws ServletException, IOException {
+    request.addHeader(HttpHeaders.AUTHORIZATION, encryptedToken);
+
     // given - precondition or setup
     given(jwtService.getJwtToken(request, false)).willReturn(encryptedToken);
     given(encryptionService.decrypt(anyString())).willReturn(invalidBearerToken);
