@@ -41,7 +41,7 @@
         <springdoc-openapi-starter.version>
             2.0.2
         </springdoc-openapi-starter.version>
-        <datafaker.version>1.7.0</datafaker.version>
+        <datafaker.version>1.8.0</datafaker.version>
         <postgresql.version>42.5.3</postgresql.version>
         <hibernate-envers.version>6.1.7.Final</hibernate-envers.version>
     </properties>
