@@ -28,7 +28,7 @@ import java.util.Objects;
 public class UserRoleEntity extends AbstractAuditEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ToString.Exclude

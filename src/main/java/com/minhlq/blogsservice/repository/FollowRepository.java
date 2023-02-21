@@ -17,5 +17,5 @@ import java.util.Set;
 public interface FollowRepository extends JpaRepository<FollowEntity, FollowKey> {
 
   @Query("select F.id.followId from FollowEntity F where F.id.userId = :userId")
-  Set<Long> findByUserId(Long userId);
+  Set<Long> findByUserIdQuery(Long userId);
 }

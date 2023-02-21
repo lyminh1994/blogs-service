@@ -13,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.ToString;
@@ -41,7 +40,7 @@ import java.util.Set;
 public class UserEntity extends AbstractAuditEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true, nullable = false)
@@ -63,7 +62,6 @@ public class UserEntity extends AbstractAuditEntity {
   private String lastName;
 
   @Column(unique = true)
-  @Pattern(regexp = "^\\d", message = UserConstants.PHONE_MUST_BE_NUMBER)
   private String phone;
 
   private LocalDate birthday;

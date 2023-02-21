@@ -111,13 +111,13 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-    Set<Long> followedUsers = followRepository.findByUserId(currentUser.id());
+    Set<Long> followedUsers = followRepository.findByUserIdQuery(currentUser.id());
     if (CollectionUtils.isEmpty(followedUsers)) {
       return new PageResponse<>(Collections.emptyList(), 0);
     }
 
     Page<ArticleEntity> articles =
-        articleRepository.findByFollowedUsers(followedUsers, pageRequest);
+        articleRepository.findByFollowedUsersQuery(followedUsers, pageRequest);
     List<ArticleResponse> contents = getArticleResponses(articles.getContent());
 
     return new PageResponse<>(contents, articles.getTotalElements());
@@ -214,11 +214,11 @@ public class ArticleServiceImpl implements ArticleService {
       throw new NoAuthorizationException();
     }
 
-    List<ArticleTagEntity> articleTags = articleTagRepository.findByArticleId(article.getId());
+    List<ArticleTagEntity> articleTags = articleTagRepository.findByArticleIdQuery(article.getId());
     articleTagRepository.deleteAll(articleTags);
 
     List<ArticleFavoriteEntity> articleFavorites =
-        articleFavoriteRepository.findByArticleId(article.getId());
+        articleFavoriteRepository.findByArticleIdQuery(article.getId());
     articleFavoriteRepository.deleteAll(articleFavorites);
 
     articleRepository.delete(article);
@@ -277,7 +277,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     result.setFavoritesCount(
-        articleFavoriteRepository.countArticleFavoritesByArticleId(article.getId()));
+        articleFavoriteRepository.countArticleFavoritesByArticleIdQuery(article.getId()));
 
     QTagEntity qTag = QTagEntity.tagEntity;
     QArticleTagEntity qArticleTag = QArticleTagEntity.articleTagEntity;

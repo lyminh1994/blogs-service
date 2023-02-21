@@ -20,6 +20,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   Optional<ArticleEntity> findBySlug(String slug);
 
-  @Query(value = "from ArticleEntity A where A.author.id in (:followedUsers)")
-  Page<ArticleEntity> findByFollowedUsers(Set<Long> followedUsers, Pageable pageable);
+  @Query("from ArticleEntity A where A.author.id in (:followedUsers)")
+  Page<ArticleEntity> findByFollowedUsersQuery(Set<Long> followedUsers, Pageable pageable);
 }

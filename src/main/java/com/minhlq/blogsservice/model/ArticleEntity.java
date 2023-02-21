@@ -36,7 +36,7 @@ import java.util.Objects;
 public class ArticleEntity extends AbstractAuditEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String title;

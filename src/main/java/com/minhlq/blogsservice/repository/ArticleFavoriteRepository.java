@@ -21,8 +21,8 @@ public interface ArticleFavoriteRepository
       "select count(AF.id.articleId) "
           + "from ArticleFavoriteEntity AF "
           + "where AF.id.articleId = :articleId")
-  long countArticleFavoritesByArticleId(Long articleId);
+  long countArticleFavoritesByArticleIdQuery(Long articleId);
 
   @Query("from ArticleFavoriteEntity AF where AF.id.articleId = :articleId")
-  List<ArticleFavoriteEntity> findByArticleId(Long articleId);
+  List<ArticleFavoriteEntity> findByArticleIdQuery(Long articleId);
 }

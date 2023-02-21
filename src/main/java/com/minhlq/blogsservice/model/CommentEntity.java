@@ -31,7 +31,7 @@ import java.util.Objects;
 public class CommentEntity extends AbstractAuditEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String body;

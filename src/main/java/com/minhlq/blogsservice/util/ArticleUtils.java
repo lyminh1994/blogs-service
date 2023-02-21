@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.util;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utilities class handle operation for article.
@@ -21,6 +22,10 @@ public final class ArticleUtils {
    * @return formatted slug
    */
   public String toSlug(String title) {
+    if (StringUtils.isBlank(title)) {
+      return title;
+    }
+
     return title.toLowerCase().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
   }
 }

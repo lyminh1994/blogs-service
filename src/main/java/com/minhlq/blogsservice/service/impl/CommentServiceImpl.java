@@ -49,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
     CommentEntity savedComment =
-        commentRepository.saveAndFlush(
+        commentRepository.save(
             CommentEntity.builder()
                 .body(newCommentRequest.body())
                 .article(article)
@@ -74,8 +74,7 @@ public class CommentServiceImpl implements CommentService {
                 comment -> {
                   CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
                   if (currentUser != null) {
-                    FollowKey followId =
-                        new FollowKey(currentUser.id(), comment.getUser().getId());
+                    FollowKey followId = new FollowKey(currentUser.id(), comment.getUser().getId());
                     response.getUser().setFollowing(followRepository.existsById(followId));
                   }
 
