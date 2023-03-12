@@ -24,7 +24,7 @@ class ArticleFavoriteRepositoryTest {
   @Autowired ArticleFavoriteRepository repository;
 
   @Test
-  void given3ArticleFavorites_whenCountArticleFavoritesByArticleIdQuery_thenReturn3() {
+  void givenThreeArticleFavorites_whenCountArticleFavoritesByArticleIdQuery_thenReturnThree() {
     Long articleIdReturn9 = 1L;
     Long articleIdReturn5 = 10L;
     Long articleIdReturn0 = 11L;
