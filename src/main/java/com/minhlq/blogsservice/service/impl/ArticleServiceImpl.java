@@ -158,13 +158,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     long totalElements = query.select(qArticle.countDistinct()).fetchFirst();
 
-    List<ArticleEntity> articles = Collections.emptyList();
-    query
-        .distinct()
-        .select(qArticle)
-        .offset(pageRequest.getOffset())
-        .limit(pageRequest.getPageSize())
-        .fetch();
+    List<ArticleEntity> articles =
+        query
+            .distinct()
+            .select(qArticle)
+            .offset(pageRequest.getOffset())
+            .limit(pageRequest.getPageSize())
+            .fetch();
 
     List<ArticleResponse> contents = getArticleResponses(articles);
 
