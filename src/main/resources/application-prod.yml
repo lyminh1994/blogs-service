@@ -6,48 +6,19 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: Root@1234
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      auto-commit: true
-      connection-timeout: 30000
-      idle-timeout: 30000
-      max-lifetime: 60000
-      minimum-idle: 5
-      maximum-pool-size: 30
-      pool-name: blogs-pool
   jpa:
+    show-sql: false
     open-in-view: false
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-  cache:
-    type: redis
+        format_sql: false
   data:
     redis:
       host: localhost
       port: 6379
       password: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-      timeout: 10000ms
-      database: 3
-      lettuce:
-        pool:
-          enabled: true
-          max-active: 8
-          max-wait: -1ms
-          max-idle: 8
-          min-idle: 0
-      repositories:
-        enabled: false
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
-    deserialization:
-      fail-on-unknown-properties: false
-    mapper:
-      accept-case-insensitive-enums: true
 
 # Crypto and JWT configuration
 encryption:
@@ -73,10 +44,3 @@ logging:
   level:
     root: info
     com.minhlq.blogsservice: error
-  logback:
-    rollingpolicy:
-      max-file-size: 1MB
-      max-history: 10
-  file:
-    path: logs
-    name: logs/blogs-service.log
