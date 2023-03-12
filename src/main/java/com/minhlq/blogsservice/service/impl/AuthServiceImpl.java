@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.enums.TokenType;
+import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.model.RoleEntity;
 import com.minhlq.blogsservice.model.UserEntity;
@@ -70,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   @Transactional
   public AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders) {
-    RoleEntity role = roleService.findByName("ROLE_USER");
+    RoleEntity role = roleService.findByName(UserRole.ROLE_USER);
     Duration ttl = Duration.ofDays(DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
 
     String verificationToken =

@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.service;
 
+import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.model.RoleEntity;
 
 import java.util.List;
@@ -24,10 +25,10 @@ public interface RoleService {
   /**
    * Retrieves the role with the specified name.
    *
-   * @param name the name of the role to retrieve
+   * @param role the name of the role to retrieve
    * @return the role tuple that matches the id given
    */
-  RoleEntity findByName(final String name);
+  RoleEntity findByName(final UserRole role);
 
   /**
    * Find all role.
