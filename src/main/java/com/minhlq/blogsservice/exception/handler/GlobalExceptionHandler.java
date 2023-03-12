@@ -1,8 +1,10 @@
 package com.minhlq.blogsservice.exception.handler;
 
+import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -43,7 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError.getDefaultMessage()))
             .toList();
 
-    return ResponseEntity.badRequest().body(new ErrorResource(fieldErrorResources));
+    return ResponseEntity.badRequest().body(new ErrorsResource(fieldErrorResources));
   }
 
   @ExceptionHandler({ConstraintViolationException.class})
@@ -63,7 +65,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         violation.getMessage()))
             .toList();
 
-    return ResponseEntity.badRequest().body(new ErrorResource(fieldErrorResources));
+    return ResponseEntity.badRequest().body(new ErrorsResource(fieldErrorResources));
+  }
+
+  @ExceptionHandler({ResourceNotFoundException.class})
+  public ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(new ErrorResource(null, null, HttpStatus.NOT_FOUND, ex.getMessage()));
   }
 
   private String getParam(String s) {

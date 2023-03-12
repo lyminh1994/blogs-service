@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class ErrorResourceSerializer extends JsonSerializer<ErrorResource> {
+public class ErrorResourceSerializer extends JsonSerializer<ErrorsResource> {
 
   @Override
-  public void serialize(ErrorResource value, JsonGenerator gen, SerializerProvider serializers)
+  public void serialize(ErrorsResource value, JsonGenerator gen, SerializerProvider serializers)
       throws IOException {
     Map<String, List<String>> json = new HashMap<>();
     gen.writeStartObject();

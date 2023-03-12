@@ -1,19 +1,18 @@
 package com.minhlq.blogsservice.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.minhlq.blogsservice.exception.handler.ErrorResource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
-
-import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
  * This class implements AuthenticationEntryPoint interface. Then we override the commence method.
@@ -40,11 +39,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     log.error("Unauthorized error: {}", authException.getMessage());
 
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    response.setStatus(SC_UNAUTHORIZED);
+    response.setStatus(HttpStatus.UNAUTHORIZED.value());
     response
         .getWriter()
         .write(
             objectMapper.writeValueAsString(
-                Collections.singletonMap("errors", authException.getLocalizedMessage())));
+                new ErrorResource(
+                    null, null, HttpStatus.UNAUTHORIZED, authException.getMessage())));
   }
 }
