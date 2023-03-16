@@ -27,7 +27,7 @@ public @interface UpdateUserConstraint {
    *
    * @return the validation messages
    */
-  String message() default "Invalid update user params";
+  String message() default "";
 
   /**
    * Certain validation group that should be triggered.

@@ -20,7 +20,7 @@ public @interface UpdatePasswordConstraint {
    *
    * @return the validation messages
    */
-  String message() default "Invalid current password!";
+  String message() default "{current.password.invalid}";
 
   /**
    * Certain validation group that should be triggered.

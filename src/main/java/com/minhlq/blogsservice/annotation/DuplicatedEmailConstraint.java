@@ -27,7 +27,7 @@ public @interface DuplicatedEmailConstraint {
    *
    * @return the validation messages
    */
-  String message() default "Email {email} has been used";
+  String message() default "{email.duplicated}";
 
   /**
    * Certain validation group that should be triggered.

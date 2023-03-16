@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 
 /**
  * The implement for UpdateUserConstraint annotation.
@@ -33,10 +34,14 @@ public class UpdateUserValidator
             .findByEmail(email)
             .map(user -> Objects.equals(user.getId(), targetUser.id()))
             .orElse(true);
+
+    HibernateConstraintValidatorContext hibernateContext =
+        context.unwrap(HibernateConstraintValidatorContext.class);
     if (!isValidEmail) {
-      context.disableDefaultConstraintViolation();
-      context
-          .buildConstraintViolationWithTemplate("email already using by another user")
+      hibernateContext.disableDefaultConstraintViolation();
+      hibernateContext.addMessageParameter("email", email);
+      hibernateContext
+          .buildConstraintViolationWithTemplate("{email.duplicated}")
           .addPropertyNode("email")
           .addConstraintViolation();
     }
@@ -47,9 +52,10 @@ public class UpdateUserValidator
             .map(user -> Objects.equals(user.getId(), targetUser.id()))
             .orElse(true);
     if (!isValidPhone) {
-      context.disableDefaultConstraintViolation();
-      context
-          .buildConstraintViolationWithTemplate("phone number already using by another user")
+      hibernateContext.disableDefaultConstraintViolation();
+      hibernateContext.addMessageParameter("phone", phone);
+      hibernateContext
+          .buildConstraintViolationWithTemplate("{phone.duplicated}")
           .addPropertyNode("phone")
           .addConstraintViolation();
     }

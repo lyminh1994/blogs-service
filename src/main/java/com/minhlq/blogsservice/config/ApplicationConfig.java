@@ -2,10 +2,13 @@ package com.minhlq.blogsservice.config;
 
 import com.minhlq.blogsservice.service.impl.DateTimeProviderImpl;
 import java.time.Clock;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * This class holds application configuration settings for this application.
@@ -36,5 +39,23 @@ public class ApplicationConfig {
   @Primary
   public DateTimeProvider dateTimeProvider() {
     return new DateTimeProviderImpl(clock());
+  }
+
+  @Bean
+  public MessageSource messageSource() {
+    ReloadableResourceBundleMessageSource messageSource =
+        new ReloadableResourceBundleMessageSource();
+    messageSource.setBasename("classpath:i18n/messages");
+    messageSource.setDefaultEncoding("UTF-8");
+
+    return messageSource;
+  }
+
+  @Bean
+  public LocalValidatorFactoryBean validator() {
+    LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+    bean.setValidationMessageSource(messageSource());
+
+    return bean;
   }
 }
