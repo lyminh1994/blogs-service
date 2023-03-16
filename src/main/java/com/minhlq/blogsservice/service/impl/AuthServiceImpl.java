@@ -1,5 +1,10 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static com.minhlq.blogsservice.constant.ErrorConstants.INVALID_TOKEN;
+import static com.minhlq.blogsservice.constant.ErrorConstants.VERIFY_TOKEN_EXPIRED;
+import static com.minhlq.blogsservice.constant.SecurityConstants.DEFAULT_TOKEN_DURATION;
+import static com.minhlq.blogsservice.constant.UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION;
+
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
@@ -18,6 +23,10 @@ import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -28,16 +37,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Date;
-
-import static com.minhlq.blogsservice.constant.ErrorConstants.INVALID_TOKEN;
-import static com.minhlq.blogsservice.constant.ErrorConstants.VERIFY_TOKEN_EXPIRED;
-import static com.minhlq.blogsservice.constant.SecurityConstants.DEFAULT_TOKEN_DURATION;
-import static com.minhlq.blogsservice.constant.UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION;
 
 /**
  * This is implement for the authentication service operations.

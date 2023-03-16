@@ -1,5 +1,8 @@
 package com.minhlq.blogsservice.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.AuthenticationResponse;
 import com.minhlq.blogsservice.payload.SignUpRequest;
@@ -14,9 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

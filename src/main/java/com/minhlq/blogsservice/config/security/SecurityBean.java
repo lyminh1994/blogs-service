@@ -1,5 +1,13 @@
 package com.minhlq.blogsservice.config.security;
 
+import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_HEADERS_ALLOWED;
+import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_METHODS_ALLOWED;
+import static com.minhlq.blogsservice.constant.SecurityConstants.SECURITY_STRENGTH;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
+import java.time.Duration;
+import java.util.Arrays;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -11,15 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.time.Duration;
-import java.util.Arrays;
-
-import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_HEADERS_ALLOWED;
-import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_METHODS_ALLOWED;
-import static com.minhlq.blogsservice.constant.SecurityConstants.SECURITY_STRENGTH;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 /**
  * This class defines the beans needed for the security operation of the application.

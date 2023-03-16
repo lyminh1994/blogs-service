@@ -1,8 +1,8 @@
 package com.minhlq.blogsservice.enums;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor

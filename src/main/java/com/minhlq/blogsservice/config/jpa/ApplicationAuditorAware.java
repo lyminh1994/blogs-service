@@ -1,12 +1,11 @@
 package com.minhlq.blogsservice.config.jpa;
 
 import com.minhlq.blogsservice.util.SecurityUtils;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
-
-import java.util.Optional;
 
 /**
  * This class gets the application's current auditor which is the username of the authenticated

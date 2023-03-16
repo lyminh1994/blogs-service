@@ -1,5 +1,7 @@
 package com.minhlq.blogsservice.config;
 
+import static org.springdoc.core.utils.Constants.ALL_PATTERN;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -16,8 +18,6 @@ import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointPr
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import static org.springdoc.core.utils.Constants.ALL_PATTERN;
 
 /**
  * This class holds Open Api 3 configurations for this application.

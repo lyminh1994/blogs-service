@@ -1,9 +1,8 @@
 package com.minhlq.blogsservice.dto.response;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Data;
 
 /**
  * This class models the format of the article response produced.

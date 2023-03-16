@@ -1,9 +1,18 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_COOKIE_CANNOT_BE_NULL;
+import static com.minhlq.blogsservice.constant.SecurityConstants.NAME_CANNOT_BE_NULL_OR_EMPTY;
+import static com.minhlq.blogsservice.constant.SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY;
+import static com.minhlq.blogsservice.constant.SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL;
+
 import com.minhlq.blogsservice.constant.ProfileTypeConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.service.CookieService;
+import jakarta.servlet.http.Cookie;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -13,16 +22,6 @@ import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
-
-import jakarta.servlet.http.Cookie;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Objects;
-
-import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_COOKIE_CANNOT_BE_NULL;
-import static com.minhlq.blogsservice.constant.SecurityConstants.NAME_CANNOT_BE_NULL_OR_EMPTY;
-import static com.minhlq.blogsservice.constant.SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY;
-import static com.minhlq.blogsservice.constant.SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL;
 
 /**
  * This is the implementation of the cookie service.

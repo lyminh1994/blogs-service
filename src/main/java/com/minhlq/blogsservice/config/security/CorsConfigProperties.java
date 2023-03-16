@@ -1,10 +1,9 @@
 package com.minhlq.blogsservice.config.security;
 
+import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 /**
  * CORS configuration properties groups all properties prefixed with "cors.".

@@ -1,9 +1,8 @@
 package com.minhlq.blogsservice.dto.response;
 
 import com.minhlq.blogsservice.enums.Gender;
-import lombok.Data;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 /**
  * This class models the format of the user profile response produced.

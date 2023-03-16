@@ -1,15 +1,14 @@
 package com.minhlq.blogsservice.util;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 class PagingUtilsTest {
 

@@ -1,19 +1,18 @@
 package com.minhlq.blogsservice.payload;
 
+import static com.minhlq.blogsservice.constant.UserConstants.USER_MUST_NOT_BE_NULL;
+
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
-import org.apache.commons.lang3.Validate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.minhlq.blogsservice.constant.UserConstants.USER_MUST_NOT_BE_NULL;
+import org.apache.commons.lang3.Validate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * UserPrincipal builds the userDetails to be used by the application security context.

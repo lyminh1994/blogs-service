@@ -2,7 +2,6 @@ package com.minhlq.blogsservice.dto.request;
 
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.List;
 
 /**

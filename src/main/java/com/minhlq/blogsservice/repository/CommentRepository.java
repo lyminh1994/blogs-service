@@ -2,11 +2,10 @@ package com.minhlq.blogsservice.repository;
 
 import com.minhlq.blogsservice.model.ArticleEntity;
 import com.minhlq.blogsservice.model.CommentEntity;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
 
 /**
  * Repository for the Article comments.

@@ -1,11 +1,10 @@
 package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.enums.TokenType;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
-
 import jakarta.servlet.http.Cookie;
 import java.time.Duration;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
 
 /**
  * Provides mechanism to create and manage cookies.

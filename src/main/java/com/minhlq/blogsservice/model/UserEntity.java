@@ -14,17 +14,16 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 /**
  * The user model for the application.

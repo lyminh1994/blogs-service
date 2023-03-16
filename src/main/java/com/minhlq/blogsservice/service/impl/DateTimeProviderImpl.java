@@ -1,14 +1,13 @@
 package com.minhlq.blogsservice.service.impl;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.auditing.DateTimeProvider;
-import org.springframework.stereotype.Service;
-
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.stereotype.Service;
 
 /**
  * DateTimeProvider simply creating new clocked LocalDateTime instances for each method call. This

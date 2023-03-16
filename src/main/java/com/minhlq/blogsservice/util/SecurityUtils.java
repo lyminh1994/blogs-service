@@ -1,7 +1,20 @@
 package com.minhlq.blogsservice.util;
 
+import static com.minhlq.blogsservice.constant.ErrorConstants.UNAUTHORIZED_ACCESS;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_DEBUG_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_DISABLED_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_EXPIRED_MESSAGE;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_LOCKED_MESSAGE;
+import static org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
+
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.UserPrincipal;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountExpiredException;
@@ -17,20 +30,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-
-import static com.minhlq.blogsservice.constant.ErrorConstants.UNAUTHORIZED_ACCESS;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_DEBUG_MESSAGE;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_DISABLED_MESSAGE;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_EXPIRED_MESSAGE;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_LOCKED_MESSAGE;
-import static org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
 
 /**
  * This utility class holds custom operations on security used in the application.

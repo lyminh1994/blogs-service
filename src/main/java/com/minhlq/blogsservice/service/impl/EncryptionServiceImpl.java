@@ -1,20 +1,18 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static com.minhlq.blogsservice.constant.EncryptionConstants.AES_ALGORITHM;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.DECRYPTING_DATA_ERROR;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.DERIVATION_FUNCTION;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.ENCRYPTING_DATA_ERROR;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.ENCRYPT_ALGORITHM;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.GCM_IV_LENGTH;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.GCM_TAG_LENGTH;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.ITERATION_COUNT;
+import static com.minhlq.blogsservice.constant.EncryptionConstants.KEY_LENGTH;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.minhlq.blogsservice.exception.EncryptionException;
 import com.minhlq.blogsservice.service.EncryptionService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidAlgorithmParameterException;
@@ -26,17 +24,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Base64;
-
-import static com.minhlq.blogsservice.constant.EncryptionConstants.AES_ALGORITHM;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.DECRYPTING_DATA_ERROR;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.DERIVATION_FUNCTION;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.ENCRYPTING_DATA_ERROR;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.ENCRYPT_ALGORITHM;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.GCM_IV_LENGTH;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.GCM_TAG_LENGTH;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.ITERATION_COUNT;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.KEY_LENGTH;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * This is the implementation of the encryption service.

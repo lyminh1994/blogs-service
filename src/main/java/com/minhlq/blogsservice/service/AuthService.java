@@ -3,10 +3,9 @@ package com.minhlq.blogsservice.service;
 import com.minhlq.blogsservice.payload.AuthenticationResponse;
 import com.minhlq.blogsservice.payload.SignInRequest;
 import com.minhlq.blogsservice.payload.SignUpRequest;
-import org.springframework.http.HttpHeaders;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 
 /**
  * This is the contract for the authentication service operations.

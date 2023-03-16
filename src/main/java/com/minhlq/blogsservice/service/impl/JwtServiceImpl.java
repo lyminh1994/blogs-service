@@ -1,5 +1,10 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
+import static com.minhlq.blogsservice.enums.TokenType.ACCESS;
+import static org.apache.commons.lang3.StringUtils.SPACE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -11,12 +16,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
@@ -24,11 +23,11 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
-
-import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
-import static com.minhlq.blogsservice.enums.TokenType.ACCESS;
-import static org.apache.commons.lang3.StringUtils.SPACE;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * This is the implementation of the jwt service.

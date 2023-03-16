@@ -1,9 +1,8 @@
 package com.minhlq.blogsservice.exception;
 
+import java.io.Serial;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.io.Serial;
 
 /**
  * Handles all encryption exceptions for the application.

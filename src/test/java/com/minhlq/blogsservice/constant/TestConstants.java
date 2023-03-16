@@ -1,10 +1,10 @@
 package com.minhlq.blogsservice.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
 import static io.netty.util.internal.StringUtil.SPACE;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestConstants {

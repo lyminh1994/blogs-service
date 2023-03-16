@@ -1,11 +1,5 @@
 package com.minhlq.blogsservice.payload;
 
-import com.minhlq.blogsservice.annotation.DuplicatedEmailConstraint;
-import com.minhlq.blogsservice.annotation.DuplicatedUsernameConstraint;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
 import static com.minhlq.blogsservice.constant.UserConstants.BLANK_EMAIL;
 import static com.minhlq.blogsservice.constant.UserConstants.EMAIL_ALREADY_EXIST;
 import static com.minhlq.blogsservice.constant.UserConstants.INVALID_EMAIL;
@@ -14,6 +8,12 @@ import static com.minhlq.blogsservice.constant.UserConstants.INVALID_USERNAME_SI
 import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
 import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
 import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_EXISTED;
+
+import com.minhlq.blogsservice.annotation.DuplicatedEmailConstraint;
+import com.minhlq.blogsservice.annotation.DuplicatedUsernameConstraint;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * This class models the format of the register request allowed through the controller endpoints.

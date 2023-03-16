@@ -2,11 +2,10 @@ package com.minhlq.blogsservice.model.unionkey;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * This class hold union key for article favorite relation.

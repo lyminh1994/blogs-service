@@ -1,13 +1,12 @@
 package com.minhlq.blogsservice.helper;
 
 import com.minhlq.blogsservice.util.ArticleUtils;
+import java.time.LocalDateTime;
 import net.datafaker.Faker;
 import net.datafaker.transformations.Field;
 import net.datafaker.transformations.Schema;
 import net.datafaker.transformations.sql.SqlDialect;
 import net.datafaker.transformations.sql.SqlTransformer;
-
-import java.time.LocalDateTime;
 
 public final class DataHelper {
 

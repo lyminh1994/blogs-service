@@ -1,14 +1,13 @@
 package com.minhlq.blogsservice.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Handle convent paging request to JPA {@link Pageable}.

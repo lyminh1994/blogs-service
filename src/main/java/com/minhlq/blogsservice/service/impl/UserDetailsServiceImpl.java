@@ -1,8 +1,12 @@
 package com.minhlq.blogsservice.service.impl;
 
+import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_NOT_FOUND;
+
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
+import java.text.MessageFormat;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Primary;
@@ -11,11 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.MessageFormat;
-
-import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_NOT_FOUND;
 
 /**
  * The implementation of service used to query user details during login.

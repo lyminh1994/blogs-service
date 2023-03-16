@@ -1,13 +1,12 @@
 package com.minhlq.blogsservice.task;
 
 import com.minhlq.blogsservice.annotation.Loggable;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * Removes all entries in the cache.

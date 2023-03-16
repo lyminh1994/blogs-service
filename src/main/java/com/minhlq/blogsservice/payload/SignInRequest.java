@@ -1,9 +1,9 @@
 package com.minhlq.blogsservice.payload;
 
-import jakarta.validation.constraints.NotBlank;
-
 import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
 import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
+
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * This class models the format of the login request accepted.

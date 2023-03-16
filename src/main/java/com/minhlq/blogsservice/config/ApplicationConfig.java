@@ -1,12 +1,11 @@
 package com.minhlq.blogsservice.config;
 
 import com.minhlq.blogsservice.service.impl.DateTimeProviderImpl;
+import java.time.Clock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.auditing.DateTimeProvider;
-
-import java.time.Clock;
 
 /**
  * This class holds application configuration settings for this application.

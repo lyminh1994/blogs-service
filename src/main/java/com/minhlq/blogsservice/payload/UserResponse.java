@@ -1,13 +1,12 @@
 package com.minhlq.blogsservice.payload;
 
-import com.minhlq.blogsservice.enums.Gender;
-import org.apache.commons.lang3.Validate;
-import org.springframework.security.core.GrantedAuthority;
+import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_MUST_NOT_BE_NULL;
 
+import com.minhlq.blogsservice.enums.Gender;
 import java.time.LocalDate;
 import java.util.Collection;
-
-import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_MUST_NOT_BE_NULL;
+import org.apache.commons.lang3.Validate;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * This class models the format of the user response produced.

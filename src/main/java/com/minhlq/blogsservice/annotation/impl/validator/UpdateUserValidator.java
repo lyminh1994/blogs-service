@@ -6,9 +6,8 @@ import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The implement for UpdateUserConstraint annotation.

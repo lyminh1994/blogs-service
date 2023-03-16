@@ -1,11 +1,5 @@
 package com.minhlq.blogsservice.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-import java.util.Collection;
-import java.util.List;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -14,6 +8,11 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+
+import java.util.Collection;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * This class holds all security-related URL mappings constants.
