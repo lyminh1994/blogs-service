@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.controller;
 
-import com.minhlq.blogsservice.annotation.Loggable;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
@@ -55,7 +54,6 @@ public class UserController {
    * @param updateUserRequest the user
    * @return new user details.
    */
-  @Loggable
   @PutMapping
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update info", description = "Update current user information")
