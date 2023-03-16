@@ -42,41 +42,6 @@ public record UserPrincipal(
     Collection<? extends GrantedAuthority> authorities)
     implements UserDetails {
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return authorities;
-  }
-
-  @Override
-  public String getPassword() {
-    return password;
-  }
-
-  @Override
-  public String getUsername() {
-    return username;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return accountNonExpired;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return accountNonLocked;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return credentialsNonExpired;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return enabled;
-  }
-
   /**
    * Builds userDetails object from the specified user.
    *
@@ -117,5 +82,40 @@ public record UserPrincipal(
         !isAccountLocked,
         true,
         authorities);
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return authorities;
+  }
+
+  @Override
+  public String getPassword() {
+    return password;
+  }
+
+  @Override
+  public String getUsername() {
+    return username;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return accountNonExpired;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return accountNonLocked;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return credentialsNonExpired;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return enabled;
   }
 }
