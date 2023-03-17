@@ -41,7 +41,7 @@ public class UpdateUserValidator
       hibernateContext.disableDefaultConstraintViolation();
       hibernateContext.addMessageParameter("email", email);
       hibernateContext
-          .buildConstraintViolationWithTemplate("{email.duplicated}")
+          .buildConstraintViolationWithTemplate("{user.email.duplicated}")
           .addPropertyNode("email")
           .addConstraintViolation();
     }
@@ -55,7 +55,7 @@ public class UpdateUserValidator
       hibernateContext.disableDefaultConstraintViolation();
       hibernateContext.addMessageParameter("phone", phone);
       hibernateContext
-          .buildConstraintViolationWithTemplate("{phone.duplicated}")
+          .buildConstraintViolationWithTemplate("{user.phone.duplicated}")
           .addPropertyNode("phone")
           .addConstraintViolation();
     }
