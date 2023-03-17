@@ -1,8 +1,5 @@
 package com.minhlq.blogsservice.payload;
 
-import static com.minhlq.blogsservice.constant.UserConstants.PASSWORD_CANNOT_BLANK;
-import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
-
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -13,5 +10,5 @@ import jakarta.validation.constraints.NotBlank;
  * @since 1.0
  */
 public record SignInRequest(
-    @NotBlank(message = USERNAME_CANNOT_BLANK) String username,
-    @NotBlank(message = PASSWORD_CANNOT_BLANK) String password) {}
+    @NotBlank(message = "{user.username.cannot.blank}") String username,
+    @NotBlank(message = "{user.password.cannot.blank}") String password) {}

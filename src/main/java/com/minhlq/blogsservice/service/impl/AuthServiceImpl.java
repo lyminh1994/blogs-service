@@ -1,10 +1,8 @@
 package com.minhlq.blogsservice.service.impl;
 
-import static com.minhlq.blogsservice.constant.ErrorConstants.INVALID_TOKEN;
-import static com.minhlq.blogsservice.constant.ErrorConstants.VERIFY_TOKEN_EXPIRED;
-import static com.minhlq.blogsservice.constant.SecurityConstants.DEFAULT_TOKEN_DURATION;
-import static com.minhlq.blogsservice.constant.UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION;
-
+import com.minhlq.blogsservice.constant.ErrorConstants;
+import com.minhlq.blogsservice.constant.SecurityConstants;
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
@@ -71,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   public AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders) {
     RoleEntity role = roleService.findByName(UserRole.ROLE_USER);
-    Duration ttl = Duration.ofDays(DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
+    Duration ttl = Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
 
     String verificationToken =
         jwtService.createJwt(
@@ -130,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
     boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     if (!refreshTokenValid) {
-      throw new IllegalArgumentException(INVALID_TOKEN);
+      throw new IllegalArgumentException(ErrorConstants.INVALID_TOKEN);
     }
 
     String username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
@@ -158,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
     String decodedToken = encryptionService.decode(verificationToken);
 
     if (StringUtils.isBlank(decodedToken) || !jwtService.isValidJwtToken(decodedToken)) {
-      throw new SecurityException(VERIFY_TOKEN_EXPIRED);
+      throw new SecurityException(ErrorConstants.VERIFY_TOKEN_EXPIRED);
     }
 
     UserEntity user =
@@ -181,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
   private String updateCookies(
       String username, boolean isRefreshTokenValid, HttpHeaders responseHeaders) {
     if (!isRefreshTokenValid) {
-      Duration refreshTokenMaxAge = Duration.ofDays(DEFAULT_TOKEN_DURATION);
+      Duration refreshTokenMaxAge = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
       String refreshToken =
           jwtService.createJwt(
               username, Date.from(Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds())));

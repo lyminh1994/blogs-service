@@ -1,10 +1,7 @@
 package com.minhlq.blogsservice.service.impl;
 
-import static com.minhlq.blogsservice.constant.SecurityConstants.BEARER;
-import static com.minhlq.blogsservice.enums.TokenType.ACCESS;
-import static org.apache.commons.lang3.StringUtils.SPACE;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
+import com.minhlq.blogsservice.constant.SecurityConstants;
+import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -20,6 +17,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
@@ -27,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -135,10 +134,10 @@ public class JwtServiceImpl implements JwtService {
    * @return the jwt token
    */
   private String getJwtFromRequest(HttpServletRequest request) {
-    String headerAuth = request.getHeader(AUTHORIZATION);
+    String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-    if (StringUtils.isNotBlank(headerAuth) && headerAuth.startsWith(BEARER)) {
-      return headerAuth.split(SPACE)[1];
+    if (StringUtils.isNotBlank(headerAuth) && headerAuth.startsWith(SecurityConstants.BEARER)) {
+      return headerAuth.split(StringUtils.SPACE)[1];
     }
 
     return null;
@@ -153,11 +152,11 @@ public class JwtServiceImpl implements JwtService {
   private String getJwtFromCookie(HttpServletRequest request) {
     Cookie[] cookies = request.getCookies();
     if (Objects.nonNull(cookies)) {
-      for (Cookie cookie : cookies) {
-        if (ACCESS.getName().equals(cookie.getName())) {
-          return cookie.getValue();
-        }
-      }
+      return Arrays.stream(cookies)
+          .filter(cookie -> StringUtils.equals(TokenType.ACCESS.getName(), cookie.getName()))
+          .findFirst()
+          .map(Cookie::getValue)
+          .orElse(null);
     }
 
     return null;

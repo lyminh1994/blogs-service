@@ -1,12 +1,7 @@
 package com.minhlq.blogsservice.util;
 
-import static com.minhlq.blogsservice.constant.ErrorConstants.UNAUTHORIZED_ACCESS;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_DEBUG_MESSAGE;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_DISABLED_MESSAGE;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_EXPIRED_MESSAGE;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_LOCKED_MESSAGE;
-import static org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
-
+import com.minhlq.blogsservice.constant.ErrorConstants;
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import jakarta.servlet.http.Cookie;
@@ -30,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 
 /**
  * This utility class holds custom operations on security used in the application.
@@ -147,7 +143,7 @@ public class SecurityUtils {
       return (UserPrincipal) getAuthentication().getPrincipal();
     }
 
-    log.warn(UNAUTHORIZED_ACCESS);
+    log.warn(ErrorConstants.UNAUTHORIZED_ACCESS);
     return null;
   }
 
@@ -159,7 +155,8 @@ public class SecurityUtils {
    */
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     CookieClearingLogoutHandler logoutHandler =
-        new CookieClearingLogoutHandler(SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
+        new CookieClearingLogoutHandler(
+            AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
 
     SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
     logoutHandler.logout(request, response, null);
@@ -172,16 +169,16 @@ public class SecurityUtils {
    * @param userDetails the user details
    */
   public void validateUserDetailsStatus(UserDetails userDetails) {
-    log.debug(USER_DETAILS_DEBUG_MESSAGE, userDetails);
+    log.debug(UserConstants.USER_DETAILS_DEBUG_MESSAGE, userDetails);
 
     if (!userDetails.isEnabled()) {
-      throw new DisabledException(USER_DISABLED_MESSAGE);
+      throw new DisabledException(UserConstants.USER_DISABLED_MESSAGE);
     }
     if (!userDetails.isAccountNonLocked()) {
-      throw new LockedException(USER_LOCKED_MESSAGE);
+      throw new LockedException(UserConstants.USER_LOCKED_MESSAGE);
     }
     if (!userDetails.isAccountNonExpired()) {
-      throw new AccountExpiredException(USER_EXPIRED_MESSAGE);
+      throw new AccountExpiredException(UserConstants.USER_EXPIRED_MESSAGE);
     }
   }
 

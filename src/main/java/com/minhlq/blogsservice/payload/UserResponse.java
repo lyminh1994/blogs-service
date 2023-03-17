@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.payload;
 
-import static com.minhlq.blogsservice.constant.UserConstants.USER_DETAILS_MUST_NOT_BE_NULL;
-
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -26,7 +25,7 @@ public record UserResponse(
     String profileImage,
     Collection<? extends GrantedAuthority> authorities) {
   public static UserResponse getUserResponse(final UserPrincipal userDetails) {
-    Validate.notNull(userDetails, USER_DETAILS_MUST_NOT_BE_NULL);
+    Validate.notNull(userDetails, UserConstants.USER_DETAILS_MUST_NOT_BE_NULL);
 
     return new UserResponse(
         userDetails.publicId(),

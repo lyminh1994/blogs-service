@@ -1,11 +1,6 @@
 package com.minhlq.blogsservice.config.security;
 
-import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_HEADERS_ALLOWED;
-import static com.minhlq.blogsservice.constant.SecurityConstants.HTTP_METHODS_ALLOWED;
-import static com.minhlq.blogsservice.constant.SecurityConstants.SECURITY_STRENGTH;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
-
+import com.minhlq.blogsservice.constant.SecurityConstants;
 import java.time.Duration;
 import java.util.Arrays;
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,6 +9,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -37,7 +33,7 @@ public class SecurityBean {
    */
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(SECURITY_STRENGTH);
+    return new BCryptPasswordEncoder(SecurityConstants.SECURITY_STRENGTH);
   }
 
   /**
@@ -91,7 +87,8 @@ public class SecurityBean {
    */
   private void setExposedHeaders(CorsConfigProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getExposedHeaders())) {
-      corsConfig.setExposedHeaders(Arrays.asList(AUTHORIZATION, SET_COOKIE));
+      corsConfig.setExposedHeaders(
+          Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE));
     } else {
       corsConfig.setExposedHeaders(props.getExposedHeaders());
     }
@@ -113,7 +110,7 @@ public class SecurityBean {
    */
   private void setAllowedHeaders(CorsConfigProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getAllowedHeaders())) {
-      corsConfig.setAllowedHeaders(HTTP_HEADERS_ALLOWED);
+      corsConfig.setAllowedHeaders(SecurityConstants.HTTP_HEADERS_ALLOWED);
     } else {
       corsConfig.setAllowedHeaders(props.getAllowedHeaders());
     }
@@ -141,7 +138,7 @@ public class SecurityBean {
    */
   private void setAllowedMethods(CorsConfigProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getAllowedMethods())) {
-      corsConfig.setAllowedMethods(HTTP_METHODS_ALLOWED);
+      corsConfig.setAllowedMethods(SecurityConstants.HTTP_METHODS_ALLOWED);
     } else {
       corsConfig.setAllowedMethods(props.getAllowedMethods());
     }

@@ -1,7 +1,5 @@
 package com.minhlq.blogsservice.config;
 
-import static org.springdoc.core.utils.Constants.ALL_PATTERN;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
+import org.springdoc.core.utils.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.context.annotation.Bean;
@@ -49,12 +48,12 @@ public class OpenApiConfig {
       WebEndpointProperties endpointProperties) {
     return GroupedOpenApi.builder()
         .group("Actuator")
-        .pathsToMatch(endpointProperties.getBasePath() + ALL_PATTERN)
+        .pathsToMatch(endpointProperties.getBasePath() + Constants.ALL_PATTERN)
         .addOpenApiCustomizer(actuatorOpenApiCustomizer)
         .addOpenApiCustomizer(
             openApi -> openApi.info(new Info().title("Actuator APIs").version(version)))
         .addOperationCustomizer(actuatorCustomizer)
-        // .pathsToExclude(endpointProperties.getBasePath() + HEALTH_PATTERN)
+        .pathsToExclude(endpointProperties.getBasePath() + Constants.HEALTH_PATTERN)
         .build();
   }
 
@@ -79,7 +78,7 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToMatch("/auth" + ALL_PATTERN)
+        .pathsToMatch("/auth" + Constants.ALL_PATTERN)
         .build();
   }
 
@@ -105,7 +104,9 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToExclude(endpointProperties.getBasePath() + ALL_PATTERN, "/auth" + ALL_PATTERN)
+        .pathsToExclude(
+            endpointProperties.getBasePath() + Constants.ALL_PATTERN,
+            "/auth" + Constants.ALL_PATTERN)
         .build();
   }
 

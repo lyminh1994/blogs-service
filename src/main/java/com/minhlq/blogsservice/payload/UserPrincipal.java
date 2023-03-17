@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.payload;
 
-import static com.minhlq.blogsservice.constant.UserConstants.USER_MUST_NOT_BE_NULL;
-
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
 import java.time.LocalDate;
@@ -49,8 +48,8 @@ public record UserPrincipal(
    * @return the userDetails
    * @throws NullPointerException if the user is null
    */
-  public static UserPrincipal buildUserDetails(final UserEntity user) {
-    Validate.notNull(user, USER_MUST_NOT_BE_NULL);
+  public static UserPrincipal buildUserDetails(UserEntity user) {
+    Validate.notNull(user, UserConstants.USER_MUST_NOT_BE_NULL);
 
     // Build the authorities from the user's roles
     Set<GrantedAuthority> authorities =

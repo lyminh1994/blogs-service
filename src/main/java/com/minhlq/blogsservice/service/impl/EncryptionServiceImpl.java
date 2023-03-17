@@ -1,20 +1,13 @@
 package com.minhlq.blogsservice.service.impl;
 
-import static com.minhlq.blogsservice.constant.EncryptionConstants.AES_ALGORITHM;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.DECRYPTING_DATA_ERROR;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.DERIVATION_FUNCTION;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.ENCRYPTING_DATA_ERROR;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.ENCRYPT_ALGORITHM;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.GCM_IV_LENGTH;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.GCM_TAG_LENGTH;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.ITERATION_COUNT;
-import static com.minhlq.blogsservice.constant.EncryptionConstants.KEY_LENGTH;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.minhlq.blogsservice.constant.EncryptionConstants;
 import com.minhlq.blogsservice.exception.EncryptionException;
 import com.minhlq.blogsservice.service.EncryptionService;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -63,11 +56,12 @@ public class EncryptionServiceImpl implements EncryptionService {
         return null;
       }
 
-      byte[] iv = new byte[GCM_IV_LENGTH];
+      byte[] iv = new byte[EncryptionConstants.GCM_IV_LENGTH];
       random.nextBytes(iv);
 
-      Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
-      GCMParameterSpec ivSpec = new GCMParameterSpec(GCM_TAG_LENGTH * Byte.SIZE, iv);
+      Cipher cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
+      GCMParameterSpec ivSpec =
+          new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
       cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPassword(), ivSpec);
 
       byte[] ciphertext = cipher.doFinal(text.getBytes(UTF_8));
@@ -83,7 +77,7 @@ public class EncryptionServiceImpl implements EncryptionService {
         | NoSuchPaddingException
         | IllegalBlockSizeException
         | BadPaddingException e) {
-      log.debug(ENCRYPTING_DATA_ERROR, e);
+      log.debug(EncryptionConstants.ENCRYPTING_DATA_ERROR, e);
       throw new EncryptionException(e);
     }
   }
@@ -96,15 +90,20 @@ public class EncryptionServiceImpl implements EncryptionService {
       }
 
       byte[] decoded = Base64.getDecoder().decode(encryptedText);
-      byte[] iv = Arrays.copyOfRange(decoded, 0, GCM_IV_LENGTH);
+      byte[] iv = Arrays.copyOfRange(decoded, 0, EncryptionConstants.GCM_IV_LENGTH);
 
-      Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
-      GCMParameterSpec ivSpec = new GCMParameterSpec(GCM_TAG_LENGTH * Byte.SIZE, iv);
+      Cipher cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
+      GCMParameterSpec ivSpec =
+          new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
       cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(), ivSpec);
 
-      byte[] ciphertext = cipher.doFinal(decoded, GCM_IV_LENGTH, decoded.length - GCM_IV_LENGTH);
+      byte[] ciphertext =
+          cipher.doFinal(
+              decoded,
+              EncryptionConstants.GCM_IV_LENGTH,
+              decoded.length - EncryptionConstants.GCM_IV_LENGTH);
 
-      return new String(ciphertext, UTF_8);
+      return new String(ciphertext, StandardCharsets.UTF_8);
     } catch (NoSuchAlgorithmException
         | IllegalArgumentException
         | InvalidKeyException
@@ -112,7 +111,7 @@ public class EncryptionServiceImpl implements EncryptionService {
         | IllegalBlockSizeException
         | BadPaddingException
         | NoSuchPaddingException e) {
-      log.debug(DECRYPTING_DATA_ERROR, e);
+      log.debug(EncryptionConstants.DECRYPTING_DATA_ERROR, e);
       throw new EncryptionException(e);
     }
   }
@@ -123,7 +122,7 @@ public class EncryptionServiceImpl implements EncryptionService {
       return null;
     }
 
-    return URLEncoder.encode(text, UTF_8);
+    return URLEncoder.encode(text, StandardCharsets.UTF_8);
   }
 
   @Override
@@ -132,16 +131,23 @@ public class EncryptionServiceImpl implements EncryptionService {
       return null;
     }
 
-    return URLDecoder.decode(text, UTF_8).replaceAll("\\s+", "+");
+    return URLDecoder.decode(text, StandardCharsets.UTF_8).replaceAll("\\s+", "+");
   }
 
   private Key getKeyFromPassword() {
     try {
-      SecretKeyFactory factory = SecretKeyFactory.getInstance(DERIVATION_FUNCTION);
-      byte[] saltBytes = salt.getBytes(UTF_8);
-      KeySpec spec = new PBEKeySpec(password.toCharArray(), saltBytes, ITERATION_COUNT, KEY_LENGTH);
+      SecretKeyFactory factory =
+          SecretKeyFactory.getInstance(EncryptionConstants.DERIVATION_FUNCTION);
+      byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
+      KeySpec spec =
+          new PBEKeySpec(
+              password.toCharArray(),
+              saltBytes,
+              EncryptionConstants.ITERATION_COUNT,
+              EncryptionConstants.KEY_LENGTH);
 
-      return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), AES_ALGORITHM);
+      return new SecretKeySpec(
+          factory.generateSecret(spec).getEncoded(), EncryptionConstants.AES_ALGORITHM);
     } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
       throw new EncryptionException(e);
     }

@@ -1,8 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
-import static com.minhlq.blogsservice.constant.CacheConstants.ROLE;
-import static com.minhlq.blogsservice.constant.CacheConstants.ROLES;
-
+import com.minhlq.blogsservice.constant.CacheConstants;
 import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.model.RoleEntity;
@@ -40,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
    */
   @Override
   @Transactional
-  @CachePut({ROLE, ROLES})
+  @CachePut({CacheConstants.ROLE, CacheConstants.ROLES})
   public RoleEntity save(RoleEntity role) {
     Validate.notNull(role, "The role cannot be null");
 
@@ -54,7 +52,7 @@ public class RoleServiceImpl implements RoleService {
    * @return the role tuple that matches the id given
    */
   @Override
-  @Cacheable(value = ROLE, unless = "#result != null")
+  @Cacheable(value = CacheConstants.ROLE, unless = "#result != null")
   public RoleEntity findByName(UserRole role) {
     Validate.notNull(role, "Role cannot be null");
 
@@ -76,7 +74,7 @@ public class RoleServiceImpl implements RoleService {
   }
 
   @Override
-  @Cacheable(value = ROLES, unless = "!#result.isEmpty()")
+  @Cacheable(value = CacheConstants.ROLES, unless = "!#result.isEmpty()")
   public List<RoleEntity> findAll() {
     return Collections.emptyList();
   }

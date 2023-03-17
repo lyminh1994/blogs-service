@@ -1,14 +1,12 @@
 package com.minhlq.blogsservice.service.impl;
 
-import static com.minhlq.blogsservice.constant.UserConstants.USERNAME_CANNOT_BLANK;
-import static com.minhlq.blogsservice.constant.UserConstants.USER_NOT_FOUND;
-
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
-import java.text.MessageFormat;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+  private final MessageSource messageSource;
+
   private final UserRepository userRepository;
 
   /**
@@ -45,7 +45,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
-      throw new UsernameNotFoundException(USERNAME_CANNOT_BLANK);
+      throw new UsernameNotFoundException(
+          messageSource.getMessage("user.username.cannot.blank", null, Locale.ENGLISH));
     }
 
     UserEntity user =
@@ -53,7 +54,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             .findByUsername(username)
             .orElseThrow(
                 () ->
-                    new UsernameNotFoundException(MessageFormat.format(USER_NOT_FOUND, username)));
+                    new UsernameNotFoundException(
+                        messageSource.getMessage(
+                            "user.not.found", new String[] {username}, Locale.ENGLISH)));
 
     return UserPrincipal.buildUserDetails(user);
   }

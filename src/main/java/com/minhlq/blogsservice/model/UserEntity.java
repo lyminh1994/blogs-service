@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,17 +42,17 @@ public class UserEntity extends AbstractAuditEntity {
   private Long id;
 
   @Column(unique = true, nullable = false)
-  @NotBlank(message = UserConstants.USERNAME_CANNOT_BLANK)
-  @Size(min = 3, max = 50, message = UserConstants.INVALID_USERNAME_SIZE)
+  @NotBlank(message = "{user.username.cannot.blank}")
+  @Size(min = 3, max = 50, message = "{user.invalid.username.size}")
   private String username;
 
   @JsonIgnore
   @ToString.Exclude
-  @NotBlank(message = UserConstants.PASSWORD_CANNOT_BLANK)
+  @NotBlank(message = "{user.password.cannot.blank}")
   private String password;
 
   @Column(unique = true)
-  @Email(message = UserConstants.INVALID_EMAIL)
+  @Email(message = "{user.invalid.email}")
   private String email;
 
   private String firstName;

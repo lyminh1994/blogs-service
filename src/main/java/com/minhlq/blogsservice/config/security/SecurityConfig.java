@@ -1,20 +1,18 @@
 package com.minhlq.blogsservice.config.security;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.OPTIONS;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -75,18 +73,23 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     http.cors().and().csrf().disable();
+
     http.httpBasic().disable().formLogin().disable().logout().disable();
-    // @formatter:off
+
     http.authorizeHttpRequests()
-        .requestMatchers(OPTIONS).permitAll()
-        .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0])).permitAll()
-        .requestMatchers(GET, "/articles/feeds").authenticated()
-        .requestMatchers(GET, "/articles/**", "/user/{username}", "/tags").permitAll()
-        .anyRequest().authenticated();
-    // @formatter:on
+        .requestMatchers(HttpMethod.OPTIONS)
+        .permitAll()
+        .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
+        .permitAll()
+        .requestMatchers(HttpMethod.GET, "/articles/feeds")
+        .authenticated()
+        .requestMatchers(HttpMethod.GET, "/articles/**", "/user/{username}", "/tags")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
 
     http.sessionManagement()
-            .sessionCreationPolicy(STATELESS)
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .exceptionHandling()
         .authenticationEntryPoint(unauthorizedHandler);
