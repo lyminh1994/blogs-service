@@ -1,13 +1,11 @@
 package com.minhlq.blogsservice.helper;
 
-import com.minhlq.blogsservice.constant.UserConstants;
+import com.minhlq.blogsservice.constant.TestConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.model.UserRoleEntity;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
@@ -115,7 +113,7 @@ public class UserHelper {
    * @param userDto the userDto
    */
   public void enableUser(final UserEntity userDto) {
-    Validate.notNull(userDto, UserConstants.USER_DTO_MUST_NOT_BE_NULL);
+    Validate.notNull(userDto, TestConstants.USER_DTO_MUST_NOT_BE_NULL);
     userDto.setEnabled(true);
     userDto.setFailedLoginAttempts(0);
   }
@@ -126,16 +124,11 @@ public class UserHelper {
    * @param userRoles the userRoles
    * @return set of the roles as strings
    */
-  public List<String> getRoles(Set<UserRoleEntity> userRoles) {
-    List<String> roles = new ArrayList<>();
-
-    for (UserRoleEntity userRole : userRoles) {
-      if (Objects.nonNull(userRole.getRole())) {
-        roles.add(userRole.getRole().getName());
-      }
-    }
-
-    return roles;
+  public Set<String> getRoles(Set<UserRoleEntity> userRoles) {
+    return userRoles.stream()
+        .filter(role -> role.getRole() != null)
+        .map(role -> role.getRole().getName())
+        .collect(Collectors.toSet());
   }
 
   /**

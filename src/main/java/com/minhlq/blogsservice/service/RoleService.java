@@ -2,7 +2,9 @@ package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.model.RoleEntity;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Role service to provide implementation for the definitions about a role.
@@ -11,6 +13,7 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
+@Validated
 public interface RoleService {
 
   /**
@@ -19,7 +22,7 @@ public interface RoleService {
    * @param role the role
    * @return the persisted role with assigned id
    */
-  RoleEntity save(final RoleEntity role);
+  RoleEntity save(@NotNull RoleEntity role);
 
   /**
    * Retrieves the role with the specified name.
@@ -27,7 +30,7 @@ public interface RoleService {
    * @param role the name of the role to retrieve
    * @return the role tuple that matches the id given
    */
-  RoleEntity findByName(final UserRole role);
+  RoleEntity findByName(@NotNull UserRole role);
 
   /**
    * Find all role.

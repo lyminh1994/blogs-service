@@ -1,14 +1,15 @@
 package com.minhlq.blogsservice.service.impl;
 
+import com.minhlq.blogsservice.constant.CacheConstants;
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
    *     GrantedAuthority
    */
   @Override
-  public UserDetails loadUserByUsername(final String username) {
+  @Cacheable(value = CacheConstants.USER_DETAILS, unless = "#result != null")
+  public UserPrincipal loadUserByUsername(final String username) {
     if (StringUtils.isBlank(username)) {
       throw new UsernameNotFoundException(
           messageSource.getMessage("user.username.cannot.blank", null, Locale.ENGLISH));

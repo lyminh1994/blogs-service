@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.dto.response.TagResponse;
 import com.minhlq.blogsservice.service.TagService;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tags")
+@RequestMapping(AppConstants.TAGS)
 @Tag(name = "Tags", description = "Blog Article Tags APIs")
 public class TagsController {
 
@@ -41,9 +42,9 @@ public class TagsController {
   @SecurityRequirements
   @Operation(summary = "Get tags", description = "Get all tags name")
   public PageResponse<TagResponse> getTags(
-      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize,
-      @RequestParam(name = "sort", required = false) String[] sort) {
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize,
+      @RequestParam(required = false) String[] sort) {
 
     PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);
     return tagService.getTags(pageRequest);

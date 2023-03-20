@@ -14,7 +14,5 @@ import lombok.NoArgsConstructor;
 public final class ProfileTypeConstants {
 
   /** The profiles expose development specific beans and configurations. */
-  public static final String DEV = "dev";
   public static final String PROD = "prod";
-  public static final String TEST = "test";
 }

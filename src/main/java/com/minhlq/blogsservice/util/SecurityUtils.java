@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.util;
 
-import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -143,7 +142,7 @@ public class SecurityUtils {
       return (UserPrincipal) getAuthentication().getPrincipal();
     }
 
-    log.warn(ErrorConstants.UNAUTHORIZED_ACCESS);
+    log.warn("Unauthorized Access detected...");
     return null;
   }
 
@@ -169,7 +168,7 @@ public class SecurityUtils {
    * @param userDetails the user details
    */
   public void validateUserDetailsStatus(UserDetails userDetails) {
-    log.debug(UserConstants.USER_DETAILS_DEBUG_MESSAGE, userDetails);
+    log.debug("User details {}", userDetails);
 
     if (!userDetails.isEnabled()) {
       throw new DisabledException(UserConstants.USER_DISABLED_MESSAGE);

@@ -7,10 +7,8 @@ import com.minhlq.blogsservice.model.RoleEntity;
 import com.minhlq.blogsservice.repository.RoleRepository;
 import com.minhlq.blogsservice.service.RoleService;
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.Validate;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -40,8 +38,6 @@ public class RoleServiceImpl implements RoleService {
   @Transactional
   @CachePut({CacheConstants.ROLE, CacheConstants.ROLES})
   public RoleEntity save(RoleEntity role) {
-    Validate.notNull(role, "The role cannot be null");
-
     return roleRepository.save(role);
   }
 
@@ -54,8 +50,6 @@ public class RoleServiceImpl implements RoleService {
   @Override
   @Cacheable(value = CacheConstants.ROLE, unless = "#result != null")
   public RoleEntity findByName(UserRole role) {
-    Validate.notNull(role, "Role cannot be null");
-
     return roleRepository
         .findByName(role.name())
         .orElseGet(
@@ -76,6 +70,6 @@ public class RoleServiceImpl implements RoleService {
   @Override
   @Cacheable(value = CacheConstants.ROLES, unless = "!#result.isEmpty()")
   public List<RoleEntity> findAll() {
-    return Collections.emptyList();
+    return roleRepository.findAll();
   }
 }

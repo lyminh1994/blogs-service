@@ -1,14 +1,13 @@
 package com.minhlq.blogsservice.payload;
 
-import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
 import com.minhlq.blogsservice.model.UserEntity;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,9 +47,7 @@ public record UserPrincipal(
    * @return the userDetails
    * @throws NullPointerException if the user is null
    */
-  public static UserPrincipal buildUserDetails(UserEntity user) {
-    Validate.notNull(user, UserConstants.USER_MUST_NOT_BE_NULL);
-
+  public static UserPrincipal buildUserDetails(@NotNull UserEntity user) {
     // Build the authorities from the user's roles
     Set<GrantedAuthority> authorities =
         user.getUserRoles().stream()

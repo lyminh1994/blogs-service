@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CacheConstants {
 
-  /** Constant for the cache key for the user. */
-  public static final String USERS = "users";
-
   /** Constant for the cache key for the roles */
   public static final String ROLE = "role";
 

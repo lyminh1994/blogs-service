@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.config.security;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import java.time.Duration;
 import java.util.Arrays;
@@ -55,7 +56,7 @@ public class SecurityBean {
     corsConfiguration.setAllowedOrigins(props.getAllowedOrigins());
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", corsConfiguration);
+    source.registerCorsConfiguration(AppConstants.ALL_PATTERN, corsConfiguration);
 
     return source;
   }

@@ -77,7 +77,7 @@ public class EncryptionServiceImpl implements EncryptionService {
         | NoSuchPaddingException
         | IllegalBlockSizeException
         | BadPaddingException e) {
-      log.debug(EncryptionConstants.ENCRYPTING_DATA_ERROR, e);
+      log.debug("Error encrypting data", e);
       throw new EncryptionException(e);
     }
   }
@@ -111,7 +111,7 @@ public class EncryptionServiceImpl implements EncryptionService {
         | IllegalBlockSizeException
         | BadPaddingException
         | NoSuchPaddingException e) {
-      log.debug(EncryptionConstants.DECRYPTING_DATA_ERROR, e);
+      log.debug("Error decrypting data", e);
       throw new EncryptionException(e);
     }
   }

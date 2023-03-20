@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.config;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -78,7 +79,12 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToMatch("/auth" + Constants.ALL_PATTERN)
+        .pathsToMatch(
+            AppConstants.SIGN_UP,
+            AppConstants.SIGN_IN,
+            AppConstants.REFRESH_TOKEN,
+            AppConstants.SIGN_OUT,
+            AppConstants.VERIFY)
         .build();
   }
 
@@ -106,7 +112,11 @@ public class OpenApiConfig {
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
         .pathsToExclude(
             endpointProperties.getBasePath() + Constants.ALL_PATTERN,
-            "/auth" + Constants.ALL_PATTERN)
+            AppConstants.SIGN_UP,
+            AppConstants.SIGN_IN,
+            AppConstants.REFRESH_TOKEN,
+            AppConstants.SIGN_OUT,
+            AppConstants.VERIFY)
         .build();
   }
 

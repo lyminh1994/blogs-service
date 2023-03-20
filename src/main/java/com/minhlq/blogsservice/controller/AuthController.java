@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.payload.AuthenticationResponse;
 import com.minhlq.blogsservice.payload.SignInRequest;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @SecurityRequirements
 @RequiredArgsConstructor
-@RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
@@ -52,7 +51,7 @@ public class AuthController {
    * @param signUpBody the register
    * @return the jwt token details
    */
-  @PostMapping("/sign-up")
+  @PostMapping(AppConstants.SIGN_UP)
   @Operation(summary = "Sign up", description = "Create new account")
   public ResponseEntity<AuthenticationResponse> signUp(
       @Valid @RequestBody SignUpRequest signUpBody) {
@@ -72,7 +71,7 @@ public class AuthController {
    * @param request The request
    * @return the jwt token details
    */
-  @PostMapping("/sign-in")
+  @PostMapping(AppConstants.SIGN_IN)
   @Operation(
       summary = "Sign in",
       description = "Authentication account and return access information",
@@ -98,7 +97,7 @@ public class AuthController {
    * @param request The request
    * @return the jwt token details
    */
-  @GetMapping("/refresh-token")
+  @GetMapping(AppConstants.REFRESH_TOKEN)
   @Operation(
       summary = "Refresh access token",
       description = "Create and return new access information")
@@ -114,7 +113,7 @@ public class AuthController {
    * @param request the http request
    * @param response the http response
    */
-  @DeleteMapping("/sign-out")
+  @DeleteMapping(AppConstants.SIGN_OUT)
   @Operation(summary = "Sign out", description = "Sign out and clear cookie of user browser")
   public ResponseEntity<Void> signOut(HttpServletRequest request, HttpServletResponse response) {
     HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
@@ -125,11 +124,11 @@ public class AuthController {
   /**
    * Verify account by verification token.
    *
-   * @param verificationToken the token
+   * @param verifyToken the token
    */
-  @GetMapping("/verify/{verify-token}")
+  @GetMapping(AppConstants.VERIFY)
   @Operation(summary = "Verify account", description = "Active account by provided token in email")
-  public void verify(@PathVariable(value = "verify-token") String verificationToken) {
-    authService.activeAccount(verificationToken);
+  public void verify(@PathVariable String verifyToken) {
+    authService.activeAccount(verifyToken);
   }
 }

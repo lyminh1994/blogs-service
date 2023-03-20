@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.config.security;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,9 +82,13 @@ public class SecurityConfig {
         .permitAll()
         .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
         .permitAll()
-        .requestMatchers(HttpMethod.GET, "/articles/feeds")
+        .requestMatchers(HttpMethod.GET, AppConstants.ARTICLES + AppConstants.FEEDS)
         .authenticated()
-        .requestMatchers(HttpMethod.GET, "/articles/**", "/user/{username}", "/tags")
+        .requestMatchers(
+            HttpMethod.GET,
+            AppConstants.ARTICLES + AppConstants.ALL_PATTERN,
+            AppConstants.USER + AppConstants.USERNAME,
+            AppConstants.TAGS)
         .permitAll()
         .anyRequest()
         .authenticated();

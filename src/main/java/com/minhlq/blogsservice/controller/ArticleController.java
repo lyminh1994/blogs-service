@@ -2,6 +2,7 @@ package com.minhlq.blogsservice.controller;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/articles")
+@RequestMapping(AppConstants.ARTICLES)
 @Tag(name = "Articles", description = "Blog Article APIs")
 public class ArticleController {
 
@@ -60,18 +61,18 @@ public class ArticleController {
    * @param pageSize page size
    * @return paging articles
    */
-  @GetMapping("/feeds")
+  @GetMapping(AppConstants.FEEDS)
   @Operation(summary = "Get feed", description = "Get followed user articles")
   public PageResponse<ArticleResponse> getFeeds(
-      @RequestParam(value = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(value = "page-size", required = false, defaultValue = "10") int pageSize) {
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
     return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
   }
 
   /**
    * Get all articles by filter params provided.
    *
-   * @param tagName tag name
+   * @param tag tag name
    * @param favoriteBy username favorite
    * @param author article author
    * @param pageNumber page number
@@ -82,13 +83,13 @@ public class ArticleController {
   @SecurityRequirements
   @Operation(summary = "Get articles", description = "Get all user articles")
   public PageResponse<ArticleResponse> getArticles(
-      @RequestParam(value = "tag", required = false) String tagName,
-      @RequestParam(value = "favorite-by", required = false) String favoriteBy,
-      @RequestParam(value = "author", required = false) String author,
-      @RequestParam(value = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(value = "page-size", required = false, defaultValue = "10") int pageSize) {
+      @RequestParam(required = false) String tag,
+      @RequestParam(required = false) String favoriteBy,
+      @RequestParam(required = false) String author,
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
     return articleService.findRecentArticles(
-        tagName, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
+        tag, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
   }
 
   /**
@@ -98,9 +99,9 @@ public class ArticleController {
    * @return article
    */
   @SecurityRequirements
-  @GetMapping("/{slug}")
+  @GetMapping(AppConstants.SLUG)
   @Operation(summary = "Get article", description = "Get article by slug")
-  public ArticleResponse getArticle(@PathVariable("slug") String slug) {
+  public ArticleResponse getArticle(@PathVariable String slug) {
     return articleService.findBySlug(slug);
   }
 
@@ -111,11 +112,10 @@ public class ArticleController {
    * @param updateArticleRequest update article details
    * @return updated article
    */
-  @PutMapping("/{slug}")
+  @PutMapping(AppConstants.SLUG)
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
-      @PathVariable("slug") String slug,
-      @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
+      @PathVariable String slug, @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
     return articleService.updateArticle(slug, updateArticleRequest);
   }
 
@@ -124,10 +124,10 @@ public class ArticleController {
    *
    * @param slug slug
    */
-  @DeleteMapping("/{slug}")
+  @DeleteMapping(AppConstants.SLUG)
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
-  public void deleteArticle(@PathVariable("slug") String slug) {
+  public void deleteArticle(@PathVariable String slug) {
     articleService.deleteArticle(slug);
   }
 
@@ -137,9 +137,9 @@ public class ArticleController {
    * @param slug slug
    * @return article
    */
-  @PutMapping("/{slug}/favorite")
+  @PutMapping(AppConstants.FAVORITE)
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
-  public ArticleResponse favoriteArticle(@PathVariable("slug") String slug) {
+  public ArticleResponse favoriteArticle(@PathVariable String slug) {
     return articleService.favoriteArticle(slug);
   }
 
@@ -149,9 +149,9 @@ public class ArticleController {
    * @param slug slug
    * @return article
    */
-  @DeleteMapping("/{slug}/favorite")
+  @DeleteMapping(AppConstants.FAVORITE)
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
-  public ArticleResponse unFavoriteArticle(@PathVariable("slug") String slug) {
+  public ArticleResponse unFavoriteArticle(@PathVariable String slug) {
     return articleService.unFavoriteArticle(slug);
   }
 }

@@ -1,6 +1,7 @@
 package com.minhlq.blogsservice.config;
 
 import com.minhlq.blogsservice.service.impl.DateTimeProviderImpl;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +47,7 @@ public class ApplicationConfig {
     ReloadableResourceBundleMessageSource messageSource =
         new ReloadableResourceBundleMessageSource();
     messageSource.setBasename("classpath:i18n/messages");
-    messageSource.setDefaultEncoding("UTF-8");
+    messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
 
     return messageSource;
   }

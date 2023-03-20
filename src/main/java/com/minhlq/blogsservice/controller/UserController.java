@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.controller;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogsservice.dto.request.UpdateUserRequest;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping(AppConstants.USER)
 @Tag(name = "User", description = "Blog User Information APIs")
 public class UserController {
 
@@ -69,7 +70,7 @@ public class UserController {
     return UserResponse.getUserResponse(userDetails);
   }
 
-  @PutMapping("/password")
+  @PutMapping(AppConstants.PASSWORD)
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update password", description = "Update current user password")
   public void updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
@@ -83,10 +84,10 @@ public class UserController {
    * @param username the username
    * @return user profile.
    */
-  @GetMapping("/{username}")
+  @GetMapping(AppConstants.USERNAME)
   @SecurityRequirements
   @Operation(summary = "Public profile", description = "Get public user information by username")
-  public ProfileResponse getProfile(@PathVariable("username") String username) {
+  public ProfileResponse getProfile(@PathVariable String username) {
     return userService.findByUsername(username);
   }
 
@@ -96,9 +97,9 @@ public class UserController {
    * @param username the username following
    * @return user profile.
    */
-  @PutMapping(path = "/{username}/following")
+  @PutMapping(path = AppConstants.FOLLOWING)
   @Operation(summary = "Following", description = "Following user by username")
-  public ProfileResponse following(@PathVariable("username") String username) {
+  public ProfileResponse following(@PathVariable String username) {
     return userService.followByUsername(username);
   }
 
@@ -108,9 +109,9 @@ public class UserController {
    * @param username the username un-following
    * @return user profile.
    */
-  @DeleteMapping(path = "/{username}/following")
+  @DeleteMapping(path = AppConstants.FOLLOWING)
   @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
-  public ProfileResponse unFollowing(@PathVariable("username") String username) {
+  public ProfileResponse unFollowing(@PathVariable String username) {
     return userService.unFollowByUsername(username);
   }
 }

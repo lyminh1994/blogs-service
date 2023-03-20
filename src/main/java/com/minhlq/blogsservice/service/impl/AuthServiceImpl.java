@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.constant.ErrorConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.TokenType;
@@ -128,7 +127,7 @@ public class AuthServiceImpl implements AuthService {
     boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     if (!refreshTokenValid) {
-      throw new IllegalArgumentException(ErrorConstants.INVALID_TOKEN);
+      throw new IllegalArgumentException("Invalid token");
     }
 
     String username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
@@ -156,7 +155,7 @@ public class AuthServiceImpl implements AuthService {
     String decodedToken = encryptionService.decode(verificationToken);
 
     if (StringUtils.isBlank(decodedToken) || !jwtService.isValidJwtToken(decodedToken)) {
-      throw new SecurityException(ErrorConstants.VERIFY_TOKEN_EXPIRED);
+      throw new SecurityException("Verification token was expire");
     }
 
     UserEntity user =

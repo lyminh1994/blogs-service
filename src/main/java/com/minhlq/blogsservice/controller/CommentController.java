@@ -3,6 +3,7 @@ package com.minhlq.blogsservice.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/articles/{slug}/comments")
+@RequestMapping(AppConstants.COMMENTS)
 @Tag(name = "Comments", description = "Blog Comments of Article APIs")
 public class CommentController {
 
@@ -49,7 +50,7 @@ public class CommentController {
   @ResponseStatus(CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
-      @PathVariable("slug") String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
+      @PathVariable String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
     return commentService.addCommentToArticle(slug, newCommentRequest);
   }
 
@@ -63,9 +64,9 @@ public class CommentController {
   @SecurityRequirements
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
   public PageResponse<CommentResponse> getComments(
-      @PathVariable("slug") String slug,
-      @RequestParam(name = "page-number", required = false, defaultValue = "0") int pageNumber,
-      @RequestParam(name = "page-size", required = false, defaultValue = "10") int pageSize) {
+      @PathVariable String slug,
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
+      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
     return commentService.findArticleComments(slug, PageRequest.of(pageNumber, pageSize));
   }
 
@@ -75,10 +76,10 @@ public class CommentController {
    * @param slug slug
    * @param commentId id
    */
-  @DeleteMapping("/{id}")
+  @DeleteMapping(AppConstants.COMMENT)
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
-  public void deleteComment(@PathVariable("slug") String slug, @PathVariable("id") Long commentId) {
+  public void deleteComment(@PathVariable String slug, @PathVariable Long commentId) {
     commentService.deleteCommentFromArticle(slug, commentId);
   }
 }

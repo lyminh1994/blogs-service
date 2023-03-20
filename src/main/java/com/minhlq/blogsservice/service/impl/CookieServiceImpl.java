@@ -5,13 +5,14 @@ import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.enums.TokenType;
 import com.minhlq.blogsservice.service.CookieService;
 import jakarta.servlet.http.Cookie;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
@@ -41,9 +42,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public Cookie createCookie(HttpCookie httpCookie) {
-    Validate.notNull(httpCookie, SecurityConstants.HTTP_COOKIE_CANNOT_BE_NULL);
-
+  public Cookie createCookie(@NotNull HttpCookie httpCookie) {
     Cookie cookie = new Cookie(httpCookie.getName(), httpCookie.getValue());
     cookie.setSecure(
         Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD));
@@ -61,9 +60,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie createCookie(String name, String value, Duration maxAge) {
-    Validate.notBlank(name, SecurityConstants.NAME_CANNOT_BE_NULL_OR_EMPTY);
-
+  public HttpCookie createCookie(@NotNull String name, String value, Duration maxAge) {
     return ResponseCookie.from(name, value)
         .secure(Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD))
         .sameSite("strict")
@@ -81,9 +78,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie createTokenCookie(String token, TokenType tokenType) {
-    Validate.notBlank(token, SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY);
-
+  public HttpCookie createTokenCookie(@NotEmpty String token, TokenType tokenType) {
     return createTokenCookie(token, tokenType, duration);
   }
 
@@ -96,10 +91,8 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie createTokenCookie(String token, TokenType tokenType, Duration maxAge) {
-    Validate.notBlank(token, SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY);
-    Validate.notNull(tokenType, SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL);
-
+  public HttpCookie createTokenCookie(
+      @NotEmpty String token, @NotNull TokenType tokenType, Duration maxAge) {
     return createCookie(tokenType.getName(), token, maxAge);
   }
 
@@ -110,9 +103,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie deleteTokenCookie(TokenType tokenType) {
-    Validate.notNull(tokenType, SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL);
-
+  public HttpCookie deleteTokenCookie(@NotNull TokenType tokenType) {
     return createCookie(tokenType.getName(), StringUtils.EMPTY, Duration.ZERO);
   }
 
@@ -123,9 +114,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the httpHeaders
    */
   @Override
-  public HttpHeaders addDeletedCookieToHeaders(TokenType tokenType) {
-    Validate.notNull(tokenType, SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL);
-
+  public HttpHeaders addDeletedCookieToHeaders(@NotNull TokenType tokenType) {
     HttpCookie httpCookie = deleteTokenCookie(tokenType);
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add(HttpHeaders.SET_COOKIE, httpCookie.toString());
@@ -140,10 +129,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the httpHeaders
    */
   @Override
-  public HttpHeaders addCookieToHeaders(TokenType tokenType, String token) {
-    Validate.notNull(tokenType, SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL);
-    Validate.notBlank(token, SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY);
-
+  public HttpHeaders addCookieToHeaders(@NotNull TokenType tokenType, @NotEmpty String token) {
     return addCookieToHeaders(tokenType, token, duration);
   }
 
@@ -156,10 +142,8 @@ public class CookieServiceImpl implements CookieService {
    * @return the httpHeaders
    */
   @Override
-  public HttpHeaders addCookieToHeaders(TokenType tokenType, String token, Duration maxAge) {
-    Validate.notNull(tokenType, SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL);
-    Validate.notBlank(token, SecurityConstants.TOKEN_CANNOT_BE_NULL_OR_EMPTY);
-
+  public HttpHeaders addCookieToHeaders(
+      @NotNull TokenType tokenType, @NotEmpty String token, Duration maxAge) {
     HttpHeaders httpHeaders = new HttpHeaders();
     addCookieToHeaders(
         httpHeaders, tokenType, token, Objects.isNull(maxAge) ? this.duration : maxAge);
@@ -177,9 +161,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public void addCookieToHeaders(
-      HttpHeaders httpHeaders, TokenType tokenType, String token, Duration maxAge) {
-    Validate.notNull(tokenType, SecurityConstants.TOKEN_TYPE_CANNOT_BE_NULL);
-
+      HttpHeaders httpHeaders, @NotNull TokenType tokenType, String token, Duration maxAge) {
     httpHeaders.add(HttpHeaders.SET_COOKIE, createTokenCookie(token, tokenType, maxAge).toString());
   }
 }

@@ -21,7 +21,7 @@ public class UserDetailsPasswordServiceImpl implements UserDetailsPasswordServic
   private final PasswordEncoder passwordEncoder;
 
   @Override
-  public UserDetails updatePassword(UserDetails userDetails, String newPassword) {
+  public UserPrincipal updatePassword(UserDetails userDetails, String newPassword) {
     UserEntity user =
         userRepository
             .findByUsername(userDetails.getUsername())

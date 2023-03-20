@@ -1,5 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
+import com.minhlq.blogsservice.constant.CacheConstants;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
@@ -13,6 +14,7 @@ import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
   private final FollowRepository followRepository;
 
   @Override
+  @CachePut(value = CacheConstants.USER_DETAILS, unless = "#result != null")
   public UserPrincipal updateUserDetails(UpdateUserDto updateUserDto) {
     UserEntity updatedUser =
         userRepository

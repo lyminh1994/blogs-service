@@ -1,10 +1,9 @@
 package com.minhlq.blogsservice.payload;
 
-import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.Gender;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
-import org.apache.commons.lang3.Validate;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -24,8 +23,7 @@ public record UserResponse(
     Gender gender,
     String profileImage,
     Collection<? extends GrantedAuthority> authorities) {
-  public static UserResponse getUserResponse(final UserPrincipal userDetails) {
-    Validate.notNull(userDetails, UserConstants.USER_DETAILS_MUST_NOT_BE_NULL);
+  public static UserResponse getUserResponse(@NotNull UserPrincipal userDetails) {
 
     return new UserResponse(
         userDetails.publicId(),
