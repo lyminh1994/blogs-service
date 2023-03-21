@@ -28,7 +28,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class AbstractAuditEntity {
+public abstract class AuditEntity {
 
   @Column(unique = true, nullable = false, updatable = false)
   @NotBlank(message = "Public facing id is needed for all entities")
@@ -61,7 +61,7 @@ public class AbstractAuditEntity {
       return true;
     }
 
-    if (!(o instanceof AbstractAuditEntity that)) {
+    if (!(o instanceof AuditEntity that)) {
       return false;
     }
 
@@ -82,7 +82,7 @@ public class AbstractAuditEntity {
    * @see <a href="https://www.artima.com/articles/how-to-write-an-equality-method-in-java">More</a>
    */
   protected boolean canEqual(Object other) {
-    return other instanceof AbstractAuditEntity;
+    return other instanceof AuditEntity;
   }
 
   @Override

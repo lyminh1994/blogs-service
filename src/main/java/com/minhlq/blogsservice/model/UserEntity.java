@@ -35,7 +35,7 @@ import org.hibernate.envers.NotAudited;
 @Entity
 @Audited
 @Table(name = "users")
-public class UserEntity extends AbstractAuditEntity {
+public class UserEntity extends AuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

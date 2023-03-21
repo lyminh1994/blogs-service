@@ -27,7 +27,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "comments")
-public class CommentEntity extends AbstractAuditEntity {
+public class CommentEntity extends AuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

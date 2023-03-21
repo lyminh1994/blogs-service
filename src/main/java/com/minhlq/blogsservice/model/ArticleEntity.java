@@ -32,7 +32,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "articles")
-public class ArticleEntity extends AbstractAuditEntity {
+public class ArticleEntity extends AuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

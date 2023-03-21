@@ -24,7 +24,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity
 @Table(name = "users_roles")
-public class UserRoleEntity extends AbstractAuditEntity {
+public class UserRoleEntity extends AuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
