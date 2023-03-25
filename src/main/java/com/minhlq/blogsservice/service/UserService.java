@@ -55,7 +55,19 @@ public interface UserService {
    */
   ProfileResponse unFollowByUsername(String username);
 
+  /**
+   * Check username existed in database
+   *
+   * @param username - The username
+   * @return is username existed
+   */
   boolean isUsernameExisted(String username);
 
+  /**
+   * Check email exited in database
+   *
+   * @param email - The email
+   * @return is email exited
+   */
   boolean isEmailExisted(String email);
 }
