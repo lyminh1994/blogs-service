@@ -4,15 +4,14 @@ import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.dto.response.TagResponse;
 import com.minhlq.blogsservice.service.TagService;
-import com.minhlq.blogsservice.util.PagingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -33,20 +32,13 @@ public class TagsController {
   /**
    * Get all tags name.
    *
-   * @param pageNumber the page number
-   * @param pageSize the page size
-   * @param sort the sort fields
+   * @param pageable paging
    * @return paged tags name
    */
   @GetMapping
   @SecurityRequirements
-  @Operation(summary = "Get tags", description = "Get all tags name")
-  public PageResponse<TagResponse> getTags(
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize,
-      @RequestParam(required = false) String[] sort) {
-
-    PageRequest pageRequest = PagingUtils.toPageRequest(pageNumber, pageSize, sort);
-    return tagService.getTags(pageRequest);
+  @Operation(summary = "Get tags", description = "Get all tags")
+  public PageResponse<TagResponse> getTags(@ParameterObject Pageable pageable) {
+    return tagService.getTags(pageable);
   }
 }

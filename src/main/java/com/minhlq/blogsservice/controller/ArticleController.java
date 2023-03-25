@@ -13,7 +13,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,16 +58,13 @@ public class ArticleController {
   /**
    * Get current user feeds.
    *
-   * @param pageNumber page number
-   * @param pageSize page size
+   * @param pageable paging
    * @return paging articles
    */
   @GetMapping(AppConstants.FEEDS)
   @Operation(summary = "Get feed", description = "Get followed user articles")
-  public PageResponse<ArticleResponse> getFeeds(
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
-    return articleService.findUserFeeds(PageRequest.of(pageNumber, pageSize));
+  public PageResponse<ArticleResponse> getFeeds(@ParameterObject Pageable pageable) {
+    return articleService.findUserFeeds(pageable);
   }
 
   /**
@@ -75,8 +73,7 @@ public class ArticleController {
    * @param tag tag name
    * @param favoriteBy username favorite
    * @param author article author
-   * @param pageNumber page number
-   * @param pageSize page size
+   * @param pageable paging
    * @return paging articles
    */
   @GetMapping
@@ -86,10 +83,8 @@ public class ArticleController {
       @RequestParam(required = false) String tag,
       @RequestParam(required = false) String favoriteBy,
       @RequestParam(required = false) String author,
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
-    return articleService.findRecentArticles(
-        tag, favoriteBy, author, PageRequest.of(pageNumber, pageSize));
+      @ParameterObject Pageable pageable) {
+    return articleService.findRecentArticles(tag, favoriteBy, author, pageable);
   }
 
   /**

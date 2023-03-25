@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,7 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest) {
+  public PageResponse<ArticleResponse> findUserFeeds(Pageable pageable) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     Set<Long> followedUsers = followRepository.findByUserIdQuery(currentUser.id());
     if (CollectionUtils.isEmpty(followedUsers)) {
@@ -116,7 +116,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     Page<ArticleEntity> articles =
-        articleRepository.findByFollowedUsersQuery(followedUsers, pageRequest);
+        articleRepository.findByFollowedUsersQuery(followedUsers, pageable);
     List<ArticleResponse> contents = getArticleResponses(articles.getContent());
 
     return new PageResponse<>(contents, articles.getTotalElements());
@@ -124,7 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public PageResponse<ArticleResponse> findRecentArticles(
-      String tagName, String favoriteBy, String author, PageRequest pageRequest) {
+      String tagName, String favoriteBy, String author, Pageable pageable) {
     QTagEntity qTag = QTagEntity.tagEntity;
     QArticleEntity qArticle = QArticleEntity.articleEntity;
     QUserEntity qUser = QUserEntity.userEntity;
@@ -161,8 +161,8 @@ public class ArticleServiceImpl implements ArticleService {
         query
             .distinct()
             .select(qArticle)
-            .offset(pageRequest.getOffset())
-            .limit(pageRequest.getPageSize())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .fetch();
 
     List<ArticleResponse> contents = getArticleResponses(articles);

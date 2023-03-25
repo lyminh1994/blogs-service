@@ -4,7 +4,7 @@ import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The article service to provide for the article operations.
@@ -26,10 +26,10 @@ public interface ArticleService {
   /**
    * Find all articles created by current user.
    *
-   * @param pageRequest the paging params
+   * @param pageable the paging params
    * @return the paging articles
    */
-  PageResponse<ArticleResponse> findUserFeeds(PageRequest pageRequest);
+  PageResponse<ArticleResponse> findUserFeeds(Pageable pageable);
 
   /**
    * Find all articles with provided filter params.
@@ -37,11 +37,11 @@ public interface ArticleService {
    * @param tagName the tag name
    * @param favoriteBy the favorite user
    * @param author the article author
-   * @param pageRequest the paging params
+   * @param pageable the paging params
    * @return the paging articles
    */
   PageResponse<ArticleResponse> findRecentArticles(
-      String tagName, String favoriteBy, String author, PageRequest pageRequest);
+      String tagName, String favoriteBy, String author, Pageable pageable);
 
   /**
    * Find article by provided slug.

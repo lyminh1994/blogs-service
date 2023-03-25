@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.service;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The comment service to provide for the comment operations.
@@ -27,10 +27,10 @@ public interface CommentService {
    * Find all article comments.
    *
    * @param slug the slug
-   * @param pageRequest the paging params
+   * @param pageable the paging params
    * @return comments
    */
-  PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest);
+  PageResponse<CommentResponse> findArticleComments(String slug, Pageable pageable);
 
   /**
    * Delete comment of article with provided comment id.

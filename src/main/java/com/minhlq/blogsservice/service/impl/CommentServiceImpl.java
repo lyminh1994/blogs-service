@@ -19,7 +19,7 @@ import com.minhlq.blogsservice.util.SecurityUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,12 +60,12 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<CommentResponse> findArticleComments(String slug, PageRequest pageRequest) {
+  public PageResponse<CommentResponse> findArticleComments(String slug, Pageable pageable) {
     UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    Page<CommentEntity> comments = commentRepository.findByArticle(article, pageRequest);
+    Page<CommentEntity> comments = commentRepository.findByArticle(article, pageable);
 
     List<CommentResponse> contents =
         comments.getContent().stream()

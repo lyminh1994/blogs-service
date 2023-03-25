@@ -13,14 +13,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,16 +58,15 @@ public class CommentController {
    * Get all comments of article by slug.
    *
    * @param slug slug
+   * @param pageable paging
    * @return comments
    */
   @GetMapping
   @SecurityRequirements
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
   public PageResponse<CommentResponse> getComments(
-      @PathVariable String slug,
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
-      @RequestParam(required = false, defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
-    return commentService.findArticleComments(slug, PageRequest.of(pageNumber, pageSize));
+      @PathVariable String slug, @ParameterObject Pageable pageable) {
+    return commentService.findArticleComments(slug, pageable);
   }
 
   /**
