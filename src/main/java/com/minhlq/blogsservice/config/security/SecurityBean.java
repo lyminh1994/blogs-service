@@ -43,7 +43,7 @@ public class SecurityBean {
    * @return CorsConfigurationSource
    */
   @Bean
-  public CorsConfigurationSource corsConfigurationSource(final CorsConfigProperties props) {
+  public CorsConfigurationSource corsConfigurationSource(final CorsProperties props) {
 
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowCredentials(props.isAllowCredentials());
@@ -86,7 +86,7 @@ public class SecurityBean {
    * @param props CorsConfigProperties
    * @param corsConfig CorsConfiguration
    */
-  private void setExposedHeaders(CorsConfigProperties props, CorsConfiguration corsConfig) {
+  private void setExposedHeaders(CorsProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getExposedHeaders())) {
       corsConfig.setExposedHeaders(
           Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE));
@@ -109,7 +109,7 @@ public class SecurityBean {
    * @param props CorsConfigProperties
    * @param corsConfig CorsConfiguration
    */
-  private void setAllowedHeaders(CorsConfigProperties props, CorsConfiguration corsConfig) {
+  private void setAllowedHeaders(CorsProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getAllowedHeaders())) {
       corsConfig.setAllowedHeaders(SecurityConstants.HTTP_HEADERS_ALLOWED);
     } else {
@@ -137,7 +137,7 @@ public class SecurityBean {
    * @param props CorsConfigProperties
    * @param corsConfig CorsConfiguration
    */
-  private void setAllowedMethods(CorsConfigProperties props, CorsConfiguration corsConfig) {
+  private void setAllowedMethods(CorsProperties props, CorsConfiguration corsConfig) {
     if (CollectionUtils.isEmpty(props.getAllowedMethods())) {
       corsConfig.setAllowedMethods(SecurityConstants.HTTP_METHODS_ALLOWED);
     } else {
