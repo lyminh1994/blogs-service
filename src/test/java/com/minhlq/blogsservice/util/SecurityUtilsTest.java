@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.helper.TestHelper;
 import com.minhlq.blogsservice.helper.UserHelper;
 import com.minhlq.blogsservice.model.UserEntity;
@@ -56,13 +57,13 @@ class SecurityUtilsTest {
 
   @Test
   void givenAnonymousUser_whenIsAuthenticated_thenReturnFalse() {
-    TestHelper.setAuthentication(TestHelper.ANONYMOUS_USER, TestHelper.ROLE_ANONYMOUS);
+    TestHelper.setAuthentication("anonymous", UserRole.ROLE_ANONYMOUS.name());
     assertFalse(SecurityUtils.isAuthenticated());
   }
 
   @Test
   void givenValidUser_whenIsAuthenticated_thenReturnTrue(TestInfo testInfo) {
-    TestHelper.setAuthentication(testInfo.getDisplayName(), TestHelper.ROLE_USER);
+    TestHelper.setAuthentication(testInfo.getDisplayName(), UserRole.ROLE_USER.name());
     assertTrue(SecurityUtils.isAuthenticated());
   }
 

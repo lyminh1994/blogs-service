@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.annotation;
 
-import com.minhlq.blogsservice.annotation.impl.validator.DuplicatedUsernameValidator;
+import com.minhlq.blogsservice.annotation.validator.DuplicatedUsernameValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.Documented;

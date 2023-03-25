@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.annotation.impl.validator;
+package com.minhlq.blogsservice.annotation.validator;
 
 import com.minhlq.blogsservice.annotation.DuplicatedArticleConstraint;
 import com.minhlq.blogsservice.service.ArticleService;

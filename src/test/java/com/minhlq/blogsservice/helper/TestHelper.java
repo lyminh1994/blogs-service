@@ -18,15 +18,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class TestHelper {
 
-  public static final String ANONYMOUS_USER = "anonymousUser";
-  public static final String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
-  public static final String ROLE_USER = "ROLE_USER";
-  public static final String ROLE_ADMIN = "ROLE_ADMIN";
   public static final ObjectMapper objectMapper = new ObjectMapper();
+
   public static final String[] IGNORED_FIELDS = {
     "id", "createdAt", "createdBy", "updatedAt", "updatedBy"
   };
+
   public static final String[] BASE_EQUALS_AND_HASH_CODE_FIELDS = {"version", "publicId"};
+
   public static final String[] USER_EQUALS_FIELDS = {"publicId", "username", "email"};
 
   public static Collection<String> getBaseEqualsAndHashCodeFields() {
@@ -56,7 +55,7 @@ public class TestHelper {
     List<SimpleGrantedAuthority> authorities =
         Collections.singletonList(new SimpleGrantedAuthority(role));
     Authentication auth;
-    if (username.equals(ANONYMOUS_USER)) {
+    if (username.equals("anonymous")) {
       UserDetails user =
           User.builder().username(username).password(username).authorities(authorities).build();
 

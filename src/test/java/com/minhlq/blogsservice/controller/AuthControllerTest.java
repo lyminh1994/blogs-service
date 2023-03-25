@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogsservice.annotation.impl.validator.DuplicatedUsernameValidator;
+import com.minhlq.blogsservice.annotation.validator.DuplicatedUsernameValidator;
 import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
