@@ -17,5 +17,5 @@ public final class TestConstants {
       SecurityConstants.BEARER + StringUtils.SPACE + AUTHENTICATION_TOKEN;
 
   public static final String INVALID_TOKEN = SecurityConstants.BEARER;
-public static final String USER_DTO_MUST_NOT_BE_NULL = "UserDto must not be null";
+  public static final String USER_DTO_MUST_NOT_BE_NULL = "User must not be null";
 }

@@ -23,25 +23,33 @@ class ArticleFavoriteRepositoryTest {
   @Autowired ArticleFavoriteRepository repository;
 
   @Test
-  void givenThreeArticleFavorites_whenCountArticleFavoritesByArticleIdQuery_thenReturnThree() {
-    Long articleIdReturn9 = 1L;
-    Long articleIdReturn5 = 10L;
-    Long articleIdReturn0 = 11L;
-    assertEquals(9, repository.countArticleFavoritesByArticleIdQuery(articleIdReturn9));
-    assertEquals(5, repository.countArticleFavoritesByArticleIdQuery(articleIdReturn5));
-    assertEquals(0, repository.countArticleFavoritesByArticleIdQuery(articleIdReturn0));
+  void whenCountArticleFavoritesByArticleIdQuery_thenReturnCorrect() {
+    // when
+    long actual = repository.countArticleFavoritesByArticleIdQuery(1L);
+    long actual1 = repository.countArticleFavoritesByArticleIdQuery(10L);
+    long actual2 = repository.countArticleFavoritesByArticleIdQuery(null);
+
+    // then
+    assertEquals(9, actual);
+    assertEquals(5, actual1);
+    assertEquals(0, actual2);
   }
 
   @Test
-  void givenArticleFavorites_whenFindByArticleIdQuery_thenReturnArticleFavorites() {
+  void whenFindByArticleIdQuery_thenReturnCorrect() {
+    // when
     List<ArticleFavoriteEntity> articleFavoritesFound = repository.findByArticleIdQuery(1L);
     List<ArticleFavoriteEntity> articleFavoritesNotFound = repository.findByArticleIdQuery(11L);
+    List<ArticleFavoriteEntity> articleFavoritesNull = repository.findByArticleIdQuery(null);
 
+    // then
     assertNotNull(articleFavoritesNotFound);
     assertTrue(articleFavoritesNotFound.isEmpty());
     assertNotNull(articleFavoritesFound);
     assertFalse(articleFavoritesFound.isEmpty());
     assertEquals(9, articleFavoritesFound.size());
     assertEquals(1L, articleFavoritesFound.get(0).getId().getArticleId());
+    assertNotNull(articleFavoritesNull);
+    assertTrue(articleFavoritesNull.isEmpty());
   }
 }

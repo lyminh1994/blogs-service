@@ -49,13 +49,12 @@ class ArticleControllerTest {
 
   @Test
   @DisplayName(
-      "Should Update Article Content Success UPDATE request to " + "endpoint - /articles/{slug}")
+      "Should Update Article Content Success UPDATE request to endpoint - /articles/{slug}")
   void shouldUpdateArticleContentSuccess() {}
 
   @Test
   @DisplayName(
-      "Should Get 403 If Not Author To Update Article UPDATE request to "
-          + "endpoint - /articles/{slug}")
+      "Should Get 403 If Not Author To Update Article UPDATE request to endpoint - /articles/{slug}")
   void shouldGet403IfNotAuthorToUpdateArticle() {}
 
   @Test
@@ -64,18 +63,16 @@ class ArticleControllerTest {
 
   @Test
   @DisplayName(
-      "Should 403 If Not Author Delete Article DELETE request to " + "endpoint - /articles/{slug}")
+      "Should 403 If Not Author Delete Article DELETE request to endpoint - /articles/{slug}")
   void should403IfNotAuthorDeleteArticle() {}
 
   @Test
   @DisplayName(
-      "Should Favorite An Article Success POST request to "
-          + "endpoint - /articles/{slug}/favorite")
+      "Should Favorite An Article Success POST request to endpoint - /articles/{slug}/favorite")
   void shouldFavoriteAnArticleSuccess() {}
 
   @Test
   @DisplayName(
-      "Should Un Favorite An Article Success DELETE request to "
-          + "endpoint - /articles/{slug}/favorite")
+      "Should Un Favorite An Article Success DELETE request to endpoint - /articles/{slug}/favorite")
   void shouldUnFavoriteAnArticleSuccess() {}
 }
