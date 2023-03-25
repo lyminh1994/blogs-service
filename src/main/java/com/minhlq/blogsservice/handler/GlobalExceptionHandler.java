@@ -1,10 +1,19 @@
-package com.minhlq.blogsservice.exception.handler;
+package com.minhlq.blogsservice.handler;
 
+import com.minhlq.blogsservice.dto.ErrorResource;
+import com.minhlq.blogsservice.dto.ErrorsResource;
+import com.minhlq.blogsservice.dto.FieldErrorResource;
+import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -23,7 +32,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+  private final MessageSource messageSource;
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -63,6 +75,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .toList();
 
     return ResponseEntity.badRequest().body(new ErrorsResource(fieldErrorResources));
+  }
+
+  @ExceptionHandler({ResourceNotFoundException.class})
+  public ErrorResource handleResourceNotFound(ResourceNotFoundException ex, Locale locale) {
+    return new ErrorResource(
+        null,
+        null,
+        HttpStatus.NOT_FOUND,
+        StringUtils.defaultString(
+            ex.getMessage(), messageSource.getMessage("not.found", null, locale)));
   }
 
   private String getParam(String s) {

@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exception.handler;
+package com.minhlq.blogsservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 

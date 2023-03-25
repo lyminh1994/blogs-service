@@ -1,7 +1,7 @@
 package com.minhlq.blogsservice.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogsservice.exception.handler.ErrorResource;
+import com.minhlq.blogsservice.dto.ErrorResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
