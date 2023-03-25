@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "cors")
-public class CorsConfigProperties {
+public class CorsProperties {
 
   private int maxAge;
 
