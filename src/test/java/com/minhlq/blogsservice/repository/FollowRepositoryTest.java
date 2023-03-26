@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@Sql({"classpath:/sql/users.sql", "classpath:/sql/follows.sql"})
+/*@Sql({"classpath:/sql/users.sql", "classpath:/sql/follows.sql"})*/
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class FollowRepositoryTest {
 
   @Autowired FollowRepository repository;
