@@ -23,7 +23,7 @@ public final class ArticleUtils {
    */
   public String toSlug(String title) {
     if (StringUtils.isBlank(title)) {
-      return title;
+      return StringUtils.EMPTY;
     }
 
     return title.toLowerCase().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
