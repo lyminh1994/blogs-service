@@ -20,13 +20,15 @@ public final class SecurityConstants {
   public static final int DEFAULT_TOKEN_DURATION = 7;
   public static final int SECURITY_STRENGTH = 12;
 
-  public static final List<String> HTTP_METHODS_ALLOWED = List.of("GET", "POST", "PUT", "DELETE");
+  public static final List<String> HTTP_HEADERS_EXPOSED =
+      List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE);
   public static final List<String> HTTP_HEADERS_ALLOWED =
       List.of(
           HttpHeaders.AUTHORIZATION,
           HttpHeaders.CACHE_CONTROL,
           HttpHeaders.CONTENT_TYPE,
           HttpHeaders.ACCEPT_LANGUAGE);
+  public static final List<String> HTTP_METHODS_ALLOWED = List.of("GET", "POST", "PUT", "DELETE");
   public static final String[] PUBLIC_MATCHERS = {
     "/resources/**",
     "/static/**",

@@ -81,36 +81,36 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.exceptionHandling()
-        .accessDeniedHandler(getAccessDeniedHandler())
-        .authenticationEntryPoint(getAuthenticationEntryPoint());
-
-    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-    http.cors().disable();
-    http.csrf().disable();
-    http.httpBasic().disable();
-    http.formLogin().disable();
-    http.logout().disable();
-
-    http.authorizeHttpRequests()
-        .requestMatchers(HttpMethod.OPTIONS)
-        .permitAll()
-        .requestMatchers(SecurityConstants.PUBLIC_MATCHERS)
-        .permitAll()
-        .requestMatchers(HttpMethod.GET, AppConstants.ARTICLES + AppConstants.FEEDS)
-        .authenticated()
-        .requestMatchers(
-            HttpMethod.GET,
-            AppConstants.ARTICLES + AppConstants.ALL_PATTERN,
-            AppConstants.USER + AppConstants.USERNAME,
-            AppConstants.TAGS)
-        .permitAll()
-        .anyRequest()
-        .authenticated();
-
-    return http.build();
+    return http.cors()
+        .and()
+        .csrf()
+        .disable()
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers(HttpMethod.OPTIONS)
+                    .permitAll()
+                    .requestMatchers(SecurityConstants.PUBLIC_MATCHERS)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, AppConstants.ARTICLES + AppConstants.FEEDS)
+                    .authenticated()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        AppConstants.ARTICLES + AppConstants.ALL_PATTERN,
+                        AppConstants.USER + AppConstants.USERNAME,
+                        AppConstants.TAGS)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(
+            exception ->
+                exception
+                    .accessDeniedHandler(getAccessDeniedHandler())
+                    .authenticationEntryPoint(getAuthenticationEntryPoint()))
+        .build();
   }
 
   private AccessDeniedHandler getAccessDeniedHandler() {
