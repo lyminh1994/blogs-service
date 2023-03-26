@@ -82,7 +82,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ErrorResource(
         null,
         null,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NOT_FOUND.value(),
         StringUtils.defaultString(
             ex.getMessage(), messageSource.getMessage("not.found", null, locale)));
   }
