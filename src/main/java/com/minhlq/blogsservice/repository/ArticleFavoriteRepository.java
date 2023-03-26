@@ -5,6 +5,7 @@ import com.minhlq.blogsservice.model.unionkey.ArticleFavoriteKey;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repository for the Article favorite.
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
  * @version 1.0
  * @since 1.0
  */
+@Repository
 public interface ArticleFavoriteRepository
     extends JpaRepository<ArticleFavoriteEntity, ArticleFavoriteKey> {
 
