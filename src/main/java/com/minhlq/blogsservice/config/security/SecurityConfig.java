@@ -1,12 +1,18 @@
 package com.minhlq.blogsservice.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
+import com.minhlq.blogsservice.dto.ErrorResource;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -16,7 +22,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -38,7 +46,7 @@ public class SecurityConfig {
 
   private final JwtRequestFilter jwtRequestFilter;
 
-  private final JwtAuthenticationEntryPoint unauthorizedHandler;
+  private final ObjectMapper objectMapper;
 
   /**
    * Configures global user's with authentication credentials.
@@ -73,14 +81,23 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-    http.cors().and().csrf().disable();
+    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    http.exceptionHandling()
+        .accessDeniedHandler(getAccessDeniedHandler())
+        .authenticationEntryPoint(getAuthenticationEntryPoint());
 
-    http.httpBasic().disable().formLogin().disable().logout().disable();
+    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+    http.cors().disable();
+    http.csrf().disable();
+    http.httpBasic().disable();
+    http.formLogin().disable();
+    http.logout().disable();
 
     http.authorizeHttpRequests()
         .requestMatchers(HttpMethod.OPTIONS)
         .permitAll()
-        .requestMatchers(SecurityConstants.getPublicMatchers().toArray(new String[0]))
+        .requestMatchers(SecurityConstants.PUBLIC_MATCHERS)
         .permitAll()
         .requestMatchers(HttpMethod.GET, AppConstants.ARTICLES + AppConstants.FEEDS)
         .authenticated()
@@ -93,14 +110,32 @@ public class SecurityConfig {
         .anyRequest()
         .authenticated();
 
-    http.sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .exceptionHandling()
-        .authenticationEntryPoint(unauthorizedHandler);
-
-    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
     return http.build();
+  }
+
+  private AccessDeniedHandler getAccessDeniedHandler() {
+    return (request, response, accessDeniedException) -> {
+      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      OutputStream outputStream = response.getOutputStream();
+      ErrorResource errorResource =
+          new ErrorResource(
+              null, null, HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage());
+      objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, errorResource);
+      outputStream.flush();
+    };
+  }
+
+  private AuthenticationEntryPoint getAuthenticationEntryPoint() {
+    return (request, response, authException) -> {
+      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      ErrorResource errorResource =
+          new ErrorResource(
+              null, null, HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+      ServletOutputStream outputStream = response.getOutputStream();
+      objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, errorResource);
+      outputStream.flush();
+    };
   }
 }

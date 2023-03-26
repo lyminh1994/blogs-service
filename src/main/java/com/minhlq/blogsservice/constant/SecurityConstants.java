@@ -1,6 +1,5 @@
 package com.minhlq.blogsservice.constant;
 
-import java.util.Collection;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -23,8 +22,12 @@ public final class SecurityConstants {
 
   public static final List<String> HTTP_METHODS_ALLOWED = List.of("GET", "POST", "PUT", "DELETE");
   public static final List<String> HTTP_HEADERS_ALLOWED =
-      List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE);
-  private static final String[] PUBLIC_MATCHERS = {
+      List.of(
+          HttpHeaders.AUTHORIZATION,
+          HttpHeaders.CACHE_CONTROL,
+          HttpHeaders.CONTENT_TYPE,
+          HttpHeaders.ACCEPT_LANGUAGE);
+  public static final String[] PUBLIC_MATCHERS = {
     "/resources/**",
     "/static/**",
     "/actuator/**",
@@ -36,13 +39,4 @@ public final class SecurityConstants {
     AppConstants.SIGN_OUT,
     AppConstants.VERIFY
   };
-
-  /**
-   * Public matchers to allow access to the application.
-   *
-   * @return public matchers.
-   */
-  public static Collection<String> getPublicMatchers() {
-    return List.of(PUBLIC_MATCHERS);
-  }
 }
