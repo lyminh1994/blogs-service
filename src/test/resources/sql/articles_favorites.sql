@@ -1,4 +1,4 @@
-INSERT INTO articles_favorites (article_id, user_id)
+INSERT INTO blogs_test.articles_favorites (article_id, user_id)
 VALUES (1, 2),
        (1, 3),
        (1, 4),

@@ -1,19 +1,19 @@
-create sequence articles_seq increment by 1;
-create sequence comments_seq increment by 1;
-create sequence revinfo_seq increment by 50;
-create sequence roles_seq increment by 1;
-create sequence tags_seq increment by 1;
-create sequence users_roles_seq increment by 1;
-create sequence users_seq increment by 1;
+create sequence if not exists articles_seq increment by 1;
+create sequence if not exists comments_seq increment by 1;
+create sequence if not exists revinfo_seq increment by 50;
+create sequence if not exists roles_seq increment by 1;
+create sequence if not exists tags_seq increment by 1;
+create sequence if not exists users_roles_seq increment by 1;
+create sequence if not exists users_seq increment by 1;
 
-create table roles
+create table if not exists roles
 (
     id          bigint not null primary key,
     description varchar(255),
     name        varchar(255)
 );
 
-create table users
+create table if not exists users
 (
     id                    bigint       not null primary key,
     created_at            timestamp(6),
@@ -37,7 +37,7 @@ create table users
     verification_token    varchar(255)
 );
 
-create table users_roles
+create table if not exists users_roles
 (
     id         bigint       not null primary key,
     created_at timestamp(6),
@@ -50,14 +50,14 @@ create table users_roles
     user_id    bigint references users
 );
 
-create table follows
+create table if not exists follows
 (
     follow_id bigint not null,
     user_id   bigint not null,
     primary key (follow_id, user_id)
 );
 
-create table articles
+create table if not exists articles
 (
     id          bigint       not null primary key,
     created_at  timestamp(6),
@@ -73,27 +73,27 @@ create table articles
     user_id     bigint references users
 );
 
-create table articles_favorites
+create table if not exists articles_favorites
 (
     article_id bigint not null,
     user_id    bigint not null,
     primary key (article_id, user_id)
 );
 
-create table tags
+create table if not exists tags
 (
     id   bigint       not null primary key,
     name varchar(255) not null
 );
 
-create table articles_tags
+create table if not exists articles_tags
 (
     article_id bigint not null,
     tag_id     bigint not null,
     primary key (article_id, tag_id)
 );
 
-create table comments
+create table if not exists comments
 (
     id         bigint       not null primary key,
     created_at timestamp(6),
@@ -107,13 +107,13 @@ create table comments
     user_id    bigint references users
 );
 
-create table revinfo
+create table if not exists revinfo
 (
     rev      integer not null primary key,
     revtstmp bigint
 );
 
-create table users_aud
+create table if not exists users_aud
 (
     id            bigint  not null,
     rev           integer not null references revinfo,

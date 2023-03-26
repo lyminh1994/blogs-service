@@ -1,4 +1,4 @@
-INSERT INTO users (id, created_at, created_by, public_id, updated_at, updated_by, version, birthday, email,
+INSERT INTO blogs_test.users (id, created_at, created_by, public_id, updated_at, updated_by, version, birthday, email,
                    enabled, failed_login_attempts, first_name, gender, last_name, last_successful_login,
                    password, phone, profile_image, username, verification_token)
 VALUES (8, '2023-02-20 22:38:48.988945', 'system', 'ada557d0-0c46-484e-a592-89a31fac3853', '2023-02-21 20:38:50.915612',

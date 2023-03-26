@@ -1,4 +1,4 @@
-INSERT INTO articles_tags (article_id, tag_id)
+INSERT INTO blogs_test.articles_tags (article_id, tag_id)
 VALUES (1, 1),
        (1, 3),
        (1, 4),

@@ -1,4 +1,4 @@
-INSERT INTO tags (id, name)
+INSERT INTO blogs_test.tags (id, name)
 VALUES (1, 'Taunya Hickle'),
        (2, 'Marylynn Kohler'),
        (3, 'Jonas Schmidt'),

@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-/*@Sql({"classpath:/sql/users.sql", "classpath:/sql/articles.sql"})*/
+@Sql({"classpath:/sql/users.sql", "classpath:/sql/articles.sql"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ArticleRepositoryTest {
 
