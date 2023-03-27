@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 
 /**
@@ -30,10 +31,11 @@ public class UpdateUserValidator
     final UserPrincipal targetUser = value.targetUser();
 
     boolean isValidEmail =
-        userRepository
-            .findByEmail(email)
-            .map(user -> Objects.equals(user.getId(), targetUser.id()))
-            .orElse(true);
+        StringUtils.isBlank(email)
+            || userRepository
+                .findByEmail(email)
+                .map(user -> Objects.equals(user.getId(), targetUser.id()))
+                .orElse(true);
 
     HibernateConstraintValidatorContext hibernateContext =
         context.unwrap(HibernateConstraintValidatorContext.class);
@@ -47,10 +49,11 @@ public class UpdateUserValidator
     }
 
     boolean isValidPhone =
-        userRepository
-            .findByPhone(phone)
-            .map(user -> Objects.equals(user.getId(), targetUser.id()))
-            .orElse(true);
+        StringUtils.isBlank(phone)
+            || userRepository
+                .findByPhone(phone)
+                .map(user -> Objects.equals(user.getId(), targetUser.id()))
+                .orElse(true);
     if (!isValidPhone) {
       hibernateContext.disableDefaultConstraintViolation();
       hibernateContext.addMessageParameter("phone", phone);
