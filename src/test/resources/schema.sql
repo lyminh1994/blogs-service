@@ -1,3 +1,5 @@
+create schema if not exists blogs_test;
+
 create sequence if not exists articles_seq increment by 1;
 create sequence if not exists comments_seq increment by 1;
 create sequence if not exists revinfo_seq increment by 50;

@@ -1,4 +1,4 @@
-INSERT INTO blogs_test.articles (id, created_at, created_by, public_id, updated_at, updated_by, version, body, description,
+INSERT INTO articles (id, created_at, created_by, public_id, updated_at, updated_by, version, body, description,
                              slug, title, user_id)
 VALUES (1, '2023-02-20 22:38:48.993708', 'system', '8655d646-8358-48fc-a1b2-18b40232de17', '2023-02-20 23:28:47.787972',
         'system', 3, 'Not knowing is part of the fun. Was that the motto of your community college?',

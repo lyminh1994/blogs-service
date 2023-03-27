@@ -1,4 +1,4 @@
-INSERT INTO blogs_test.follows (follow_id, user_id)
+INSERT INTO follows (follow_id, user_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),

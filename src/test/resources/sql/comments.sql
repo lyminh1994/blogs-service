@@ -1,4 +1,4 @@
-INSERT INTO blogs_test.comments (id, created_at, created_by, public_id, updated_at, updated_by, version, body, article_id,
+INSERT INTO comments (id, created_at, created_by, public_id, updated_at, updated_by, version, body, article_id,
                              user_id)
 VALUES (1, '2023-02-20 22:38:49.004848', 'system', '162a88cd-3062-4c05-a7c4-24a5dffed520', '2023-02-20 22:38:49.004974',
         'system', 0, 'I quit doing blow, not being rad.', 2, 6),

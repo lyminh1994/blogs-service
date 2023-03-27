@@ -1,4 +1,4 @@
-INSERT INTO blogs_test.users_roles (id, created_at, created_by, public_id, updated_at, updated_by, version, role_id, user_id)
+INSERT INTO users_roles (id, created_at, created_by, public_id, updated_at, updated_by, version, role_id, user_id)
 VALUES (1, '2023-02-20 22:38:48.925896', 'system', '5f9ccd0d-d450-4f80-bf32-4b221c866254', '2023-02-20 22:38:48.925896',
         'system', 0, 1, 1),
        (2, '2023-02-20 22:38:48.925896', 'system', '5f9ccd0d-d450-4f80-bf32-4b221c866255', '2023-02-20 22:38:48.925896',
