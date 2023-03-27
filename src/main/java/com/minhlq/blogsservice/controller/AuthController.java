@@ -9,8 +9,6 @@ import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,14 +72,7 @@ public class AuthController {
   @PostMapping(AppConstants.SIGN_IN)
   @Operation(
       summary = "Sign in",
-      description = "Authentication account and return access information",
-      requestBody =
-          @io.swagger.v3.oas.annotations.parameters.RequestBody(
-              content =
-                  @Content(
-                      examples =
-                          @ExampleObject(
-                              value = "{\"username\": \"user\",\"password\": \"Minh@759407\"}"))))
+      description = "Authentication account and return access information")
   public ResponseEntity<AuthenticationResponse> signIn(
       @Valid @RequestBody SignInRequest requestBody, HttpServletRequest request) {
     String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
