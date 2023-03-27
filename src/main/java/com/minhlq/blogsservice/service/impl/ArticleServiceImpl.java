@@ -171,8 +171,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleResponse findBySlug(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ArticleResponse findBySlug(UserPrincipal currentUser, String slug) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     return getArticleResponse(currentUser, article);
@@ -180,8 +179,8 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ArticleResponse updateArticle(
+      UserPrincipal currentUser, String slug, UpdateArticleRequest updateRequest) {
     ArticleEntity newArticle =
         articleRepository
             .findBySlug(slug)
@@ -205,8 +204,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public void deleteArticle(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public void deleteArticle(UserPrincipal currentUser, String slug) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     if (!currentUser.id().equals(article.getAuthor().getId())) {
@@ -225,8 +223,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleResponse favoriteArticle(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ArticleResponse favoriteArticle(UserPrincipal currentUser, String slug) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavoriteKey =
@@ -240,8 +237,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleResponse unFavoriteArticle(String slug) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ArticleResponse unFavoriteArticle(UserPrincipal currentUser, String slug) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     ArticleFavoriteKey articleFavorite = new ArticleFavoriteKey(article.getId(), currentUser.id());

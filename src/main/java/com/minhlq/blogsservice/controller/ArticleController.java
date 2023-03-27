@@ -7,6 +7,7 @@ import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,8 +98,9 @@ public class ArticleController {
   @SecurityRequirements
   @GetMapping(AppConstants.SLUG)
   @Operation(summary = "Get article", description = "Get article by slug")
-  public ArticleResponse getArticle(@PathVariable String slug) {
-    return articleService.findBySlug(slug);
+  public ArticleResponse getArticle(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+    return articleService.findBySlug(currentUser, slug);
   }
 
   /**
@@ -110,8 +113,10 @@ public class ArticleController {
   @PutMapping(AppConstants.SLUG)
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
-      @PathVariable String slug, @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
-    return articleService.updateArticle(slug, updateArticleRequest);
+      @AuthenticationPrincipal UserPrincipal currentUser,
+      @PathVariable String slug,
+      @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
+    return articleService.updateArticle(currentUser, slug, updateArticleRequest);
   }
 
   /**
@@ -122,8 +127,9 @@ public class ArticleController {
   @DeleteMapping(AppConstants.SLUG)
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
-  public void deleteArticle(@PathVariable String slug) {
-    articleService.deleteArticle(slug);
+  public void deleteArticle(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+    articleService.deleteArticle(currentUser, slug);
   }
 
   /**
@@ -134,8 +140,9 @@ public class ArticleController {
    */
   @PutMapping(AppConstants.FAVORITE)
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
-  public ArticleResponse favoriteArticle(@PathVariable String slug) {
-    return articleService.favoriteArticle(slug);
+  public ArticleResponse favoriteArticle(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+    return articleService.favoriteArticle(currentUser, slug);
   }
 
   /**
@@ -146,7 +153,8 @@ public class ArticleController {
    */
   @DeleteMapping(AppConstants.FAVORITE)
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
-  public ArticleResponse unFavoriteArticle(@PathVariable String slug) {
-    return articleService.unFavoriteArticle(slug);
+  public ArticleResponse unFavoriteArticle(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+    return articleService.unFavoriteArticle(currentUser, slug);
   }
 }

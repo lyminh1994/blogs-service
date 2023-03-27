@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,8 +45,7 @@ public class UserController {
   @GetMapping
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Current user", description = "Get current user")
-  public UserResponse getCurrentUser() {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public UserResponse getCurrentUser(@AuthenticationPrincipal UserPrincipal currentUser) {
     return UserResponse.getUserResponse(currentUser);
   }
 
@@ -58,9 +58,9 @@ public class UserController {
   @PutMapping
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update info", description = "Update current user information")
-  public UserResponse updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
-
+  public UserResponse updateUser(
+      @AuthenticationPrincipal UserPrincipal currentUser,
+      @Valid @RequestBody UpdateUserRequest updateUserRequest) {
     UpdateUserDto updateUser = new UpdateUserDto(currentUser, updateUserRequest);
     UserPrincipal userDetails = userService.updateUserDetails(updateUser);
 
@@ -73,8 +73,9 @@ public class UserController {
   @PutMapping(AppConstants.PASSWORD)
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update password", description = "Update current user password")
-  public void updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public void updatePassword(
+      @AuthenticationPrincipal UserPrincipal currentUser,
+      @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
     passwordService.updatePassword(currentUser, updatePasswordRequest.newPassword());
   }
 
@@ -87,8 +88,9 @@ public class UserController {
   @GetMapping(AppConstants.USERNAME)
   @SecurityRequirements
   @Operation(summary = "Public profile", description = "Get public user information by username")
-  public ProfileResponse getProfile(@PathVariable String username) {
-    return userService.findByUsername(username);
+  public ProfileResponse getProfile(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String username) {
+    return userService.findByUsername(currentUser, username);
   }
 
   /**
@@ -99,8 +101,9 @@ public class UserController {
    */
   @PutMapping(path = AppConstants.FOLLOWING)
   @Operation(summary = "Following", description = "Following user by username")
-  public ProfileResponse following(@PathVariable String username) {
-    return userService.followByUsername(username);
+  public ProfileResponse following(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String username) {
+    return userService.followByUsername(currentUser.id(), username);
   }
 
   /**
@@ -111,7 +114,8 @@ public class UserController {
    */
   @DeleteMapping(path = AppConstants.FOLLOWING)
   @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
-  public ProfileResponse unFollowing(@PathVariable String username) {
-    return userService.unFollowByUsername(username);
+  public ProfileResponse unFollowing(
+      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String username) {
+    return userService.unFollowByUsername(currentUser.id(), username);
   }
 }

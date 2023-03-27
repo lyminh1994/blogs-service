@@ -12,7 +12,6 @@ import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.UserService;
-import com.minhlq.blogsservice.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
@@ -54,8 +53,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  public ProfileResponse findByUsername(String username) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ProfileResponse findByUsername(UserPrincipal currentUser, String username) {
     return userRepository
         .findByUsername(username)
         .map(
@@ -72,13 +70,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse followByUsername(String username) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ProfileResponse followByUsername(Long userId, String username) {
     return userRepository
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followId = new FollowKey(currentUser.id(), targetUser.getId());
+              FollowKey followId = new FollowKey(userId, targetUser.getId());
               if (!followRepository.existsById(followId)) {
                 followRepository.save(new FollowEntity(followId));
               }
@@ -89,13 +86,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse unFollowByUsername(String username) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ProfileResponse unFollowByUsername(Long userId, String username) {
     return userRepository
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followId = new FollowKey(currentUser.id(), targetUser.getId());
+              FollowKey followId = new FollowKey(userId, targetUser.getId());
               followRepository.findById(followId).ifPresent(followRepository::delete);
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);

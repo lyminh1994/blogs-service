@@ -7,6 +7,7 @@ import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.dto.request.NewCommentRequest;
 import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +52,10 @@ public class CommentController {
   @ResponseStatus(CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
-      @PathVariable String slug, @Valid @RequestBody NewCommentRequest newCommentRequest) {
-    return commentService.addCommentToArticle(slug, newCommentRequest);
+      @AuthenticationPrincipal UserPrincipal currentUser,
+      @PathVariable String slug,
+      @Valid @RequestBody NewCommentRequest newCommentRequest) {
+    return commentService.addCommentToArticle(currentUser, slug, newCommentRequest);
   }
 
   /**
@@ -65,8 +69,10 @@ public class CommentController {
   @SecurityRequirements
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
   public PageResponse<CommentResponse> getComments(
-      @PathVariable String slug, @ParameterObject Pageable pageable) {
-    return commentService.findArticleComments(slug, pageable);
+      @AuthenticationPrincipal UserPrincipal currentUser,
+      @PathVariable String slug,
+      @ParameterObject Pageable pageable) {
+    return commentService.findArticleComments(currentUser, slug, pageable);
   }
 
   /**
@@ -78,7 +84,10 @@ public class CommentController {
   @DeleteMapping(AppConstants.COMMENT)
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
-  public void deleteComment(@PathVariable String slug, @PathVariable Long commentId) {
-    commentService.deleteCommentFromArticle(slug, commentId);
+  public void deleteComment(
+      @AuthenticationPrincipal UserPrincipal currentUser,
+      @PathVariable String slug,
+      @PathVariable Long commentId) {
+    commentService.deleteCommentFromArticle(currentUser, slug, commentId);
   }
 }

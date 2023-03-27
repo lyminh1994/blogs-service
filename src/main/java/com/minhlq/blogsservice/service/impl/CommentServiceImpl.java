@@ -15,7 +15,6 @@ import com.minhlq.blogsservice.repository.ArticleRepository;
 import com.minhlq.blogsservice.repository.CommentRepository;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.service.CommentService;
-import com.minhlq.blogsservice.util.SecurityUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,8 +41,8 @@ public class CommentServiceImpl implements CommentService {
   private final FollowRepository followRepository;
 
   @Override
-  public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public CommentResponse addCommentToArticle(
+      UserPrincipal currentUser, String slug, NewCommentRequest newCommentRequest) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
@@ -60,8 +59,8 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<CommentResponse> findArticleComments(String slug, Pageable pageable) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public PageResponse<CommentResponse> findArticleComments(
+      UserPrincipal currentUser, String slug, Pageable pageable) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
@@ -71,13 +70,13 @@ public class CommentServiceImpl implements CommentService {
         comments.getContent().stream()
             .map(
                 comment -> {
-                  CommentResponse response = CommentMapper.MAPPER.toCommentResponse(comment);
+                  CommentResponse result = CommentMapper.MAPPER.toCommentResponse(comment);
                   if (currentUser != null) {
                     FollowKey followId = new FollowKey(currentUser.id(), comment.getUser().getId());
-                    response.getUser().setFollowing(followRepository.existsById(followId));
+                    result.getUser().setFollowing(followRepository.existsById(followId));
                   }
 
-                  return response;
+                  return result;
                 })
             .toList();
 
@@ -85,8 +84,7 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteCommentFromArticle(String slug, Long commentId) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public void deleteCommentFromArticle(UserPrincipal currentUser, String slug, Long commentId) {
     ArticleEntity article =
         articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     CommentEntity comment =

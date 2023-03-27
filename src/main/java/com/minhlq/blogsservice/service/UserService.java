@@ -29,31 +29,34 @@ public interface UserService {
   /**
    * Returns a user profile for the given username or throw exception if a user could not be found.
    *
+   * @param currentUser user details
    * @param username The username associated to the user to find
    * @return a user for the given username or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse findByUsername(String username);
+  ProfileResponse findByUsername(UserPrincipal currentUser, String username);
 
   /**
    * Add follow relation and returns a user profile for the given username or throw exception if a
    * user could not be found.
    *
+   * @param userId user id
    * @param username The username associated to the user to find
    * @return a user for the given username or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse followByUsername(String username);
+  ProfileResponse followByUsername(Long userId, String username);
 
   /**
    * Remove follow relation and returns a user profile for the given username or throw exception if
    * a user could not be found.
    *
+   * @param userId user id
    * @param username The username associated to the user to find
    * @return a user for the given username or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse unFollowByUsername(String username);
+  ProfileResponse unFollowByUsername(Long userId, String username);
 
   /**
    * Check username existed in database

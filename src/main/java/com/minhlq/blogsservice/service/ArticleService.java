@@ -4,6 +4,7 @@ import com.minhlq.blogsservice.dto.request.NewArticleRequest;
 import com.minhlq.blogsservice.dto.request.UpdateArticleRequest;
 import com.minhlq.blogsservice.dto.response.ArticleResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
+import com.minhlq.blogsservice.payload.UserPrincipal;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -46,42 +47,48 @@ public interface ArticleService {
   /**
    * Find article by provided slug.
    *
+   * @param currentUser user details
    * @param slug the slug
    * @return article
    */
-  ArticleResponse findBySlug(String slug);
+  ArticleResponse findBySlug(UserPrincipal currentUser, String slug);
 
   /**
    * Update article by slug with provided information.
    *
+   * @param currentUser user details
    * @param slug the slug
    * @param updateRequest update fields
    * @return article
    */
-  ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest);
+  ArticleResponse updateArticle(
+      UserPrincipal currentUser, String slug, UpdateArticleRequest updateRequest);
 
   /**
    * Delete single article by slug.
    *
+   * @param currentUser user details
    * @param slug the slug
    */
-  void deleteArticle(String slug);
+  void deleteArticle(UserPrincipal currentUser, String slug);
 
   /**
    * Set favorite article by current user.
    *
+   * @param currentUser user details
    * @param slug the slug
    * @return article
    */
-  ArticleResponse favoriteArticle(String slug);
+  ArticleResponse favoriteArticle(UserPrincipal currentUser, String slug);
 
   /**
    * Un-favorite article by current user.
    *
+   * @param currentUser user details
    * @param slug the slug
    * @return article
    */
-  ArticleResponse unFavoriteArticle(String slug);
+  ArticleResponse unFavoriteArticle(UserPrincipal currentUser, String slug);
 
   /**
    * Check article slug has exited in table articles
