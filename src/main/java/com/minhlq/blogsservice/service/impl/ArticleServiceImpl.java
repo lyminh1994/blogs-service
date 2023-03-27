@@ -29,7 +29,6 @@ import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.TagRepository;
 import com.minhlq.blogsservice.service.ArticleService;
 import com.minhlq.blogsservice.util.ArticleUtils;
-import com.minhlq.blogsservice.util.SecurityUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -70,8 +69,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleResponse createArticle(NewArticleRequest createRequest) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public ArticleResponse createArticle(UserPrincipal currentUser, NewArticleRequest createRequest) {
     UserEntity author = UserMapper.MAPPER.toUser(currentUser);
     ArticleEntity savedArticle =
         articleRepository.saveAndFlush(
@@ -108,8 +106,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public PageResponse<ArticleResponse> findUserFeeds(Pageable pageable) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  public PageResponse<ArticleResponse> findUserFeeds(UserPrincipal currentUser, Pageable pageable) {
     Set<Long> followedUsers = followRepository.findByUserIdQuery(currentUser.id());
     if (CollectionUtils.isEmpty(followedUsers)) {
       return new PageResponse<>(Collections.emptyList(), 0);
@@ -117,14 +114,18 @@ public class ArticleServiceImpl implements ArticleService {
 
     Page<ArticleEntity> articles =
         articleRepository.findByFollowedUsersQuery(followedUsers, pageable);
-    List<ArticleResponse> contents = getArticleResponses(articles.getContent());
+    List<ArticleResponse> contents = getArticleResponses(currentUser, articles.getContent());
 
     return new PageResponse<>(contents, articles.getTotalElements());
   }
 
   @Override
   public PageResponse<ArticleResponse> findRecentArticles(
-      String tagName, String favoriteBy, String author, Pageable pageable) {
+      UserPrincipal currentUser,
+      String tagName,
+      String favoriteBy,
+      String author,
+      Pageable pageable) {
     QTagEntity qTag = QTagEntity.tagEntity;
     QArticleEntity qArticle = QArticleEntity.articleEntity;
     QUserEntity qUser = QUserEntity.userEntity;
@@ -165,7 +166,7 @@ public class ArticleServiceImpl implements ArticleService {
             .limit(pageable.getPageSize())
             .fetch();
 
-    List<ArticleResponse> contents = getArticleResponses(articles);
+    List<ArticleResponse> contents = getArticleResponses(currentUser, articles);
 
     return new PageResponse<>(contents, totalElements);
   }
@@ -298,8 +299,8 @@ public class ArticleServiceImpl implements ArticleService {
    * @param articles the articles
    * @return articles
    */
-  private List<ArticleResponse> getArticleResponses(List<ArticleEntity> articles) {
-    UserPrincipal currentUser = SecurityUtils.getAuthenticatedUserDetails();
+  private List<ArticleResponse> getArticleResponses(
+      UserPrincipal currentUser, List<ArticleEntity> articles) {
     return articles.stream().map(article -> getArticleResponse(currentUser, article)).toList();
   }
 }

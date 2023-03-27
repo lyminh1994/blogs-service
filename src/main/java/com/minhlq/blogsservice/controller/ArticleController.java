@@ -53,8 +53,8 @@ public class ArticleController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create article", description = "Create article")
-  public ArticleResponse createArticle(@Valid @RequestBody NewArticleRequest articleRequest) {
-    return articleService.createArticle(articleRequest);
+  public ArticleResponse createArticle(@AuthenticationPrincipal UserPrincipal currentUser, @Valid @RequestBody NewArticleRequest articleRequest) {
+    return articleService.createArticle(currentUser, articleRequest);
   }
 
   /**
@@ -65,8 +65,8 @@ public class ArticleController {
    */
   @GetMapping(AppConstants.FEEDS)
   @Operation(summary = "Get feed", description = "Get followed user articles")
-  public PageResponse<ArticleResponse> getFeeds(@ParameterObject Pageable pageable) {
-    return articleService.findUserFeeds(pageable);
+  public PageResponse<ArticleResponse> getFeeds(@AuthenticationPrincipal UserPrincipal currentUser,@ParameterObject Pageable pageable) {
+    return articleService.findUserFeeds(currentUser,pageable);
   }
 
   /**
@@ -81,12 +81,12 @@ public class ArticleController {
   @GetMapping
   @SecurityRequirements
   @Operation(summary = "Get articles", description = "Get all user articles")
-  public PageResponse<ArticleResponse> getArticles(
+  public PageResponse<ArticleResponse> getArticles(@AuthenticationPrincipal UserPrincipal currentUser,
       @RequestParam(required = false) String tag,
       @RequestParam(required = false) String favoriteBy,
       @RequestParam(required = false) String author,
       @ParameterObject Pageable pageable) {
-    return articleService.findRecentArticles(tag, favoriteBy, author, pageable);
+    return articleService.findRecentArticles(currentUser, tag, favoriteBy, author, pageable);
   }
 
   /**

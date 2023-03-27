@@ -19,22 +19,25 @@ public interface ArticleService {
   /**
    * Crete a new article with provided content.
    *
+   * @param currentUser user details
    * @param createRequest the article content
    * @return article
    */
-  ArticleResponse createArticle(NewArticleRequest createRequest);
+  ArticleResponse createArticle(UserPrincipal currentUser, NewArticleRequest createRequest);
 
   /**
    * Find all articles created by current user.
    *
+   * @param currentUser user details
    * @param pageable the paging params
    * @return the paging articles
    */
-  PageResponse<ArticleResponse> findUserFeeds(Pageable pageable);
+  PageResponse<ArticleResponse> findUserFeeds(UserPrincipal currentUser, Pageable pageable);
 
   /**
    * Find all articles with provided filter params.
    *
+   * @param currentUser user details
    * @param tagName the tag name
    * @param favoriteBy the favorite user
    * @param author the article author
@@ -42,7 +45,11 @@ public interface ArticleService {
    * @return the paging articles
    */
   PageResponse<ArticleResponse> findRecentArticles(
-      String tagName, String favoriteBy, String author, Pageable pageable);
+      UserPrincipal currentUser,
+      String tagName,
+      String favoriteBy,
+      String author,
+      Pageable pageable);
 
   /**
    * Find article by provided slug.
