@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import jakarta.validation.Valid;

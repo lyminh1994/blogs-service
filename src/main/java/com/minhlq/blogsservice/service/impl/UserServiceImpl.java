@@ -7,7 +7,7 @@ import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.enums.UserRole;
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.model.FollowEntity;
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.model.unionkey.FollowKey;

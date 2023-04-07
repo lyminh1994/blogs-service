@@ -1,6 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

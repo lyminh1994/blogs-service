@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.service.impl;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.minhlq.blogsservice.constant.EncryptionConstants;
-import com.minhlq.blogsservice.exception.EncryptionException;
+import com.minhlq.blogsservice.handler.exception.EncryptionException;
 import com.minhlq.blogsservice.service.EncryptionService;
 import java.net.URLDecoder;
 import java.net.URLEncoder;

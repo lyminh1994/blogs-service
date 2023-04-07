@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exception;
+package com.minhlq.blogsservice.handler.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

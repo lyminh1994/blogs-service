@@ -2,7 +2,7 @@ package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.enums.TokenType;
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.payload.AuthenticationResponse;
 import com.minhlq.blogsservice.payload.SignInRequest;
 import com.minhlq.blogsservice.repository.UserRepository;

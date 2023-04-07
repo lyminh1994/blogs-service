@@ -1,4 +1,4 @@
-package com.minhlq.blogsservice.exception;
+package com.minhlq.blogsservice.handler.exception;
 
 import java.io.Serial;
 import org.springframework.http.HttpStatus;

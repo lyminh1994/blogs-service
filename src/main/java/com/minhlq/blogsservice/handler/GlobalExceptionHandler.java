@@ -3,7 +3,7 @@ package com.minhlq.blogsservice.handler;
 import com.minhlq.blogsservice.dto.ErrorResource;
 import com.minhlq.blogsservice.dto.ErrorsResource;
 import com.minhlq.blogsservice.dto.FieldErrorResource;
-import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.handler.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Locale;
