@@ -61,8 +61,8 @@ public class UserController {
   public UserResponse updateUser(
       @AuthenticationPrincipal UserPrincipal currentUser,
       @Valid @RequestBody UpdateUserRequest updateUserRequest) {
-    UpdateUserDto updateUser = new UpdateUserDto(currentUser, updateUserRequest);
-    UserPrincipal userDetails = userService.updateUserDetails(updateUser);
+    var updateUser = new UpdateUserDto(currentUser, updateUserRequest);
+    var userDetails = userService.updateUserDetails(updateUser);
 
     // Authenticate user with the updated profile.
     SecurityUtils.authenticateUser(userDetails);

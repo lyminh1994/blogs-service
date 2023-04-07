@@ -1,22 +1,15 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.SecurityConstants;
-import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.enums.TokenType;
-import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
-import com.minhlq.blogsservice.model.RoleEntity;
-import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.AuthenticationResponse;
 import com.minhlq.blogsservice.payload.SignInRequest;
-import com.minhlq.blogsservice.payload.SignUpRequest;
-import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
 import com.minhlq.blogsservice.service.EncryptionService;
 import com.minhlq.blogsservice.service.JwtService;
-import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,9 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +41,6 @@ public class AuthServiceImpl implements AuthService {
 
   private final UserRepository userRepository;
 
-  private final RoleService roleService;
-
-  private final PasswordEncoder passwordEncoder;
-
   private final AuthenticationManager authenticationManager;
 
   private final UserDetailsService userDetailsService;
@@ -66,56 +53,28 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   @Transactional
-  public AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders) {
-    RoleEntity role = roleService.findByName(UserRole.ROLE_USER);
-    Duration ttl = Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
-
-    String verificationToken =
-        jwtService.createJwt(
-            signUpBody.username(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
-
-    UserEntity user = new UserEntity();
-    user.setUsername(signUpBody.username());
-    user.setPassword(passwordEncoder.encode(signUpBody.password()));
-    user.setEmail(signUpBody.email());
-    user.setVerificationToken(encryptionService.encode(verificationToken));
-    user.addRole(role);
-
-    UserEntity savedUser = userRepository.saveAndFlush(user);
-    UserPrincipal userDetails = UserPrincipal.buildUserDetails(savedUser);
-    SecurityUtils.authenticateUser(userDetails);
-
-    String accessToken = updateCookies(savedUser.getUsername(), false, responseHeaders);
-    String encryptedAccessToken = encryptionService.encrypt(accessToken);
-
-    return AuthenticationResponse.build(encryptedAccessToken);
-  }
-
-  @Override
-  @Transactional
   public AuthenticationResponse signIn(
       String refreshToken, SignInRequest requestBody, HttpHeaders responseHeaders) {
 
-    String username = requestBody.username();
+    var username = requestBody.username();
     // Authentication will fail if the credentials are invalid and throw exception.
     SecurityUtils.authenticateUser(authenticationManager, username, requestBody.password());
 
     // Update user last successful login and reset failed login attempts
-    UserEntity user =
-        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    var user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     user.setLastSuccessfulLogin(LocalDateTime.now());
     user.setFailedLoginAttempts(0);
     userRepository.save(user);
 
-    boolean isRefreshTokenValid = false;
+    var isRefreshTokenValid = false;
     if (StringUtils.isNotEmpty(refreshToken)) {
-      String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
+      var decryptedRefreshToken = encryptionService.decrypt(refreshToken);
       isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
     }
 
     // If the refresh token is valid, then we will not generate a new refresh token.
-    String accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
-    String encryptedAccessToken = encryptionService.encrypt(accessToken);
+    var accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
+    var encryptedAccessToken = encryptionService.encrypt(accessToken);
 
     return AuthenticationResponse.build(encryptedAccessToken);
   }
@@ -123,22 +82,22 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public AuthenticationResponse refreshAccessToken(
       String refreshToken, HttpServletRequest request) {
-    String decryptedRefreshToken = encryptionService.decrypt(refreshToken);
-    boolean refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
+    var decryptedRefreshToken = encryptionService.decrypt(refreshToken);
+    var refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
 
     if (!refreshTokenValid) {
       throw new IllegalArgumentException("Invalid token");
     }
 
-    String username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
-    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    var username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
+    var userDetails = userDetailsService.loadUserByUsername(username);
 
     SecurityUtils.clearAuthentication();
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
-    String accessToken = jwtService.createJwt(username);
-    String encryptedAccessToken = encryptionService.encrypt(accessToken);
+    var accessToken = jwtService.createJwt(username);
+    var encryptedAccessToken = encryptionService.encrypt(accessToken);
 
     return AuthenticationResponse.build(encryptedAccessToken);
   }
@@ -152,13 +111,12 @@ public class AuthServiceImpl implements AuthService {
   @Override
   @Transactional
   public void activeAccount(String verificationToken) {
-    String decodedToken = encryptionService.decode(verificationToken);
-
+    var decodedToken = encryptionService.decode(verificationToken);
     if (StringUtils.isBlank(decodedToken) || !jwtService.isValidJwtToken(decodedToken)) {
       throw new SecurityException("Verification token was expire");
     }
 
-    UserEntity user =
+    var user =
         userRepository
             .findByVerificationTokenAndEnabled(decodedToken, false)
             .orElseThrow(ResourceNotFoundException::new);
@@ -178,12 +136,12 @@ public class AuthServiceImpl implements AuthService {
   private String updateCookies(
       String username, boolean isRefreshTokenValid, HttpHeaders responseHeaders) {
     if (!isRefreshTokenValid) {
-      Duration refreshTokenMaxAge = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
-      String refreshToken =
+      var refreshTokenMaxAge = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
+      var refreshToken =
           jwtService.createJwt(
               username, Date.from(Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds())));
 
-      String encryptedRefreshToken = encryptionService.encrypt(refreshToken);
+      var encryptedRefreshToken = encryptionService.encrypt(refreshToken);
       cookieService.addCookieToHeaders(
           responseHeaders, TokenType.REFRESH, encryptedRefreshToken, refreshTokenMaxAge);
     }

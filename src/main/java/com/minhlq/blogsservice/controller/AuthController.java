@@ -7,6 +7,7 @@ import com.minhlq.blogsservice.payload.SignInRequest;
 import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.service.AuthService;
 import com.minhlq.blogsservice.service.CookieService;
+import com.minhlq.blogsservice.service.UserService;
 import com.minhlq.blogsservice.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -39,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
+  private final UserService userService;
+
   private final AuthService authService;
 
   private final CookieService cookieService;
@@ -51,12 +54,10 @@ public class AuthController {
    */
   @PostMapping(AppConstants.SIGN_UP)
   @Operation(summary = "Sign up", description = "Create new account")
-  public ResponseEntity<AuthenticationResponse> signUp(
-      @Valid @RequestBody SignUpRequest signUpBody) {
-    HttpHeaders responseHeaders = new HttpHeaders();
-    AuthenticationResponse result = authService.createUser(signUpBody, responseHeaders);
+  public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpBody) {
+    userService.createUser(signUpBody);
 
-    return ResponseEntity.status(HttpStatus.CREATED).headers(responseHeaders).body(result);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   /**
@@ -75,10 +76,10 @@ public class AuthController {
       description = "Authentication account and return access information")
   public ResponseEntity<AuthenticationResponse> signIn(
       @Valid @RequestBody SignInRequest requestBody, HttpServletRequest request) {
-    String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
+    var refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
 
-    HttpHeaders responseHeaders = new HttpHeaders();
-    AuthenticationResponse result = authService.signIn(refreshToken, requestBody, responseHeaders);
+    var responseHeaders = new HttpHeaders();
+    var result = authService.signIn(refreshToken, requestBody, responseHeaders);
     return ResponseEntity.ok().headers(responseHeaders).body(result);
   }
 
@@ -93,7 +94,7 @@ public class AuthController {
       summary = "Refresh access token",
       description = "Create and return new access information")
   public AuthenticationResponse refreshToken(HttpServletRequest request) {
-    String refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
+    var refreshToken = SecurityUtils.getRefreshTokenFromCookies(request);
 
     return authService.refreshAccessToken(refreshToken, request);
   }
@@ -107,7 +108,7 @@ public class AuthController {
   @DeleteMapping(AppConstants.SIGN_OUT)
   @Operation(summary = "Sign out", description = "Sign out and clear cookie of user browser")
   public ResponseEntity<Void> signOut(HttpServletRequest request, HttpServletResponse response) {
-    HttpHeaders responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
+    var responseHeaders = cookieService.addDeletedCookieToHeaders(TokenType.REFRESH);
     authService.signOut(request, response);
     return ResponseEntity.noContent().headers(responseHeaders).build();
   }

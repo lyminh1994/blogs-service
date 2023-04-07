@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
 
 /**
  * This class gets the application's current auditor which is the username of the authenticated
@@ -32,7 +31,7 @@ public final class ApplicationAuditorAware implements AuditorAware<String> {
     // Check if there is a user logged in.
     // If so, use the logged-in user as the current auditor.
     // spring injects an anonymousUser if there is no authentication and authorization
-    Authentication authentication = SecurityUtils.getAuthentication();
+    var authentication = SecurityUtils.getAuthentication();
     if (SecurityUtils.isAuthenticated(authentication)) {
       return Optional.ofNullable(authentication.getName());
     }

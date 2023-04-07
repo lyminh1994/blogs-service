@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import com.minhlq.blogsservice.dto.ErrorResource;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -117,8 +115,8 @@ public class SecurityConfig {
     return (request, response, accessDeniedException) -> {
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-      OutputStream outputStream = response.getOutputStream();
-      ErrorResource errorResource =
+      var outputStream = response.getOutputStream();
+      var errorResource =
           new ErrorResource(
               null, null, HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage());
       objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, errorResource);
@@ -130,10 +128,10 @@ public class SecurityConfig {
     return (request, response, authException) -> {
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      ErrorResource errorResource =
+      var errorResource =
           new ErrorResource(
               null, null, HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-      ServletOutputStream outputStream = response.getOutputStream();
+      var outputStream = response.getOutputStream();
       objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, errorResource);
       outputStream.flush();
     };

@@ -43,7 +43,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public Cookie createCookie(@NotNull HttpCookie httpCookie) {
-    Cookie cookie = new Cookie(httpCookie.getName(), httpCookie.getValue());
+    var cookie = new Cookie(httpCookie.getName(), httpCookie.getValue());
     cookie.setSecure(
         Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD));
     cookie.setHttpOnly(true);
@@ -115,8 +115,8 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addDeletedCookieToHeaders(@NotNull TokenType tokenType) {
-    HttpCookie httpCookie = deleteTokenCookie(tokenType);
-    HttpHeaders httpHeaders = new HttpHeaders();
+    var httpCookie = deleteTokenCookie(tokenType);
+    var httpHeaders = new HttpHeaders();
     httpHeaders.add(HttpHeaders.SET_COOKIE, httpCookie.toString());
     return httpHeaders;
   }
@@ -144,7 +144,7 @@ public class CookieServiceImpl implements CookieService {
   @Override
   public HttpHeaders addCookieToHeaders(
       @NotNull TokenType tokenType, @NotEmpty String token, Duration maxAge) {
-    HttpHeaders httpHeaders = new HttpHeaders();
+    var httpHeaders = new HttpHeaders();
     addCookieToHeaders(
         httpHeaders, tokenType, token, Objects.isNull(maxAge) ? this.duration : maxAge);
 

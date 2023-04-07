@@ -14,7 +14,6 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 import javax.crypto.BadPaddingException;
@@ -56,16 +55,15 @@ public class EncryptionServiceImpl implements EncryptionService {
         return null;
       }
 
-      byte[] iv = new byte[EncryptionConstants.GCM_IV_LENGTH];
+      var iv = new byte[EncryptionConstants.GCM_IV_LENGTH];
       random.nextBytes(iv);
 
-      Cipher cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
-      GCMParameterSpec ivSpec =
-          new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
+      var cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
+      var ivSpec = new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
       cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPassword(), ivSpec);
 
-      byte[] ciphertext = cipher.doFinal(text.getBytes(UTF_8));
-      byte[] encrypted = new byte[iv.length + ciphertext.length];
+      var ciphertext = cipher.doFinal(text.getBytes(UTF_8));
+      var encrypted = new byte[iv.length + ciphertext.length];
       System.arraycopy(iv, 0, encrypted, 0, iv.length);
       System.arraycopy(ciphertext, 0, encrypted, iv.length, ciphertext.length);
 
@@ -89,15 +87,14 @@ public class EncryptionServiceImpl implements EncryptionService {
         return null;
       }
 
-      byte[] decoded = Base64.getDecoder().decode(encryptedText);
-      byte[] iv = Arrays.copyOfRange(decoded, 0, EncryptionConstants.GCM_IV_LENGTH);
+      var decoded = Base64.getDecoder().decode(encryptedText);
+      var iv = Arrays.copyOfRange(decoded, 0, EncryptionConstants.GCM_IV_LENGTH);
 
-      Cipher cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
-      GCMParameterSpec ivSpec =
-          new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
+      var cipher = Cipher.getInstance(EncryptionConstants.ENCRYPT_ALGORITHM);
+      var ivSpec = new GCMParameterSpec(EncryptionConstants.GCM_TAG_LENGTH * Byte.SIZE, iv);
       cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(), ivSpec);
 
-      byte[] ciphertext =
+      var ciphertext =
           cipher.doFinal(
               decoded,
               EncryptionConstants.GCM_IV_LENGTH,
@@ -136,10 +133,9 @@ public class EncryptionServiceImpl implements EncryptionService {
 
   private Key getKeyFromPassword() {
     try {
-      SecretKeyFactory factory =
-          SecretKeyFactory.getInstance(EncryptionConstants.DERIVATION_FUNCTION);
-      byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
-      KeySpec spec =
+      var factory = SecretKeyFactory.getInstance(EncryptionConstants.DERIVATION_FUNCTION);
+      var saltBytes = salt.getBytes(StandardCharsets.UTF_8);
+      var spec =
           new PBEKeySpec(
               password.toCharArray(),
               saltBytes,

@@ -1,21 +1,34 @@
 package com.minhlq.blogsservice.service.impl;
 
+import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.constant.CacheConstants;
+import com.minhlq.blogsservice.constant.UserConstants;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.mapper.UserMapper;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
+import com.minhlq.blogsservice.enums.UserRole;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import com.minhlq.blogsservice.model.FollowEntity;
 import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.model.unionkey.FollowKey;
+import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.repository.UserRepository;
+import com.minhlq.blogsservice.service.EncryptionService;
+import com.minhlq.blogsservice.service.JwtService;
+import com.minhlq.blogsservice.service.RoleService;
 import com.minhlq.blogsservice.service.UserService;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * The UserServiceImpl class provides implementation for the UserService definitions.
@@ -24,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @version 1.0
  * @since 1.0
  */
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,19 +45,52 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
 
+  private final RoleService roleService;
+
+  private final JwtService jwtService;
+
+  private final PasswordEncoder passwordEncoder;
+
+  private final EncryptionService encryptionService;
+
   private final FollowRepository followRepository;
+
+  @Override
+  public void createUser(SignUpRequest signUpBody) {
+    var role = roleService.findByName(UserRole.ROLE_USER);
+    var ttl = Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
+
+    var verificationToken =
+        jwtService.createJwt(
+            signUpBody.username(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
+
+    var encodedVerifyToken = encryptionService.encode(verificationToken);
+    var uri =
+        ServletUriComponentsBuilder.fromCurrentContextPath()
+            .path(AppConstants.VERIFY)
+            .buildAndExpand(encodedVerifyToken)
+            .toUri();
+    log.debug("{}", uri);
+
+    var user = new UserEntity();
+    user.setUsername(signUpBody.username());
+    user.setPassword(passwordEncoder.encode(signUpBody.password()));
+    user.setEmail(signUpBody.email());
+    user.setVerificationToken(encodedVerifyToken);
+    user.addRole(role);
+
+    userRepository.save(user);
+  }
 
   @Override
   @CachePut(value = CacheConstants.USER_DETAILS, unless = "#result != null")
   public UserPrincipal updateUserDetails(UpdateUserDto updateUserDto) {
-    UserEntity updatedUser =
+    var updatedUser =
         userRepository
             .findById(updateUserDto.targetUser().id())
             .map(
                 currentUser -> {
-                  UserEntity updateUser =
-                      UserMapper.MAPPER.toUser(currentUser, updateUserDto.params());
-
+                  var updateUser = UserMapper.MAPPER.toUser(currentUser, updateUserDto.params());
                   return userRepository.saveAndFlush(updateUser);
                 })
             .orElseThrow(ResourceNotFoundException::new);
@@ -75,7 +122,7 @@ public class UserServiceImpl implements UserService {
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followId = new FollowKey(userId, targetUser.getId());
+              var followId = new FollowKey(userId, targetUser.getId());
               if (!followRepository.existsById(followId)) {
                 followRepository.save(new FollowEntity(followId));
               }
@@ -91,7 +138,7 @@ public class UserServiceImpl implements UserService {
         .findByUsername(username)
         .map(
             targetUser -> {
-              FollowKey followId = new FollowKey(userId, targetUser.getId());
+              var followId = new FollowKey(userId, targetUser.getId());
               followRepository.findById(followId).ifPresent(followRepository::delete);
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, false);

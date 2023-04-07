@@ -3,6 +3,7 @@ package com.minhlq.blogsservice.service;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
 import com.minhlq.blogsservice.dto.response.ProfileResponse;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
+import com.minhlq.blogsservice.payload.SignUpRequest;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,13 @@ import org.springframework.validation.annotation.Validated;
  */
 @Validated
 public interface UserService {
+
+  /**
+   * Create the user with the register request instance given.
+   *
+   * @param signUpBody the register information
+   */
+  void createUser(SignUpRequest signUpBody);
 
   /**
    * Update the user with the user instance given and the update type for record.

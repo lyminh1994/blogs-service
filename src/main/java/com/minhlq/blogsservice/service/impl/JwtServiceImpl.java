@@ -6,7 +6,6 @@ import com.minhlq.blogsservice.exception.SecurityException;
 import com.minhlq.blogsservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,7 +14,6 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.security.Key;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
@@ -53,8 +51,8 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String createJwt(String username, Date expiration) {
-    byte[] keyBytes = Base64.getDecoder().decode(secret);
-    Key key = Keys.hmacShaKeyFor(keyBytes);
+    var keyBytes = Base64.getDecoder().decode(secret);
+    var key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .setSubject(username)
         .setIssuedAt(new Date())
@@ -71,9 +69,9 @@ public class JwtServiceImpl implements JwtService {
    */
   private Claims parseJwt(String jwt) {
     try {
-      byte[] keyBytes = Base64.getDecoder().decode(secret);
-      Key key = Keys.hmacShaKeyFor(keyBytes);
-      JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+      var keyBytes = Base64.getDecoder().decode(secret);
+      var key = Keys.hmacShaKeyFor(keyBytes);
+      var jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
 
       return jwtParser.parseClaimsJws(jwt).getBody();
     } catch (ExpiredJwtException ex) {
@@ -92,9 +90,9 @@ public class JwtServiceImpl implements JwtService {
   @Override
   public boolean isValidJwtToken(String jwt) {
     try {
-      byte[] keyBytes = Base64.getDecoder().decode(secret);
-      Key key = Keys.hmacShaKeyFor(keyBytes);
-      JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+      var keyBytes = Base64.getDecoder().decode(secret);
+      var key = Keys.hmacShaKeyFor(keyBytes);
+      var jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
 
       jwtParser.parseClaimsJws(jwt);
       return true;
@@ -134,7 +132,7 @@ public class JwtServiceImpl implements JwtService {
    * @return the jwt token
    */
   private String getJwtFromRequest(HttpServletRequest request) {
-    String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
+    var headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
 
     if (StringUtils.isNotBlank(headerAuth) && headerAuth.startsWith(SecurityConstants.BEARER)) {
       return headerAuth.split(StringUtils.SPACE)[1];
@@ -150,7 +148,7 @@ public class JwtServiceImpl implements JwtService {
    * @return the jwt token
    */
   private String getJwtFromCookie(HttpServletRequest request) {
-    Cookie[] cookies = request.getCookies();
+    var cookies = request.getCookies();
     if (Objects.nonNull(cookies)) {
       return Arrays.stream(cookies)
           .filter(cookie -> StringUtils.equals(TokenType.ACCESS.getName(), cookie.getName()))

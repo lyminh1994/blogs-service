@@ -2,7 +2,6 @@ package com.minhlq.blogsservice.annotation.validator;
 
 import com.minhlq.blogsservice.annotation.UpdateUserConstraint;
 import com.minhlq.blogsservice.dto.UpdateUserDto;
-import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -26,19 +25,18 @@ public class UpdateUserValidator
 
   @Override
   public boolean isValid(UpdateUserDto value, ConstraintValidatorContext context) {
-    final String email = value.params().email();
-    final String phone = value.params().phone();
-    final UserPrincipal targetUser = value.targetUser();
+    final var email = value.params().email();
+    final var phone = value.params().phone();
+    final var targetUser = value.targetUser();
 
-    boolean isValidEmail =
+    var isValidEmail =
         StringUtils.isBlank(email)
             || userRepository
                 .findByEmail(email)
                 .map(user -> Objects.equals(user.getId(), targetUser.id()))
                 .orElse(true);
 
-    HibernateConstraintValidatorContext hibernateContext =
-        context.unwrap(HibernateConstraintValidatorContext.class);
+    var hibernateContext = context.unwrap(HibernateConstraintValidatorContext.class);
     if (!isValidEmail) {
       hibernateContext.disableDefaultConstraintViolation();
       hibernateContext.addMessageParameter("email", email);
@@ -48,7 +46,7 @@ public class UpdateUserValidator
           .addConstraintViolation();
     }
 
-    boolean isValidPhone =
+    var isValidPhone =
         StringUtils.isBlank(phone)
             || userRepository
                 .findByPhone(phone)

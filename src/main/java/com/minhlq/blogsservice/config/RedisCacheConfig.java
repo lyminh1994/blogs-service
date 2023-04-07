@@ -35,7 +35,7 @@ public class RedisCacheConfig {
   @Bean
   public RedisTemplate<String, Serializable> redisCacheTemplate(
       LettuceConnectionFactory redisConnectionFactory) {
-    RedisTemplate<String, Serializable> template = new RedisTemplate<>();
+    var template = new RedisTemplate<String, Serializable>();
     template.setKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
     template.setHashKeySerializer(new StringRedisSerializer());
@@ -51,8 +51,8 @@ public class RedisCacheConfig {
   @Bean
   public CacheManager cacheManager(RedisConnectionFactory factory) {
     // Configure serialization
-    RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
-    RedisCacheConfiguration redisCacheConfiguration =
+    var config = RedisCacheConfiguration.defaultCacheConfig();
+    var redisCacheConfiguration =
         config
             .serializeKeysWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(

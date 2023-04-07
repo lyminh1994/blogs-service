@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.constant.CacheConstants;
-import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import java.util.Locale;
@@ -51,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
           messageSource.getMessage("user.username.cannot.blank", null, Locale.ENGLISH));
     }
 
-    UserEntity user =
+    var user =
         userRepository
             .findByUsername(username)
             .orElseThrow(

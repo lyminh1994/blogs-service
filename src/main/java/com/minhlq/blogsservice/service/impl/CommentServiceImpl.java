@@ -7,7 +7,6 @@ import com.minhlq.blogsservice.dto.response.CommentResponse;
 import com.minhlq.blogsservice.dto.response.PageResponse;
 import com.minhlq.blogsservice.exception.NoAuthorizationException;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
-import com.minhlq.blogsservice.model.ArticleEntity;
 import com.minhlq.blogsservice.model.CommentEntity;
 import com.minhlq.blogsservice.model.unionkey.FollowKey;
 import com.minhlq.blogsservice.payload.UserPrincipal;
@@ -15,9 +14,7 @@ import com.minhlq.blogsservice.repository.ArticleRepository;
 import com.minhlq.blogsservice.repository.CommentRepository;
 import com.minhlq.blogsservice.repository.FollowRepository;
 import com.minhlq.blogsservice.service.CommentService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +40,9 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public CommentResponse addCommentToArticle(
       UserPrincipal currentUser, String slug, NewCommentRequest newCommentRequest) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
-    CommentEntity savedComment =
+    var savedComment =
         commentRepository.save(
             CommentEntity.builder()
                 .body(newCommentRequest.body())
@@ -61,12 +57,9 @@ public class CommentServiceImpl implements CommentService {
   @Transactional(readOnly = true)
   public PageResponse<CommentResponse> findArticleComments(
       UserPrincipal currentUser, String slug, Pageable pageable) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-
-    Page<CommentEntity> comments = commentRepository.findByArticle(article, pageable);
-
-    List<CommentResponse> contents =
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var comments = commentRepository.findByArticle(article, pageable);
+    var contents =
         comments.getContent().stream()
             .map(
                 comment -> {
@@ -85,9 +78,8 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public void deleteCommentFromArticle(UserPrincipal currentUser, String slug, Long commentId) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    CommentEntity comment =
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var comment =
         commentRepository
             .findByIdAndArticle(commentId, article)
             .orElseThrow(ResourceNotFoundException::new);

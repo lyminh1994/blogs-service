@@ -17,7 +17,6 @@ import com.minhlq.blogsservice.model.QArticleTagEntity;
 import com.minhlq.blogsservice.model.QTagEntity;
 import com.minhlq.blogsservice.model.QUserEntity;
 import com.minhlq.blogsservice.model.TagEntity;
-import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.model.unionkey.ArticleFavoriteKey;
 import com.minhlq.blogsservice.model.unionkey.ArticleTagKey;
 import com.minhlq.blogsservice.model.unionkey.FollowKey;
@@ -30,15 +29,12 @@ import com.minhlq.blogsservice.repository.TagRepository;
 import com.minhlq.blogsservice.service.ArticleService;
 import com.minhlq.blogsservice.util.ArticleUtils;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,8 +66,8 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   @Transactional
   public ArticleResponse createArticle(UserPrincipal currentUser, NewArticleRequest createRequest) {
-    UserEntity author = UserMapper.MAPPER.toUser(currentUser);
-    ArticleEntity savedArticle =
+    var author = UserMapper.MAPPER.toUser(currentUser);
+    var savedArticle =
         articleRepository.saveAndFlush(
             ArticleEntity.builder()
                 .author(author)
@@ -81,19 +77,18 @@ public class ArticleServiceImpl implements ArticleService {
                 .body(createRequest.body())
                 .build());
 
-    List<String> tagNames = createRequest.tagNames();
+    var tagNames = createRequest.tagNames();
     if (CollectionUtils.isNotEmpty(tagNames)) {
-      List<ArticleTagEntity> articleTags =
+      var articleTags =
           tagNames.stream()
               .map(
                   tagName -> {
-                    TagEntity savedTag =
+                    var savedTag =
                         tagRepository
                             .findByName(tagName)
                             .orElseGet(() -> tagRepository.saveAndFlush(new TagEntity(tagName)));
 
-                    ArticleTagKey articleTagId =
-                        new ArticleTagKey(savedArticle.getId(), savedTag.getId());
+                    var articleTagId = new ArticleTagKey(savedArticle.getId(), savedTag.getId());
 
                     return new ArticleTagEntity(articleTagId);
                   })
@@ -107,14 +102,13 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public PageResponse<ArticleResponse> findUserFeeds(UserPrincipal currentUser, Pageable pageable) {
-    Set<Long> followedUsers = followRepository.findByUserIdQuery(currentUser.id());
+    var followedUsers = followRepository.findByUserIdQuery(currentUser.id());
     if (CollectionUtils.isEmpty(followedUsers)) {
       return new PageResponse<>(Collections.emptyList(), 0);
     }
 
-    Page<ArticleEntity> articles =
-        articleRepository.findByFollowedUsersQuery(followedUsers, pageable);
-    List<ArticleResponse> contents = getArticleResponses(currentUser, articles.getContent());
+    var articles = articleRepository.findByFollowedUsersQuery(followedUsers, pageable);
+    var contents = getArticleResponses(currentUser, articles.getContent());
 
     return new PageResponse<>(contents, articles.getTotalElements());
   }
@@ -126,13 +120,13 @@ public class ArticleServiceImpl implements ArticleService {
       String favoriteBy,
       String author,
       Pageable pageable) {
-    QTagEntity qTag = QTagEntity.tagEntity;
-    QArticleEntity qArticle = QArticleEntity.articleEntity;
-    QUserEntity qUser = QUserEntity.userEntity;
-    QArticleTagEntity qArticleTag = QArticleTagEntity.articleTagEntity;
-    QArticleFavoriteEntity qArticleFavorite = QArticleFavoriteEntity.articleFavoriteEntity;
+    var qTag = QTagEntity.tagEntity;
+    var qArticle = QArticleEntity.articleEntity;
+    var qUser = QUserEntity.userEntity;
+    var qArticleTag = QArticleTagEntity.articleTagEntity;
+    var qArticleFavorite = QArticleFavoriteEntity.articleFavoriteEntity;
 
-    BooleanBuilder conditions = new BooleanBuilder();
+    var conditions = new BooleanBuilder();
     if (StringUtils.isNotBlank(tagName)) {
       conditions.and(qTag.name.eq(tagName));
     }
@@ -143,7 +137,7 @@ public class ArticleServiceImpl implements ArticleService {
       conditions.and(qUser.username.eq(favoriteBy));
     }
 
-    JPAQuery<?> query =
+    var query =
         queryFactory
             .from(qArticle)
             .leftJoin(qArticleTag)
@@ -156,9 +150,9 @@ public class ArticleServiceImpl implements ArticleService {
             .on(qUser.id.eq(qArticleFavorite.id.userId))
             .where(conditions);
 
-    long totalElements = query.select(qArticle.countDistinct()).fetchFirst();
+    var totalElements = query.select(qArticle.countDistinct()).fetchFirst();
 
-    List<ArticleEntity> articles =
+    var articles =
         query
             .distinct()
             .select(qArticle)
@@ -166,15 +160,14 @@ public class ArticleServiceImpl implements ArticleService {
             .limit(pageable.getPageSize())
             .fetch();
 
-    List<ArticleResponse> contents = getArticleResponses(currentUser, articles);
+    var contents = getArticleResponses(currentUser, articles);
 
     return new PageResponse<>(contents, totalElements);
   }
 
   @Override
   public ArticleResponse findBySlug(UserPrincipal currentUser, String slug) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     return getArticleResponse(currentUser, article);
   }
 
@@ -182,7 +175,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Transactional
   public ArticleResponse updateArticle(
       UserPrincipal currentUser, String slug, UpdateArticleRequest updateRequest) {
-    ArticleEntity newArticle =
+    var newArticle =
         articleRepository
             .findBySlug(slug)
             .map(
@@ -206,17 +199,15 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   @Transactional
   public void deleteArticle(UserPrincipal currentUser, String slug) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     if (!currentUser.id().equals(article.getAuthor().getId())) {
       throw new NoAuthorizationException();
     }
 
-    List<ArticleTagEntity> articleTags = articleTagRepository.findByArticleIdQuery(article.getId());
+    var articleTags = articleTagRepository.findByArticleIdQuery(article.getId());
     articleTagRepository.deleteAll(articleTags);
 
-    List<ArticleFavoriteEntity> articleFavorites =
-        articleFavoriteRepository.findByArticleIdQuery(article.getId());
+    var articleFavorites = articleFavoriteRepository.findByArticleIdQuery(article.getId());
     articleFavoriteRepository.deleteAll(articleFavorites);
 
     articleRepository.delete(article);
@@ -225,10 +216,8 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   @Transactional
   public ArticleResponse favoriteArticle(UserPrincipal currentUser, String slug) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    ArticleFavoriteKey articleFavoriteKey =
-        new ArticleFavoriteKey(article.getId(), currentUser.id());
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var articleFavoriteKey = new ArticleFavoriteKey(article.getId(), currentUser.id());
     if (articleFavoriteRepository.findById(articleFavoriteKey).isEmpty()) {
       articleFavoriteRepository.save(new ArticleFavoriteEntity(articleFavoriteKey));
     }
@@ -239,9 +228,8 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   @Transactional
   public ArticleResponse unFavoriteArticle(UserPrincipal currentUser, String slug) {
-    ArticleEntity article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    ArticleFavoriteKey articleFavorite = new ArticleFavoriteKey(article.getId(), currentUser.id());
+    var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
+    var articleFavorite = new ArticleFavoriteKey(article.getId(), currentUser.id());
     articleFavoriteRepository
         .findById(articleFavorite)
         .ifPresent(articleFavoriteRepository::delete);
@@ -262,23 +250,22 @@ public class ArticleServiceImpl implements ArticleService {
    * @return article
    */
   private ArticleResponse getArticleResponse(UserPrincipal currentUser, ArticleEntity article) {
-    ArticleResponse result = ArticleMapper.MAPPER.toArticleResponse(article);
+    var result = ArticleMapper.MAPPER.toArticleResponse(article);
     if (currentUser != null) {
-      FollowKey followId = new FollowKey(currentUser.id(), article.getAuthor().getId());
+      var followId = new FollowKey(currentUser.id(), article.getAuthor().getId());
       result.getAuthor().setFollowing(followRepository.existsById(followId));
 
-      ArticleFavoriteKey articleFavoriteId =
-          new ArticleFavoriteKey(article.getId(), currentUser.id());
+      var articleFavoriteId = new ArticleFavoriteKey(article.getId(), currentUser.id());
       result.setFavorite(articleFavoriteRepository.existsById(articleFavoriteId));
     }
 
     result.setFavoritesCount(
         articleFavoriteRepository.countArticleFavoritesByArticleIdQuery(article.getId()));
 
-    QTagEntity qTag = QTagEntity.tagEntity;
-    QArticleTagEntity qArticleTag = QArticleTagEntity.articleTagEntity;
-    QArticleEntity qArticle = QArticleEntity.articleEntity;
-    List<String> tagNames =
+    var qTag = QTagEntity.tagEntity;
+    var qArticleTag = QArticleTagEntity.articleTagEntity;
+    var qArticle = QArticleEntity.articleEntity;
+    var tagNames =
         queryFactory
             .select(qTag.name)
             .from(qTag)

@@ -55,7 +55,7 @@ public class RoleServiceImpl implements RoleService {
         .orElseGet(
             () -> {
               if (UserRole.ROLE_USER.match(role)) {
-                RoleEntity roleEntity = new RoleEntity();
+                var roleEntity = new RoleEntity();
                 roleEntity.setName(UserRole.ROLE_USER.name());
                 roleEntity.setDescription(UserRole.ROLE_USER.getDescription());
                 return roleRepository.save(roleEntity);

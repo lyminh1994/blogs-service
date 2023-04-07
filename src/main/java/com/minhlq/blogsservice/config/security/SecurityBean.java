@@ -3,7 +3,6 @@ package com.minhlq.blogsservice.config.security;
 import com.minhlq.blogsservice.constant.AppConstants;
 import com.minhlq.blogsservice.constant.SecurityConstants;
 import java.time.Duration;
-import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -43,20 +42,20 @@ public class SecurityBean {
    */
   @Bean
   public CorsConfigurationSource corsConfigurationSource(final CorsProperties props) {
-    List<String> allowedMethods =
+    var allowedMethods =
         CollectionUtils.isEmpty(props.getAllowedMethods())
             ? SecurityConstants.HTTP_METHODS_ALLOWED
             : props.getAllowedMethods();
-    List<String> allowedHeaders =
+    var allowedHeaders =
         CollectionUtils.isEmpty(props.getAllowedHeaders())
             ? SecurityConstants.HTTP_HEADERS_ALLOWED
             : props.getAllowedHeaders();
-    List<String> exposedHeaders =
+    var exposedHeaders =
         CollectionUtils.isEmpty(props.getExposedHeaders())
             ? SecurityConstants.HTTP_HEADERS_EXPOSED
             : props.getExposedHeaders();
 
-    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    var corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowedOrigins(props.getAllowedOrigins());
     corsConfiguration.setAllowedMethods(allowedMethods);
     corsConfiguration.setMaxAge(Duration.ofHours(props.getMaxAge()));
@@ -64,7 +63,7 @@ public class SecurityBean {
     corsConfiguration.setExposedHeaders(exposedHeaders);
     corsConfiguration.setAllowCredentials(props.isAllowCredentials());
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    var source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration(AppConstants.ALL_PATTERN, corsConfiguration);
     return source;
   }

@@ -7,7 +7,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -89,9 +87,8 @@ public class SecurityUtils {
    */
   public void authenticateUser(UserPrincipal userDetails) {
     if (Objects.nonNull(userDetails)) {
-      Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-      UsernamePasswordAuthenticationToken authentication =
-          new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+      var authorities = userDetails.getAuthorities();
+      var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
       setAuthentication(authentication);
     }
@@ -106,9 +103,8 @@ public class SecurityUtils {
    */
   public void authenticateUser(HttpServletRequest request, UserDetails userDetails) {
     if (Objects.nonNull(request) && Objects.nonNull(userDetails)) {
-      Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-      UsernamePasswordAuthenticationToken authentication =
-          new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+      var authorities = userDetails.getAuthorities();
+      var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
       authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
       setAuthentication(authentication);
@@ -125,9 +121,8 @@ public class SecurityUtils {
    */
   public void authenticateUser(
       AuthenticationManager authenticationManager, String username, String password) {
-    UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(username, password);
-    Authentication authentication = authenticationManager.authenticate(authenticationToken);
+    var authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+    var authentication = authenticationManager.authenticate(authenticationToken);
 
     setAuthentication(authentication);
   }
@@ -153,11 +148,11 @@ public class SecurityUtils {
    * @param response the response
    */
   public void logout(HttpServletRequest request, HttpServletResponse response) {
-    CookieClearingLogoutHandler logoutHandler =
+    var logoutHandler =
         new CookieClearingLogoutHandler(
             AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
 
-    SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+    var securityContextLogoutHandler = new SecurityContextLogoutHandler();
     logoutHandler.logout(request, response, null);
     securityContextLogoutHandler.logout(request, response, null);
   }
@@ -182,7 +177,7 @@ public class SecurityUtils {
   }
 
   public String getRefreshTokenFromCookies(HttpServletRequest request) {
-    Cookie[] cookies = request.getCookies();
+    var cookies = request.getCookies();
     if (cookies == null) {
       return null;
     }

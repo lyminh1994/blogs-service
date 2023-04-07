@@ -6,7 +6,6 @@ import com.minhlq.blogsservice.dto.FieldErrorResource;
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @NonNull HttpHeaders headers,
       @NonNull HttpStatusCode status,
       @NonNull WebRequest request) {
-    List<FieldErrorResource> fieldErrorResources =
+    var fieldErrorResources =
         ex.getBindingResult().getFieldErrors().stream()
             .map(
                 fieldError ->
@@ -59,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({ConstraintViolationException.class})
   public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
-    List<FieldErrorResource> fieldErrorResources =
+    var fieldErrorResources =
         ex.getConstraintViolations().stream()
             .map(
                 violation ->
@@ -89,7 +88,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   private String getParam(String s) {
     log.debug("Error param: {}", s);
-    String[] splits = s.split("\\.");
+    var splits = s.split("\\.");
     if (splits.length == 1) {
       return s;
     }

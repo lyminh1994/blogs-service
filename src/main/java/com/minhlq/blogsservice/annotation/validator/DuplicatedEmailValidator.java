@@ -24,8 +24,7 @@ public class DuplicatedEmailValidator
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
     if (StringUtils.isNotBlank(value) && userService.isEmailExisted(value)) {
-      HibernateConstraintValidatorContext hibernateContext =
-          context.unwrap(HibernateConstraintValidatorContext.class);
+      var hibernateContext = context.unwrap(HibernateConstraintValidatorContext.class);
       hibernateContext.addMessageParameter("email", value);
       return false;
     }

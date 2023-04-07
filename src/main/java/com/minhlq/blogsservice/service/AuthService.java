@@ -2,7 +2,6 @@ package com.minhlq.blogsservice.service;
 
 import com.minhlq.blogsservice.payload.AuthenticationResponse;
 import com.minhlq.blogsservice.payload.SignInRequest;
-import com.minhlq.blogsservice.payload.SignUpRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -15,14 +14,6 @@ import org.springframework.http.HttpHeaders;
  * @since 1.0
  */
 public interface AuthService {
-
-  /**
-   * Create the user with the register request instance given.
-   *
-   * @param signUpBody the register information
-   * @return the authentication response
-   */
-  AuthenticationResponse createUser(SignUpRequest signUpBody, HttpHeaders responseHeaders);
 
   /**
    * Attempts to authenticate with the provided credentials. If successful, a JWT token is returned

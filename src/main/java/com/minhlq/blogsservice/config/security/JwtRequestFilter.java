@@ -11,7 +11,6 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -40,7 +39,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
     // Get the token from the request header
-    String jwtToken = jwtService.getJwtToken(request, false);
+    var jwtToken = jwtService.getJwtToken(request, false);
 
     if (StringUtils.isBlank(jwtToken)) {
       // if no Authorization token was found from the header, check the cookies.
@@ -48,11 +47,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     if (StringUtils.isNotBlank(jwtToken)) {
-      String accessToken = encryptionService.decrypt(jwtToken);
+      var accessToken = encryptionService.decrypt(jwtToken);
 
       if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
-        String username = jwtService.getUsernameFromJwt(accessToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        var username = jwtService.getUsernameFromJwt(accessToken);
+        var userDetails = userDetailsService.loadUserByUsername(username);
         SecurityUtils.authenticateUser(request, userDetails);
       }
     }

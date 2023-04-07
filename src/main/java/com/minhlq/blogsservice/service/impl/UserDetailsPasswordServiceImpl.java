@@ -1,7 +1,6 @@
 package com.minhlq.blogsservice.service.impl;
 
 import com.minhlq.blogsservice.exception.ResourceNotFoundException;
-import com.minhlq.blogsservice.model.UserEntity;
 import com.minhlq.blogsservice.payload.UserPrincipal;
 import com.minhlq.blogsservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class UserDetailsPasswordServiceImpl implements UserDetailsPasswordServic
 
   @Override
   public UserPrincipal updatePassword(UserDetails userDetails, String newPassword) {
-    UserEntity user =
+    var user =
         userRepository
             .findByUsername(userDetails.getUsername())
             .orElseThrow(ResourceNotFoundException::new);
