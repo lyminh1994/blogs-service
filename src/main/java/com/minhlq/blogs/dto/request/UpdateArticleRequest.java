@@ -1,6 +1,7 @@
 package com.minhlq.blogs.dto.request;
 
 import com.minhlq.blogs.annotation.DuplicatedArticleConstraint;
+import jakarta.validation.constraints.Max;
 
 /**
  * This class models the format of the update article request accepted.
@@ -10,4 +11,6 @@ import com.minhlq.blogs.annotation.DuplicatedArticleConstraint;
  * @since 1.0
  */
 public record UpdateArticleRequest(
-    @DuplicatedArticleConstraint String title, String body, String description) {}
+    @Max(255) @DuplicatedArticleConstraint String title,
+    @Max(255) String body,
+    @Max(255) String description) {}
