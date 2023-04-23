@@ -59,8 +59,8 @@ public class UserController {
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update info", description = "Update current user information")
   public UserResponse updateUser(
-      @AuthenticationPrincipal UserPrincipal currentUser,
-      @Valid @RequestBody UpdateUserRequest updateUserRequest) {
+      @RequestBody @Valid UpdateUserRequest updateUserRequest,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     var userDetails =
         userService.updateUserDetails(new UpdateUserDto(currentUser, updateUserRequest));
 
@@ -74,8 +74,8 @@ public class UserController {
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update password", description = "Update current user password")
   public void updatePassword(
-      @AuthenticationPrincipal UserPrincipal currentUser,
-      @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+      @RequestBody @Valid UpdatePasswordRequest updatePasswordRequest,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     passwordService.updatePassword(currentUser, updatePasswordRequest.newPassword());
   }
 
@@ -89,7 +89,7 @@ public class UserController {
   @SecurityRequirements
   @Operation(summary = "Public profile", description = "Get public user information by username")
   public ProfileResponse getProfile(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String username) {
+      @PathVariable String username, @AuthenticationPrincipal UserPrincipal currentUser) {
     return userService.findByUsername(currentUser, username);
   }
 
@@ -102,7 +102,7 @@ public class UserController {
   @PutMapping(path = AppConstants.FOLLOWING)
   @Operation(summary = "Following", description = "Following user by username")
   public ProfileResponse following(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String username) {
+      @PathVariable String username, @AuthenticationPrincipal UserPrincipal currentUser) {
     return userService.followByUsername(currentUser.id(), username);
   }
 
@@ -115,7 +115,7 @@ public class UserController {
   @DeleteMapping(path = AppConstants.FOLLOWING)
   @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
   public ProfileResponse unFollowing(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String username) {
+      @PathVariable String username, @AuthenticationPrincipal UserPrincipal currentUser) {
     return userService.unFollowByUsername(currentUser.id(), username);
   }
 }

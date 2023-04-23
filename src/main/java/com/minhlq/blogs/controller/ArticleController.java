@@ -54,8 +54,8 @@ public class ArticleController {
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create article", description = "Create article")
   public ArticleResponse createArticle(
-      @AuthenticationPrincipal UserPrincipal currentUser,
-      @Valid @RequestBody NewArticleRequest articleRequest) {
+      @RequestBody @Valid NewArticleRequest articleRequest,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.createArticle(currentUser, articleRequest);
   }
 
@@ -68,7 +68,7 @@ public class ArticleController {
   @GetMapping(AppConstants.FEEDS)
   @Operation(summary = "Get feed", description = "Get followed user articles")
   public PageResponse<ArticleResponse> getFeeds(
-      @AuthenticationPrincipal UserPrincipal currentUser, @ParameterObject Pageable pageable) {
+      @ParameterObject Pageable pageable, @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.findUserFeeds(currentUser, pageable);
   }
 
@@ -85,11 +85,11 @@ public class ArticleController {
   @SecurityRequirements
   @Operation(summary = "Get articles", description = "Get all user articles")
   public PageResponse<ArticleResponse> getArticles(
-      @AuthenticationPrincipal UserPrincipal currentUser,
       @RequestParam(required = false) String tag,
       @RequestParam(required = false) String favoriteBy,
       @RequestParam(required = false) String author,
-      @ParameterObject Pageable pageable) {
+      @ParameterObject Pageable pageable,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.findRecentArticles(currentUser, tag, favoriteBy, author, pageable);
   }
 
@@ -103,7 +103,7 @@ public class ArticleController {
   @GetMapping(AppConstants.SLUG)
   @Operation(summary = "Get article", description = "Get article by slug")
   public ArticleResponse getArticle(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.findBySlug(currentUser, slug);
   }
 
@@ -117,9 +117,9 @@ public class ArticleController {
   @PutMapping(AppConstants.SLUG)
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
-      @AuthenticationPrincipal UserPrincipal currentUser,
       @PathVariable String slug,
-      @Valid @RequestBody UpdateArticleRequest updateArticleRequest) {
+      @RequestBody @Valid UpdateArticleRequest updateArticleRequest,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.updateArticle(currentUser, slug, updateArticleRequest);
   }
 
@@ -132,7 +132,7 @@ public class ArticleController {
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
   public void deleteArticle(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
     articleService.deleteArticle(currentUser, slug);
   }
 
@@ -145,7 +145,7 @@ public class ArticleController {
   @PutMapping(AppConstants.FAVORITE)
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
   public ArticleResponse favoriteArticle(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.favoriteArticle(currentUser, slug);
   }
 
@@ -158,7 +158,7 @@ public class ArticleController {
   @DeleteMapping(AppConstants.FAVORITE)
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
   public ArticleResponse unFavoriteArticle(
-      @AuthenticationPrincipal UserPrincipal currentUser, @PathVariable String slug) {
+      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
     return articleService.unFavoriteArticle(currentUser, slug);
   }
 }

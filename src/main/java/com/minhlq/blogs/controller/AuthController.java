@@ -54,7 +54,7 @@ public class AuthController {
    */
   @PostMapping(AppConstants.SIGN_UP)
   @Operation(summary = "Sign up", description = "Create new account")
-  public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpBody) {
+  public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpBody) {
     userService.createUser(signUpBody);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
@@ -74,7 +74,7 @@ public class AuthController {
       summary = "Sign in",
       description = "Authentication account and return access information")
   public ResponseEntity<AuthenticationResponse> signIn(
-      @Valid @RequestBody SignInRequest requestBody, HttpServletRequest request) {
+      @RequestBody @Valid SignInRequest requestBody, HttpServletRequest request) {
     var responseHeaders = new HttpHeaders();
     var body =
         authService.signIn(

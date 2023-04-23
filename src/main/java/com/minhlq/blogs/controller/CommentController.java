@@ -52,9 +52,9 @@ public class CommentController {
   @ResponseStatus(CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
-      @AuthenticationPrincipal UserPrincipal currentUser,
       @PathVariable String slug,
-      @Valid @RequestBody NewCommentRequest newCommentRequest) {
+      @RequestBody @Valid NewCommentRequest newCommentRequest,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     return commentService.addCommentToArticle(currentUser, slug, newCommentRequest);
   }
 
@@ -69,9 +69,9 @@ public class CommentController {
   @SecurityRequirements
   @Operation(summary = "Get comments", description = "Get all comments by article slug")
   public PageResponse<CommentResponse> getComments(
-      @AuthenticationPrincipal UserPrincipal currentUser,
       @PathVariable String slug,
-      @ParameterObject Pageable pageable) {
+      @ParameterObject Pageable pageable,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     return commentService.findArticleComments(currentUser, slug, pageable);
   }
 
@@ -85,9 +85,9 @@ public class CommentController {
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
   public void deleteComment(
-      @AuthenticationPrincipal UserPrincipal currentUser,
       @PathVariable String slug,
-      @PathVariable Long commentId) {
+      @PathVariable Long commentId,
+      @AuthenticationPrincipal UserPrincipal currentUser) {
     commentService.deleteCommentFromArticle(currentUser, slug, commentId);
   }
 }
