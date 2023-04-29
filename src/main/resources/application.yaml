@@ -57,6 +57,9 @@ spring:
           min-idle: 0
       repositories:
         enabled: false
+  flyway:
+    table: schema_history
+    validate-migration-naming: true
 
 # Logging configuration
 logging:
