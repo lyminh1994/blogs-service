@@ -21,7 +21,6 @@ spring:
       password: Redis@123
   mvc:
     log-request-details: true
-
 # Crypto and JWT configuration
 encryption:
   secret:
@@ -31,7 +30,6 @@ jwt:
   config:
     secret: VbRSsaYcfTcIdox2DrmJ6nxJCcweiudkn/ik8aXg3g5KtF6U6sKyrvpILdwzMn7ZwxmyOSnK2qatONcQpunYBGSQyvk6xtYVqBy92vs4IWEZhseKRug6C9TftNvmAp0Cs1Jsq0J7yhunN1yPk1IrHk4OJfAU0harnPWDJ/7JtzAuzdNcVYcCfStg7fdtah/5ycQ+OuW1pW6zMKptQC8yPe4hxgQqSQ8D52GVQg==
     ttl: 600000
-
 # CORS configuration
 cors:
   max-age: 3600
@@ -40,7 +38,6 @@ cors:
   allowed-headers: Authorization, Accept-Language, Content-Type
   allowed-origins: http://localhost:3000/, http://192.168.1.9:3000/
   exposed-headers:
-
 # Open API 3 configuration
 springdoc:
   show-actuator: true
@@ -52,20 +49,9 @@ springdoc:
     disable-swagger-default-url: true
     use-root-path: true
     with-credentials: true
-
 # Logging configuration
 logging:
   level:
     root: info
     com.minhlq.blogs: trace
     web: debug
-
-# Actuator configuration
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: '*'
