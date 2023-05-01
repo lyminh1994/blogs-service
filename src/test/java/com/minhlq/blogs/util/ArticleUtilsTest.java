@@ -9,9 +9,9 @@ class ArticleUtilsTest {
 
   @Test
   void givenBlankTitle_whenCallingToSlug_thenReturnBlank() {
-    String actual = ArticleUtils.toSlug("");
+    String actual = ArticleUtils.toSlug("this*is+my_title");
 
-    assertEquals("", actual);
+    assertEquals("this-is-my-title", actual);
   }
 
   @Test

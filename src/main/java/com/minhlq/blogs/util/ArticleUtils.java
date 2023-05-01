@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 @UtilityClass
 public final class ArticleUtils {
 
-  private final String REGEX_SPECIAL_CHARACTERS = "[&\\uFE30-\\uFFA0’”\\s?,.]+";
+  private final String REGEX_SPECIAL_CHARACTERS = "[^A-Za-z0-9]+";
 
   /**
    * Replace special characters and transfer to lowercase.
