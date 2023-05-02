@@ -81,3 +81,5 @@ logging:
   file:
     path: logs
     name: logs/blogs-service.log
+  level:
+    root: info
