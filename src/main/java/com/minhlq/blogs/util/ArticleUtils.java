@@ -21,11 +21,16 @@ public final class ArticleUtils {
    * @param title the article slug
    * @return formatted slug
    */
-  public String toSlug(String title) {
+  public String toSlug(final String title) {
     if (StringUtils.isBlank(title)) {
       return StringUtils.EMPTY;
     }
 
-    return title.toLowerCase().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
+    String result = title.trim().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
+    if (result.charAt(result.length() - 1) == '-') {
+      result = result.substring(0, result.length() - 1);
+    }
+
+    return result.toLowerCase();
   }
 }
