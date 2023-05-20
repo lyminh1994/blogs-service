@@ -47,10 +47,12 @@ class ArticleFavoriteRepositoryTest {
     // then
     assertNotNull(articleFavoritesNotFound);
     assertTrue(articleFavoritesNotFound.isEmpty());
+
     assertNotNull(articleFavoritesFound);
     assertFalse(articleFavoritesFound.isEmpty());
     assertEquals(9, articleFavoritesFound.size());
     assertEquals(1L, articleFavoritesFound.get(0).getId().getArticleId());
+
     assertNotNull(articleFavoritesNull);
     assertTrue(articleFavoritesNull.isEmpty());
   }
