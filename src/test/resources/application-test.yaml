@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=blogs_test
+    username: postgres
+    password: Postgres@123
+  flyway:
+    clean-disabled: false

@@ -1,0 +1,85 @@
+# Application configuration
+application:
+  title: @project.name@
+  version: @project.version@
+  description: @project.description@
+  static-resource-location: /tmp/media/
+  static-resource-url: /media/**
+# Server configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+# Spring configuration
+spring:
+  profiles:
+    active: dev
+  application:
+    name: blogs_service
+  banner:
+    location: classpath:static/banner.txt
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: false
+    mapper:
+      accept-case-insensitive-enums: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 60000
+      minimum-idle: 5
+      maximum-pool-size: 30
+      pool-name: blogs-pool
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  cache:
+    type: redis
+  data:
+    redis:
+      timeout: 10000ms
+      database: 3
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
+      repositories:
+        enabled: false
+  flyway:
+    table: schema_history
+    validate-migration-naming: true
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: [ "health","prometheus", "metrics" ]
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+# Logging configuration
+logging:
+  logback:
+    rollingpolicy:
+      max-file-size: 1MB
+      max-history: 10
+  file:
+    path: logs
+    name: logs/blogs-service.log
+  level:
+    root: info
