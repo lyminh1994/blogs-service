@@ -4,26 +4,24 @@ import com.minhlq.blogs.constant.SecurityConstants;
 import com.minhlq.blogs.enums.TokenType;
 import com.minhlq.blogs.handler.exception.SecurityException;
 import com.minhlq.blogs.service.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,74 +36,53 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
 
-  @Value("${jwt.config.secret}")
-  private String secret;
+  private final JwtEncoder jwtEncoder;
+
+  private final JwtDecoder jwtDecoder;
 
   @Value("${jwt.config.ttl}")
   private Long ttl;
 
   @Override
   public String createJwt(String username) {
-    return createJwt(username, Date.from(Instant.now().plusMillis(ttl)));
+    return createJwt(username, Instant.now().plusMillis(ttl));
   }
 
   @Override
-  public String createJwt(String username, Date expiration) {
-    var keyBytes = Base64.getDecoder().decode(secret);
-    var key = Keys.hmacShaKeyFor(keyBytes);
-    return Jwts.builder()
-        .setSubject(username)
-        .setIssuedAt(new Date())
-        .setExpiration(expiration)
-        .signWith(key, SignatureAlgorithm.HS512)
-        .compact();
+  public String createJwt(String username, Instant expiration) {
+    JwtClaimsSet claims =
+        JwtClaimsSet.builder()
+            .issuer("self")
+            .subject(username)
+            .issuedAt(Instant.now())
+            .expiresAt(expiration)
+            .build();
+
+    return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
   }
 
   /**
    * Retrieve Jwt claims from the token.
    *
-   * @param jwt the token
+   * @param token the token
    * @return the claims
    */
-  private Claims parseJwt(String jwt) {
+  private Map<String, Object> parseJwt(String token) {
     try {
-      var keyBytes = Base64.getDecoder().decode(secret);
-      var key = Keys.hmacShaKeyFor(keyBytes);
-      var jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
-
-      return jwtParser.parseClaimsJws(jwt).getBody();
-    } catch (ExpiredJwtException ex) {
-      throw new SecurityException("JWT is expired!");
-    } catch (UnsupportedJwtException ex) {
-      throw new SecurityException("JWT is unsupported!");
-    } catch (MalformedJwtException ex) {
-      throw new SecurityException("Invalid JWT!");
-    } catch (SignatureException e) {
-      throw new SecurityException("Invalid JWT signature!");
-    } catch (IllegalArgumentException ex) {
-      throw new SecurityException("JWT claims string is empty!");
+      Jwt jwt = jwtDecoder.decode(token);
+      return jwt.getClaims();
+    } catch (JwtException ex) {
+      throw new SecurityException(ex.getMessage());
     }
   }
 
   @Override
-  public boolean isValidJwtToken(String jwt) {
+  public boolean isValidJwtToken(String token) {
     try {
-      var keyBytes = Base64.getDecoder().decode(secret);
-      var key = Keys.hmacShaKeyFor(keyBytes);
-      var jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
-
-      jwtParser.parseClaimsJws(jwt);
+      jwtDecoder.decode(token);
       return true;
-    } catch (ExpiredJwtException ex) {
-      log.error("JWT token is expired: {}", ex.getMessage());
-    } catch (UnsupportedJwtException ex) {
-      log.error("JWT token is unsupported: {}", ex.getMessage());
-    } catch (MalformedJwtException ex) {
-      log.error("Invalid JWT token: {}", ex.getMessage());
-    } catch (SignatureException ex) {
-      log.error("Invalid JWT signature: {}", ex.getMessage());
-    } catch (IllegalArgumentException ex) {
-      log.error("JWT claims string is empty: {}", ex.getMessage());
+    } catch (JwtException ex) {
+      log.error(ex.getMessage());
     }
 
     return false;
@@ -113,7 +90,7 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String getUsernameFromJwt(String jwt) {
-    return parseJwt(jwt).getSubject();
+    return parseJwt(jwt).getOrDefault(JwtClaimNames.SUB, StringUtils.EMPTY).toString();
   }
 
   @Override

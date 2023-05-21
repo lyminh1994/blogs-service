@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -138,8 +137,7 @@ public class AuthServiceImpl implements AuthService {
     if (!isRefreshTokenValid) {
       var refreshTokenMaxAge = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
       var refreshToken =
-          jwtService.createJwt(
-              username, Date.from(Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds())));
+          jwtService.createJwt(username, Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds()));
 
       var encryptedRefreshToken = encryptionService.encrypt(refreshToken);
       cookieService.addCookieToHeaders(

@@ -36,6 +36,8 @@ public final class SecurityConstants {
           "/actuator/**",
           "/v3/api-docs/**",
           "/swagger-ui/**",
+          "/swagger-resources/**",
+          "/webjars/**",
           AppConstants.SIGN_UP,
           AppConstants.SIGN_IN,
           AppConstants.REFRESH_TOKEN,

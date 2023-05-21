@@ -21,7 +21,6 @@ import com.minhlq.blogs.service.RoleService;
 import com.minhlq.blogs.service.UserService;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
@@ -61,8 +60,7 @@ public class UserServiceImpl implements UserService {
     var ttl = Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
 
     var verificationToken =
-        jwtService.createJwt(
-            signUpBody.username(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
+        jwtService.createJwt(signUpBody.username(), Instant.now().plusSeconds(ttl.toSeconds()));
 
     var encodedVerifyToken = encryptionService.encode(verificationToken);
     var uri =

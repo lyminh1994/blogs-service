@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.ReflectionUtils;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
@@ -34,19 +35,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 class SecurityUtilsTest {
 
-  HttpServletRequest request;
+  HttpServletRequest request = mock(HttpServletRequest.class);
 
-  HttpServletResponse response;
+  HttpServletResponse response = mock(HttpServletResponse.class);
 
   @BeforeEach
   void setUp() {
     SecurityUtils.clearAuthentication();
-    // Create mock HttpServletRequest and HttpServletResponse
-    request = mock(HttpServletRequest.class);
-    response = mock(HttpServletResponse.class);
   }
 
   @Test
@@ -55,12 +55,6 @@ class SecurityUtilsTest {
         UnsupportedOperationException.class,
         () -> ReflectionUtils.newInstance(SecurityUtils.class));
   }
-
-  /*@Test
-  void givenAuthenticatedUser_whenIsAuthenticated_thenReturnTrue(TestInfo testInfo) {
-    TestHelper.setAuthentication(testInfo.getDisplayName(), UserRole.ROLE_USER.name());
-    assertTrue(SecurityUtils.isAuthenticated());
-  }*/
 
   @Test
   void givenNullAuthentication_whenIsAuthenticated_thenReturnFalse() {
@@ -226,7 +220,7 @@ class SecurityUtilsTest {
     assertEquals(authentication, resultAuthentication);
   }
 
-/*  @Test
+  @Test
   void getAuthenticatedUserDetails_WhenAuthenticated_ReturnsUserPrincipal() {
     // Create a mock UserPrincipal object
     UserPrincipal expected = mock(UserPrincipal.class);
@@ -243,7 +237,7 @@ class SecurityUtilsTest {
 
     // Verify that the actual is the same as the mock UserPrincipal object
     assertEquals(expected, actual);
-  }*/
+  }
 
   @Test
   void getAuthenticatedUserDetails_WhenNotAuthenticated_ReturnsNull() {
@@ -254,7 +248,7 @@ class SecurityUtilsTest {
     assertNull(actual);
   }
 
-/*  @Test
+  @Test
   void logout_ClearsCookiesAndSecurityContext() {
     // Create mock instances of the logout handlers
     CookieClearingLogoutHandler logoutHandler = mock(CookieClearingLogoutHandler.class);
@@ -262,8 +256,8 @@ class SecurityUtilsTest {
         mock(SecurityContextLogoutHandler.class);
 
     // Set the mock instances of the logout handlers
-    *//*SecurityUtils.setCookieClearingLogoutHandler(cookieClearingLogoutHandler);
-    SecurityUtils.setSecurityContextLogoutHandler(securityContextLogoutHandler);*//*
+    // SecurityUtils.setCookieClearingLogoutHandler(cookieClearingLogoutHandler);
+    // SecurityUtils.setSecurityContextLogoutHandler(securityContextLogoutHandler);
 
     // Call the method to be tested
     SecurityUtils.logout(request, response);
@@ -271,7 +265,7 @@ class SecurityUtilsTest {
     // Verify that the logout handlers' logout methods were called with the correct arguments
     verify(logoutHandler).logout(request, response, null);
     verify(securityContextLogoutHandler).logout(request, response, null);
-  }*/
+  }
 
   @Test
   void givenDisabledUser_whenValidateUserDetailsStatus_thenThrowsDisabledException() {
