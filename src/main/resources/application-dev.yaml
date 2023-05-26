@@ -43,13 +43,13 @@ cors:
 springdoc:
   show-actuator: true
   swagger-ui:
-    path: /swagger-ui
-    csrf:
-      enabled: true
-    display-request-duration: true
     disable-swagger-default-url: true
+    path: /swagger-ui
+    display-request-duration: true
     use-root-path: true
     with-credentials: true
+    csrf:
+      enabled: true
 # Logging configuration
 logging:
   level:

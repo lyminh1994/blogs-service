@@ -5,21 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.minhlq.blogs.helper.EnableTestcontainers;
 import com.minhlq.blogs.model.ArticleFavoriteEntity;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
+@EnableTestcontainers
 @Sql({
   "classpath:/sql/users.sql",
   "classpath:/sql/articles.sql",
   "classpath:/sql/articles_favorites.sql"
 })
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ArticleFavoriteRepositoryTest {
 
   @Autowired ArticleFavoriteRepository repository;
