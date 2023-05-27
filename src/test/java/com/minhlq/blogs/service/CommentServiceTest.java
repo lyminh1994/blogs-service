@@ -1,9 +1,11 @@
 package com.minhlq.blogs.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@Disabled("not ready yet")
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
 

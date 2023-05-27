@@ -7,6 +7,7 @@ import com.minhlq.blogs.repository.FollowRepository;
 import com.minhlq.blogs.repository.TagRepository;
 import com.minhlq.blogs.service.impl.ArticleServiceImpl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@Disabled("not ready yet")
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
 

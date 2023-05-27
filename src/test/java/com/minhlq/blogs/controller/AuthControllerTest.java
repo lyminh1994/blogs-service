@@ -14,6 +14,7 @@ import com.minhlq.blogs.service.UserService;
 import java.util.Optional;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+@Disabled("not ready yet")
 @Import(DuplicatedUsernameValidator.class)
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {

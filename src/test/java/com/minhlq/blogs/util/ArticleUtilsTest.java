@@ -12,7 +12,7 @@ class ArticleUtilsTest {
   @Test
   @DisplayName("Successful toSlug call")
   void whenCallingToSlug_thenReturnCorrectSlug() {
-    String actual = ArticleUtils.toSlug("This is a test Title!");
+    String actual = ArticleUtils.toSlug("This is a test Title!!   %##");
 
     assertEquals("this-is-a-test-title", actual);
   }

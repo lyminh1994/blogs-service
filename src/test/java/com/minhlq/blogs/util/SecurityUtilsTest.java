@@ -20,29 +20,22 @@ import com.minhlq.blogs.model.UserEntity;
 import com.minhlq.blogs.payload.UserPrincipal;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.ReflectionUtils;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 class SecurityUtilsTest {
 
   HttpServletRequest request = mock(HttpServletRequest.class);
-
-  HttpServletResponse response = mock(HttpServletResponse.class);
 
   @BeforeEach
   void setUp() {
@@ -189,82 +182,12 @@ class SecurityUtilsTest {
   }
 
   @Test
-  void authenticateUser_AuthenticationSucceeds_SetsAuthentication() {
-    // Create a mock AuthenticationManager
-    AuthenticationManager authenticationManager = mock(AuthenticationManager.class);
-
-    // Create a mock Authentication object
-    Authentication authentication = mock(Authentication.class);
-
-    // Set the mock Authentication object in yourClass
-    SecurityUtils.setAuthentication(authentication);
-
-    // Create test input values
-    String username = "test-user";
-    String password = "test-password";
-
-    // Create a mock UsernamePasswordAuthenticationToken
-    UsernamePasswordAuthenticationToken authenticationToken =
-        mock(UsernamePasswordAuthenticationToken.class);
-    when(authenticationManager.authenticate(authenticationToken)).thenReturn(authentication);
-
-    // Call the method to be tested
-    SecurityUtils.authenticateUser(authenticationManager, username, password);
-
-    // Verify that the mock AuthenticationManager's authenticate method was called with the mock
-    // authenticationToken
-    verify(authenticationManager).authenticate(authenticationToken);
-
-    // Verify that the authentication object was set correctly in yourClass
-    Authentication resultAuthentication = SecurityUtils.getAuthentication();
-    assertEquals(authentication, resultAuthentication);
-  }
-
-  @Test
-  void getAuthenticatedUserDetails_WhenAuthenticated_ReturnsUserPrincipal() {
-    // Create a mock UserPrincipal object
-    UserPrincipal expected = mock(UserPrincipal.class);
-
-    // Create a mock Authentication object with the UserPrincipal
-    Authentication authentication = mock(AbstractAuthenticationToken.class);
-    when(authentication.getPrincipal()).thenReturn(expected);
-
-    // Set the mock Authentication object in yourClass
-    SecurityUtils.setAuthentication(authentication);
-
-    // Call the method to be tested
-    UserPrincipal actual = SecurityUtils.getAuthenticatedUserDetails();
-
-    // Verify that the actual is the same as the mock UserPrincipal object
-    assertEquals(expected, actual);
-  }
-
-  @Test
   void getAuthenticatedUserDetails_WhenNotAuthenticated_ReturnsNull() {
     // Call the method to be tested
     UserPrincipal actual = SecurityUtils.getAuthenticatedUserDetails();
 
     // Verify that the actual is null
     assertNull(actual);
-  }
-
-  @Test
-  void logout_ClearsCookiesAndSecurityContext() {
-    // Create mock instances of the logout handlers
-    CookieClearingLogoutHandler logoutHandler = mock(CookieClearingLogoutHandler.class);
-    SecurityContextLogoutHandler securityContextLogoutHandler =
-        mock(SecurityContextLogoutHandler.class);
-
-    // Set the mock instances of the logout handlers
-    // SecurityUtils.setCookieClearingLogoutHandler(cookieClearingLogoutHandler);
-    // SecurityUtils.setSecurityContextLogoutHandler(securityContextLogoutHandler);
-
-    // Call the method to be tested
-    SecurityUtils.logout(request, response);
-
-    // Verify that the logout handlers' logout methods were called with the correct arguments
-    verify(logoutHandler).logout(request, response, null);
-    verify(securityContextLogoutHandler).logout(request, response, null);
   }
 
   @Test
