@@ -15,7 +15,6 @@ import com.minhlq.blogs.payload.SignUpRequest;
 import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.repository.FollowRepository;
 import com.minhlq.blogs.repository.UserRepository;
-import com.minhlq.blogs.service.EncryptionService;
 import com.minhlq.blogs.service.JwtService;
 import com.minhlq.blogs.service.RoleService;
 import com.minhlq.blogs.service.UserService;
@@ -49,9 +48,7 @@ public class UserServiceImpl implements UserService {
   private final JwtService jwtService;
 
   private final PasswordEncoder passwordEncoder;
-
-  private final EncryptionService encryptionService;
-
+  
   private final FollowRepository followRepository;
 
   @Override
@@ -62,11 +59,10 @@ public class UserServiceImpl implements UserService {
     var verificationToken =
         jwtService.createJwt(signUpBody.username(), Instant.now().plusSeconds(ttl.toSeconds()));
 
-    var encodedVerifyToken = encryptionService.encode(verificationToken);
     var uri =
         ServletUriComponentsBuilder.fromCurrentContextPath()
             .path(AppConstants.VERIFY)
-            .buildAndExpand(encodedVerifyToken)
+            .buildAndExpand(verificationToken)
             .toUri();
     log.debug("{}", uri);
 
@@ -74,7 +70,7 @@ public class UserServiceImpl implements UserService {
     user.setUsername(signUpBody.username());
     user.setPassword(passwordEncoder.encode(signUpBody.password()));
     user.setEmail(signUpBody.email());
-    user.setVerificationToken(encodedVerifyToken);
+    user.setVerificationToken(verificationToken);
     user.addRole(role);
 
     userRepository.save(user);

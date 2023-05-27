@@ -19,11 +19,6 @@ spring:
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
       password: ${SPRING_DATA_REDIS_PASSWORD}
-# Crypto and JWT configuration
-encryption:
-  secret:
-    password: ${ENCRYPTION_SECRET_PASSWORD}
-    salt: ${ENCRYPTION_SECRET_SALT}
 jwt:
   config:
     private-key: ${JWT_CONFIG_PRIVATE_KEY}

@@ -1,6 +1,5 @@
 package com.minhlq.blogs.config.security;
 
-import com.minhlq.blogs.service.EncryptionService;
 import com.minhlq.blogs.service.JwtService;
 import com.minhlq.blogs.util.SecurityUtils;
 import jakarta.servlet.FilterChain;
@@ -28,8 +27,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
   private final JwtService jwtService;
 
-  private final EncryptionService encryptionService;
-
   private final UserDetailsService userDetailsService;
 
   @Override
@@ -46,14 +43,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       jwtToken = jwtService.getJwtToken(request, true);
     }
 
-    if (StringUtils.isNotBlank(jwtToken)) {
-      var accessToken = encryptionService.decrypt(jwtToken);
-
-      if (StringUtils.isNotBlank(accessToken) && jwtService.isValidJwtToken(accessToken)) {
-        var username = jwtService.getUsernameFromJwt(accessToken);
-        var userDetails = userDetailsService.loadUserByUsername(username);
-        SecurityUtils.authenticateUser(request, userDetails);
-      }
+    if (StringUtils.isNotBlank(jwtToken) && jwtService.isValidJwtToken(jwtToken)) {
+      var username = jwtService.getUsernameFromJwt(jwtToken);
+      var userDetails = userDetailsService.loadUserByUsername(username);
+      SecurityUtils.authenticateUser(request, userDetails);
     }
 
     filterChain.doFilter(request, response);

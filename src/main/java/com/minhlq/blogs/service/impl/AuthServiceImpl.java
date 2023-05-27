@@ -8,7 +8,6 @@ import com.minhlq.blogs.payload.SignInRequest;
 import com.minhlq.blogs.repository.UserRepository;
 import com.minhlq.blogs.service.AuthService;
 import com.minhlq.blogs.service.CookieService;
-import com.minhlq.blogs.service.EncryptionService;
 import com.minhlq.blogs.service.JwtService;
 import com.minhlq.blogs.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,8 +45,6 @@ public class AuthServiceImpl implements AuthService {
 
   private final CookieService cookieService;
 
-  private final EncryptionService encryptionService;
-
   private final JwtService jwtService;
 
   @Override
@@ -67,38 +64,32 @@ public class AuthServiceImpl implements AuthService {
 
     var isRefreshTokenValid = false;
     if (StringUtils.isNotEmpty(refreshToken)) {
-      var decryptedRefreshToken = encryptionService.decrypt(refreshToken);
-      isRefreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
+      isRefreshTokenValid = jwtService.isValidJwtToken(refreshToken);
     }
 
     // If the refresh token is valid, then we will not generate a new refresh token.
     var accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
-    var encryptedAccessToken = encryptionService.encrypt(accessToken);
 
-    return AuthenticationResponse.build(encryptedAccessToken);
+    return AuthenticationResponse.build(accessToken);
   }
 
   @Override
   public AuthenticationResponse refreshAccessToken(
       String refreshToken, HttpServletRequest request) {
-    var decryptedRefreshToken = encryptionService.decrypt(refreshToken);
-    var refreshTokenValid = jwtService.isValidJwtToken(decryptedRefreshToken);
+    var refreshTokenValid = jwtService.isValidJwtToken(refreshToken);
 
     if (!refreshTokenValid) {
       throw new IllegalArgumentException("Invalid token");
     }
 
-    var username = jwtService.getUsernameFromJwt(decryptedRefreshToken);
+    var username = jwtService.getUsernameFromJwt(refreshToken);
     var userDetails = userDetailsService.loadUserByUsername(username);
 
     SecurityUtils.clearAuthentication();
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
-    var accessToken = jwtService.createJwt(username);
-    var encryptedAccessToken = encryptionService.encrypt(accessToken);
-
-    return AuthenticationResponse.build(encryptedAccessToken);
+    return AuthenticationResponse.build(jwtService.createJwt(username));
   }
 
   @Override
@@ -110,14 +101,13 @@ public class AuthServiceImpl implements AuthService {
   @Override
   @Transactional
   public void activeAccount(String verificationToken) {
-    var decodedToken = encryptionService.decode(verificationToken);
-    if (StringUtils.isBlank(decodedToken) || !jwtService.isValidJwtToken(decodedToken)) {
+    if (StringUtils.isBlank(verificationToken) || !jwtService.isValidJwtToken(verificationToken)) {
       throw new SecurityException("Verification token was expire");
     }
 
     var user =
         userRepository
-            .findByVerificationTokenAndEnabled(decodedToken, false)
+            .findByVerificationTokenAndEnabled(verificationToken, false)
             .orElseThrow(ResourceNotFoundException::new);
 
     user.setVerificationToken(null);
@@ -139,9 +129,8 @@ public class AuthServiceImpl implements AuthService {
       var refreshToken =
           jwtService.createJwt(username, Instant.now().plusSeconds(refreshTokenMaxAge.toSeconds()));
 
-      var encryptedRefreshToken = encryptionService.encrypt(refreshToken);
       cookieService.addCookieToHeaders(
-          responseHeaders, TokenType.REFRESH, encryptedRefreshToken, refreshTokenMaxAge);
+          responseHeaders, TokenType.REFRESH, refreshToken, refreshTokenMaxAge);
     }
 
     return jwtService.createJwt(username);
