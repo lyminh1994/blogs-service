@@ -3,6 +3,7 @@ package com.minhlq.blogs.mapper;
 import com.minhlq.blogs.dto.response.CommentResponse;
 import com.minhlq.blogs.model.CommentEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -19,5 +20,6 @@ public interface CommentMapper {
   /** The mapper instance. */
   CommentMapper MAPPER = Mappers.getMapper(CommentMapper.class);
 
+  @Mapping(target = "user.following", ignore = true)
   CommentResponse toCommentResponse(CommentEntity comment);
 }

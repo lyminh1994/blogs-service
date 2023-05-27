@@ -25,7 +25,8 @@ public interface ArticleMapper {
   @Mappings(
       value = {
         @Mapping(target = "favorite", ignore = true),
-        @Mapping(target = "favoritesCount", ignore = true)
+        @Mapping(target = "favoritesCount", ignore = true),
+        @Mapping(target = "author.following", ignore = true)
       })
   ArticleResponse toArticleResponse(ArticleEntity article, List<String> tagNames);
 
@@ -33,7 +34,8 @@ public interface ArticleMapper {
       value = {
         @Mapping(target = "favorite", ignore = true),
         @Mapping(target = "favoritesCount", ignore = true),
-        @Mapping(target = "tagNames", ignore = true)
+        @Mapping(target = "tagNames", ignore = true),
+        @Mapping(target = "author.following", ignore = true)
       })
   ArticleResponse toArticleResponse(ArticleEntity article);
 }
