@@ -53,5 +53,7 @@ springdoc:
 # Logging configuration
 logging:
   level:
+    root: error
+    web: trace
+    org.springframework.security: trace
     com.minhlq.blogs: trace
-    web: debug
