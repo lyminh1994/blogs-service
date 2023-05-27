@@ -26,11 +26,11 @@ public final class ArticleUtils {
       return StringUtils.EMPTY;
     }
 
-    String result = title.trim().replaceAll(REGEX_SPECIAL_CHARACTERS, "-");
+    String result = StringUtils.lowerCase(title.trim().replaceAll(REGEX_SPECIAL_CHARACTERS, "-"));
     if (result.charAt(result.length() - 1) == '-') {
-      result = result.substring(0, result.length() - 1);
+      return result.substring(0, result.length() - 1);
     }
 
-    return result.toLowerCase();
+    return result;
   }
 }
