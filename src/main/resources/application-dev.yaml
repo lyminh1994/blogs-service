@@ -30,7 +30,7 @@ jwt:
   config:
     private-key: ${JWT_CONFIG_PRIVATE_KEY:classpath:secure/app.key}
     public-key: ${JWT_CONFIG_PUBLIC_KEY:classpath:secure/app.pub}
-    ttl: ${JWT_CONFIG_TTL:6000}
+    ttl: ${JWT_CONFIG_TTL:300000}
 # CORS configuration
 cors:
   max-age: ${CORS_MAX_AGE:3600}
