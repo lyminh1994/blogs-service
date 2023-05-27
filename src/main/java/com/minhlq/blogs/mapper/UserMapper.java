@@ -42,7 +42,9 @@ public interface UserMapper {
         @Mapping(target = "updatedAt", ignore = true),
         @Mapping(target = "userRoles", ignore = true),
         @Mapping(target = "verificationToken", ignore = true),
-        @Mapping(target = "version", ignore = true)
+        @Mapping(target = "version", ignore = true),
+        @Mapping(target = "articles", ignore = true),
+        @Mapping(target = "comments", ignore = true)
       })
   UserEntity toUser(UserPrincipal userDetails);
 
@@ -70,7 +72,9 @@ public interface UserMapper {
         @Mapping(target = "updatedAt", ignore = true),
         @Mapping(target = "userRoles", ignore = true),
         @Mapping(target = "verificationToken", ignore = true),
-        @Mapping(target = "version", ignore = true)
+        @Mapping(target = "version", ignore = true),
+        @Mapping(target = "articles", ignore = true),
+        @Mapping(target = "comments", ignore = true)
       })
   UserEntity toUser(@MappingTarget UserEntity user, UpdateUserRequest userRequest);
 }
