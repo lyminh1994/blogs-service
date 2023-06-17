@@ -34,8 +34,6 @@ public class OpenApiConfig {
   public static final String LICENSE_NAME = "Apache 2.0";
   public static final String LICENSE_URL = "https://springdoc.org";
 
-  private final OperationCustomizer actuatorCustomizer;
-
   /**
    * Configures the actuator group.
    *
@@ -46,7 +44,8 @@ public class OpenApiConfig {
   public GroupedOpenApi actuatorApi(
       @Value("${application.version}") String version,
       OpenApiCustomizer actuatorOpenApiCustomizer,
-      WebEndpointProperties endpointProperties) {
+      WebEndpointProperties endpointProperties,
+      OperationCustomizer actuatorCustomizer) {
     return GroupedOpenApi.builder()
         .group("Actuator")
         .pathsToMatch(endpointProperties.getBasePath() + Constants.ALL_PATTERN)
@@ -79,12 +78,7 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToMatch(
-            AppConstants.SIGN_UP,
-            AppConstants.SIGN_IN,
-            AppConstants.REFRESH_TOKEN,
-            AppConstants.SIGN_OUT,
-            AppConstants.VERIFY)
+        .pathsToMatch(AppConstants.AUTHENTICATION_ENDPOINT + Constants.ALL_PATTERN)
         .build();
   }
 
@@ -112,11 +106,7 @@ public class OpenApiConfig {
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
         .pathsToExclude(
             endpointProperties.getBasePath() + Constants.ALL_PATTERN,
-            AppConstants.SIGN_UP,
-            AppConstants.SIGN_IN,
-            AppConstants.REFRESH_TOKEN,
-            AppConstants.SIGN_OUT,
-            AppConstants.VERIFY)
+            AppConstants.AUTHENTICATION_ENDPOINT + Constants.ALL_PATTERN)
         .build();
   }
 

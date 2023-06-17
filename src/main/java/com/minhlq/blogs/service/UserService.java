@@ -3,8 +3,8 @@ package com.minhlq.blogs.service;
 import com.minhlq.blogs.dto.UpdateUserDto;
 import com.minhlq.blogs.dto.response.ProfileResponse;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
-import com.minhlq.blogs.payload.SignUpRequest;
-import com.minhlq.blogs.payload.UserPrincipal;
+import com.minhlq.blogs.model.UserEntity;
+import com.minhlq.blogs.payload.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,11 +19,11 @@ import org.springframework.validation.annotation.Validated;
 public interface UserService {
 
   /**
-   * Create the user with the register request instance given.
+   * Retrieves the currently logged-in user's information.
    *
-   * @param signUpBody the register information
+   * @return The currently logged-in user. Throw exception if not found user.
    */
-  void createUser(SignUpRequest signUpBody);
+  UserEntity getCurrentUser();
 
   /**
    * Update the user with the user instance given and the update type for record.
@@ -32,17 +32,16 @@ public interface UserService {
    * @return the updated user
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  UserPrincipal updateUserDetails(@Valid UpdateUserDto updateUserDto);
+  UserResponse updateUserDetails(@Valid UpdateUserDto updateUserDto);
 
   /**
    * Returns a user profile for the given username or throw exception if a user could not be found.
    *
-   * @param currentUser user details
    * @param username The username associated to the user to find
    * @return a user for the given username or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse findByUsername(UserPrincipal currentUser, String username);
+  ProfileResponse findByUsername(String username);
 
   /**
    * Add follow relation and returns a user profile for the given username or throw exception if a

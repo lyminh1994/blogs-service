@@ -13,26 +13,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AppConstants {
 
-  public static final String ALL_PATTERN = "/**";
+  public static final String DEFAULT_CURRENT_AUDITOR = "system";
+  public static final String ALL_PATTERN_ENDPOINT = "/**";
 
-  public static final String ARTICLES = "/articles";
-  public static final String FEEDS = "/feeds";
-  public static final String SLUG = "/{slug}";
-  public static final String FAVORITE = "/{slug}/favorite";
+  public static final String ARTICLES_ENDPOINT = "/articles";
+  public static final String FEEDS_ENDPOINT = "/feeds";
+  public static final String SLUG_ENDPOINT = "/{slug}";
+  public static final String FAVORITE_ENDPOINT = "/{slug}/favorite";
 
-  public static final String SIGN_UP = "/sign-up";
-  public static final String SIGN_IN = "/sign-in";
-  public static final String REFRESH_TOKEN = "/refresh-token";
-  public static final String SIGN_OUT = "/sign-out";
-  public static final String VERIFY = "/verify/{verifyToken}";
+  public static final String AUTHENTICATION_ENDPOINT = "/auth";
+  public static final String REGISTER_ENDPOINT = "/register";
+  public static final String LOGIN_ENDPOINT = "/login";
+  public static final String REFRESH_TOKEN_ENDPOINT = "/refresh-token";
+  public static final String LOGOUT_ENDPOINT = "/logout";
+  public static final String VERIFY_ENDPOINT = "/verify/{verifyToken}";
 
-  public static final String COMMENTS = "{slug}/comments";
-  public static final String COMMENT = "/{commentId}";
+  public static final String COMMENTS_ENDPOINT = "{slug}/comments";
+  public static final String COMMENT_ENDPOINT = "/{commentId}";
 
-  public static final String TAGS = "/tags";
+  public static final String TAGS_ENDPOINT = "/tags";
 
-  public static final String USER = "/user";
-  public static final String PASSWORD = "/password";
-  public static final String USERNAME = "/{username}";
-  public static final String FOLLOWING = "/{username}/following";
+  public static final String CURRENT_USER_ENDPOINT = "/user";
+  public static final String CHANGE_PASSWORD_ENDPOINT = "/password";
+  public static final String PROFILE_ENDPOINT = "/{username}";
+  public static final String FOLLOWING_ENDPOINT = "/{username}/following";
 }

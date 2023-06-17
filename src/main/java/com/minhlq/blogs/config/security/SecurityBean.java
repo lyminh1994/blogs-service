@@ -2,16 +2,11 @@ package com.minhlq.blogs.config.security;
 
 import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.constant.SecurityConstants;
-import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Duration;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -71,8 +66,8 @@ public class SecurityBean {
    */
   @Bean
   public JwtEncoder jwtEncoder() {
-    JWK jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
-    JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+    var jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
+    var jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwkSource);
   }
 
@@ -83,29 +78,16 @@ public class SecurityBean {
    */
   @Bean
   public CorsConfigurationSource corsConfigurationSource(final CorsProperties props) {
-    var allowedMethods =
-        CollectionUtils.isEmpty(props.getAllowedMethods())
-            ? SecurityConstants.HTTP_METHODS_ALLOWED
-            : props.getAllowedMethods();
-    var allowedHeaders =
-        CollectionUtils.isEmpty(props.getAllowedHeaders())
-            ? SecurityConstants.HTTP_HEADERS_ALLOWED
-            : props.getAllowedHeaders();
-    var exposedHeaders =
-        CollectionUtils.isEmpty(props.getExposedHeaders())
-            ? SecurityConstants.HTTP_HEADERS_EXPOSED
-            : props.getExposedHeaders();
-
     var corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowedOrigins(props.getAllowedOrigins());
-    corsConfiguration.setAllowedMethods(allowedMethods);
-    corsConfiguration.setMaxAge(Duration.ofHours(props.getMaxAge()));
-    corsConfiguration.setAllowedHeaders(allowedHeaders);
-    corsConfiguration.setExposedHeaders(exposedHeaders);
+    corsConfiguration.setAllowedMethods(props.getAllowedMethods());
+    corsConfiguration.setAllowedHeaders(props.getAllowedHeaders());
     corsConfiguration.setAllowCredentials(props.isAllowCredentials());
+    corsConfiguration.setMaxAge(props.getMaxAge());
+    corsConfiguration.setExposedHeaders(props.getExposedHeaders());
 
     var source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration(AppConstants.ALL_PATTERN, corsConfiguration);
+    source.registerCorsConfiguration(AppConstants.ALL_PATTERN_ENDPOINT, corsConfiguration);
     return source;
   }
 
@@ -116,8 +98,8 @@ public class SecurityBean {
    */
   @Bean
   public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
-    return tomcatServletWebServerFactory ->
-        tomcatServletWebServerFactory.addContextCustomizers(
+    return serverFactory ->
+        serverFactory.addContextCustomizers(
             context -> context.setCookieProcessor(new Rfc6265CookieProcessor()));
   }
 }

@@ -1,6 +1,5 @@
 package com.minhlq.blogs.enums;
 
-import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,9 +13,4 @@ public enum UserRole {
   private final Integer code;
 
   private final String description;
-
-  public boolean match(UserRole role) {
-    return Arrays.stream(UserRole.values())
-        .anyMatch(userRole -> userRole.name().equals(role.name()));
-  }
 }

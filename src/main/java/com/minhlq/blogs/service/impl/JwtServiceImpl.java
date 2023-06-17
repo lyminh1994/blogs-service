@@ -1,20 +1,13 @@
 package com.minhlq.blogs.service.impl;
 
-import com.minhlq.blogs.constant.SecurityConstants;
-import com.minhlq.blogs.enums.TokenType;
 import com.minhlq.blogs.handler.exception.SecurityException;
 import com.minhlq.blogs.service.JwtService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -61,21 +54,6 @@ public class JwtServiceImpl implements JwtService {
     return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
   }
 
-  /**
-   * Retrieve Jwt claims from the token.
-   *
-   * @param token the token
-   * @return the claims
-   */
-  private Map<String, Object> parseJwt(String token) {
-    try {
-      Jwt jwt = jwtDecoder.decode(token);
-      return jwt.getClaims();
-    } catch (JwtException ex) {
-      throw new SecurityException(ex.getMessage());
-    }
-  }
-
   @Override
   public boolean isValidJwtToken(String token) {
     try {
@@ -93,47 +71,18 @@ public class JwtServiceImpl implements JwtService {
     return parseJwt(jwt).getOrDefault(JwtClaimNames.SUB, StringUtils.EMPTY).toString();
   }
 
-  @Override
-  public String getJwtToken(HttpServletRequest request, boolean fromCookie) {
-    if (fromCookie) {
-      return getJwtFromCookie(request);
-    }
-
-    return getJwtFromRequest(request);
-  }
-
   /**
-   * Retrieves the jwt token from the request header if present and valid.
+   * Retrieve Jwt claims from the token.
    *
-   * @param request the httpRequest
-   * @return the jwt token
+   * @param token the token
+   * @return the claims
    */
-  private String getJwtFromRequest(HttpServletRequest request) {
-    var headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-    if (StringUtils.isNotBlank(headerAuth) && headerAuth.startsWith(SecurityConstants.BEARER)) {
-      return headerAuth.split(StringUtils.SPACE)[1];
+  private Map<String, Object> parseJwt(String token) {
+    try {
+      Jwt jwt = jwtDecoder.decode(token);
+      return jwt.getClaims();
+    } catch (JwtException ex) {
+      throw new SecurityException(ex.getMessage());
     }
-
-    return null;
-  }
-
-  /**
-   * Retrieves the jwt token from the request cookie if present and valid.
-   *
-   * @param request the httpRequest
-   * @return the jwt token
-   */
-  private String getJwtFromCookie(HttpServletRequest request) {
-    var cookies = request.getCookies();
-    if (Objects.nonNull(cookies)) {
-      return Arrays.stream(cookies)
-          .filter(cookie -> StringUtils.equals(TokenType.ACCESS.getName(), cookie.getName()))
-          .findFirst()
-          .map(Cookie::getValue)
-          .orElse(null);
-    }
-
-    return null;
   }
 }

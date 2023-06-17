@@ -1,6 +1,5 @@
 package com.minhlq.blogs.payload;
 
-import com.minhlq.blogs.constant.SecurityConstants;
 
 /**
  * This class models the format of the login response produced.
@@ -9,7 +8,7 @@ import com.minhlq.blogs.constant.SecurityConstants;
  * @version 1.0
  * @since 1.0
  */
-public record AuthenticationResponse(String type, String accessToken) {
+public record AuthenticationResponse(String accessToken) {
 
   /**
    * Build authentication response object from the specified userDetails.
@@ -18,6 +17,6 @@ public record AuthenticationResponse(String type, String accessToken) {
    * @return the authenticationResponse.
    */
   public static AuthenticationResponse build(String jwToken) {
-    return new AuthenticationResponse(SecurityConstants.BEARER, jwToken);
+    return new AuthenticationResponse(jwToken);
   }
 }

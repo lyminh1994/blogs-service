@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minhlq.blogs.annotation.validator.DuplicatedUsernameValidator;
-import com.minhlq.blogs.payload.SignUpRequest;
+import com.minhlq.blogs.payload.RegisterRequest;
 import com.minhlq.blogs.repository.UserRepository;
 import com.minhlq.blogs.service.AuthService;
 import com.minhlq.blogs.service.CookieService;
@@ -73,15 +73,15 @@ class AuthControllerTest {
   @Test
   void givenExistedUsername_whenCallRegister_thenReturnBadRequest() throws Exception {
     given(userRepository.findByUsername(ArgumentMatchers.anyString())).willReturn(Optional.empty());
-    SignUpRequest signUpRequest =
-        new SignUpRequest(
+    RegisterRequest registerRequest =
+        new RegisterRequest(
             FAKER.name().username(), FAKER.internet().password(), FAKER.internet().emailAddress());
 
     mockMvc
         .perform(
             post(registerUrl)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(signUpRequest)))
+                .content(mapper.writeValueAsString(registerRequest)))
         .andExpect(status().isBadRequest());
   }
 }

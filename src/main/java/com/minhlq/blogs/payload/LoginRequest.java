@@ -9,6 +9,6 @@ import jakarta.validation.constraints.NotBlank;
  * @version 1.0
  * @since 1.0
  */
-public record SignInRequest(
+public record LoginRequest(
     @NotBlank(message = "{user.username.cannot.blank}") String username,
     @NotBlank(message = "{user.password.cannot.blank}") String password) {}

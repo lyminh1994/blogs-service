@@ -2,8 +2,9 @@ package com.minhlq.blogs.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The tag model for the application.
@@ -12,7 +13,8 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  * @since 1.0
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,8 +28,4 @@ public class TagEntity {
 
   @Column(nullable = false)
   private String name;
-
-  public TagEntity(String name) {
-    this.name = name;
-  }
 }

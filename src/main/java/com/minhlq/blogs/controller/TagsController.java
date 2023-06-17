@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.TAGS)
+@RequestMapping(AppConstants.TAGS_ENDPOINT)
 @Tag(name = "Tags", description = "Blog Article Tags APIs")
 public class TagsController {
 

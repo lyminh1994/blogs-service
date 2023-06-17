@@ -1,28 +1,37 @@
 package com.minhlq.blogs.service.impl;
 
+import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.constant.SecurityConstants;
+import com.minhlq.blogs.constant.UserConstants;
 import com.minhlq.blogs.enums.TokenType;
+import com.minhlq.blogs.enums.UserRole;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
+import com.minhlq.blogs.model.UserEntity;
 import com.minhlq.blogs.payload.AuthenticationResponse;
-import com.minhlq.blogs.payload.SignInRequest;
+import com.minhlq.blogs.payload.LoginRequest;
+import com.minhlq.blogs.payload.RegisterRequest;
 import com.minhlq.blogs.repository.UserRepository;
 import com.minhlq.blogs.service.AuthService;
 import com.minhlq.blogs.service.CookieService;
 import com.minhlq.blogs.service.JwtService;
+import com.minhlq.blogs.service.RoleService;
 import com.minhlq.blogs.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * This is implement for the authentication service operations.
@@ -47,14 +56,44 @@ public class AuthServiceImpl implements AuthService {
 
   private final JwtService jwtService;
 
+  private final RoleService roleService;
+
+  private final PasswordEncoder passwordEncoder;
+
   @Override
   @Transactional
-  public AuthenticationResponse signIn(
-      String refreshToken, SignInRequest requestBody, HttpHeaders responseHeaders) {
+  public void register(RegisterRequest body) {
+    var role = roleService.findByName(UserRole.ROLE_USER);
 
-    var username = requestBody.username();
+    var verificationToken = UUID.randomUUID().toString();
+    var uri =
+        ServletUriComponentsBuilder.fromCurrentContextPath()
+            .path(AppConstants.AUTHENTICATION_ENDPOINT + AppConstants.VERIFY_ENDPOINT)
+            .buildAndExpand(verificationToken)
+            .toUri();
+    log.debug("Active account link: {}", uri);
+
+    var user =
+        UserEntity.builder()
+            .username(body.username())
+            .password(passwordEncoder.encode(body.password()))
+            .email(body.email())
+            .verificationToken(verificationToken)
+            .expiredVerificationToken(
+                LocalDateTime.now().plusDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION))
+            .build();
+
+    user.addRole(role);
+
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public AuthenticationResponse login(String refreshToken, LoginRequest body, HttpHeaders headers) {
+    var username = body.username();
     // Authentication will fail if the credentials are invalid and throw exception.
-    SecurityUtils.authenticateUser(authenticationManager, username, requestBody.password());
+    SecurityUtils.authenticateUser(authenticationManager, username, body.password());
 
     // Update user last successful login and reset failed login attempts
     var user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
@@ -68,16 +107,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // If the refresh token is valid, then we will not generate a new refresh token.
-    var accessToken = updateCookies(username, isRefreshTokenValid, responseHeaders);
+    var accessToken = updateCookies(username, isRefreshTokenValid, headers);
 
     return AuthenticationResponse.build(accessToken);
   }
 
   @Override
-  public AuthenticationResponse refreshAccessToken(
-      String refreshToken, HttpServletRequest request) {
+  public AuthenticationResponse getAccessToken(String refreshToken, HttpServletRequest request) {
     var refreshTokenValid = jwtService.isValidJwtToken(refreshToken);
-
     if (!refreshTokenValid) {
       throw new IllegalArgumentException("Invalid token");
     }
@@ -93,26 +130,22 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public void signOut(HttpServletRequest request, HttpServletResponse response) {
+  public void logout(HttpServletRequest request, HttpServletResponse response) {
     SecurityUtils.logout(request, response);
     SecurityUtils.clearAuthentication();
   }
 
   @Override
   @Transactional
-  public void activeAccount(String verificationToken) {
-    if (StringUtils.isBlank(verificationToken) || !jwtService.isValidJwtToken(verificationToken)) {
+  public void activeAccount(String verifyToken) {
+    var user = userRepository.findByVerificationTokenAndEnabled(verifyToken, false);
+    if (user.isEmpty() || LocalDateTime.now().isAfter(user.get().getExpiredVerificationToken())) {
       throw new SecurityException("Verification token was expire");
     }
 
-    var user =
-        userRepository
-            .findByVerificationTokenAndEnabled(verificationToken, false)
-            .orElseThrow(ResourceNotFoundException::new);
-
-    user.setVerificationToken(null);
-    user.setEnabled(true);
-    userRepository.save(user);
+    user.get().setVerificationToken(null);
+    user.get().setEnabled(true);
+    userRepository.saveAndFlush(user.get());
   }
 
   /**

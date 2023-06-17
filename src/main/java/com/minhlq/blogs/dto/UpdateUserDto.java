@@ -2,7 +2,7 @@ package com.minhlq.blogs.dto;
 
 import com.minhlq.blogs.annotation.UpdateUserConstraint;
 import com.minhlq.blogs.dto.request.UpdateUserRequest;
-import com.minhlq.blogs.payload.UserPrincipal;
+import com.minhlq.blogs.model.UserEntity;
 
 /**
  * The UpdateUserDto transfers user details from outside into the application.
@@ -12,4 +12,4 @@ import com.minhlq.blogs.payload.UserPrincipal;
  * @since 1.0
  */
 @UpdateUserConstraint
-public record UpdateUserDto(UserPrincipal targetUser, UpdateUserRequest params) {}
+public record UpdateUserDto(UserEntity targetUser, UpdateUserRequest params) {}

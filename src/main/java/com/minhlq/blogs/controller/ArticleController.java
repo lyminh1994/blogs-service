@@ -7,17 +7,18 @@ import com.minhlq.blogs.dto.request.NewArticleRequest;
 import com.minhlq.blogs.dto.request.UpdateArticleRequest;
 import com.minhlq.blogs.dto.response.ArticleResponse;
 import com.minhlq.blogs.dto.response.PageResponse;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +37,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.ARTICLES)
+@RequestMapping(AppConstants.ARTICLES_ENDPOINT)
 @Tag(name = "Articles", description = "Blog Article APIs")
 public class ArticleController {
 
@@ -55,8 +57,9 @@ public class ArticleController {
   @Operation(summary = "Create article", description = "Create article")
   public ArticleResponse createArticle(
       @RequestBody @Valid NewArticleRequest articleRequest,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.createArticle(currentUser, articleRequest);
+      @AuthenticationPrincipal JwtAuthenticationToken jwt) {
+    log.debug("{}", jwt.getPrincipal());
+    return articleService.createArticle(articleRequest);
   }
 
   /**
@@ -65,11 +68,10 @@ public class ArticleController {
    * @param pageable paging
    * @return paging articles
    */
-  @GetMapping(AppConstants.FEEDS)
+  @GetMapping(AppConstants.FEEDS_ENDPOINT)
   @Operation(summary = "Get feed", description = "Get followed user articles")
-  public PageResponse<ArticleResponse> getFeeds(
-      @ParameterObject Pageable pageable, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.findUserFeeds(currentUser, pageable);
+  public PageResponse<ArticleResponse> getFeeds(@ParameterObject Pageable pageable) {
+    return articleService.findUserFeeds(pageable);
   }
 
   /**
@@ -88,9 +90,8 @@ public class ArticleController {
       @RequestParam(required = false) String tag,
       @RequestParam(required = false) String favoriteBy,
       @RequestParam(required = false) String author,
-      @ParameterObject Pageable pageable,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.findRecentArticles(currentUser, tag, favoriteBy, author, pageable);
+      @ParameterObject Pageable pageable) {
+    return articleService.findRecentArticles(tag, favoriteBy, author, pageable);
   }
 
   /**
@@ -100,11 +101,10 @@ public class ArticleController {
    * @return article
    */
   @SecurityRequirements
-  @GetMapping(AppConstants.SLUG)
+  @GetMapping(AppConstants.SLUG_ENDPOINT)
   @Operation(summary = "Get article", description = "Get article by slug")
-  public ArticleResponse getArticle(
-      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.findBySlug(currentUser, slug);
+  public ArticleResponse getArticle(@PathVariable String slug) {
+    return articleService.findBySlug(slug);
   }
 
   /**
@@ -114,13 +114,11 @@ public class ArticleController {
    * @param updateArticleRequest update article details
    * @return updated article
    */
-  @PutMapping(AppConstants.SLUG)
+  @PutMapping(AppConstants.SLUG_ENDPOINT)
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
-      @PathVariable String slug,
-      @RequestBody @Valid UpdateArticleRequest updateArticleRequest,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.updateArticle(currentUser, slug, updateArticleRequest);
+      @PathVariable String slug, @RequestBody @Valid UpdateArticleRequest updateArticleRequest) {
+    return articleService.updateArticle(slug, updateArticleRequest);
   }
 
   /**
@@ -128,12 +126,11 @@ public class ArticleController {
    *
    * @param slug slug
    */
-  @DeleteMapping(AppConstants.SLUG)
+  @DeleteMapping(AppConstants.SLUG_ENDPOINT)
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
-  public void deleteArticle(
-      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
-    articleService.deleteArticle(currentUser, slug);
+  public void deleteArticle(@PathVariable String slug) {
+    articleService.deleteArticle(slug);
   }
 
   /**
@@ -142,11 +139,10 @@ public class ArticleController {
    * @param slug slug
    * @return article
    */
-  @PutMapping(AppConstants.FAVORITE)
+  @PutMapping(AppConstants.FAVORITE_ENDPOINT)
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
-  public ArticleResponse favoriteArticle(
-      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.favoriteArticle(currentUser, slug);
+  public ArticleResponse favoriteArticle(@PathVariable String slug) {
+    return articleService.favoriteArticle(slug);
   }
 
   /**
@@ -155,10 +151,9 @@ public class ArticleController {
    * @param slug slug
    * @return article
    */
-  @DeleteMapping(AppConstants.FAVORITE)
+  @DeleteMapping(AppConstants.FAVORITE_ENDPOINT)
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
-  public ArticleResponse unFavoriteArticle(
-      @PathVariable String slug, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return articleService.unFavoriteArticle(currentUser, slug);
+  public ArticleResponse unFavoriteArticle(@PathVariable String slug) {
+    return articleService.unFavoriteArticle(slug);
   }
 }

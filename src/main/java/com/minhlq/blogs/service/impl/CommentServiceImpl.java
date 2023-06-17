@@ -1,19 +1,18 @@
 package com.minhlq.blogs.service.impl;
 
-import com.minhlq.blogs.mapper.CommentMapper;
-import com.minhlq.blogs.mapper.UserMapper;
 import com.minhlq.blogs.dto.request.NewCommentRequest;
 import com.minhlq.blogs.dto.response.CommentResponse;
 import com.minhlq.blogs.dto.response.PageResponse;
 import com.minhlq.blogs.handler.exception.NoAuthorizationException;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
+import com.minhlq.blogs.mapper.CommentMapper;
 import com.minhlq.blogs.model.CommentEntity;
 import com.minhlq.blogs.model.unionkey.FollowKey;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.repository.ArticleRepository;
 import com.minhlq.blogs.repository.CommentRepository;
 import com.minhlq.blogs.repository.FollowRepository;
 import com.minhlq.blogs.service.CommentService;
+import com.minhlq.blogs.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,9 +36,11 @@ public class CommentServiceImpl implements CommentService {
 
   private final FollowRepository followRepository;
 
+  private final UserService userService;
+
   @Override
-  public CommentResponse addCommentToArticle(
-      UserPrincipal currentUser, String slug, NewCommentRequest newCommentRequest) {
+  public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
     var savedComment =
@@ -47,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
             CommentEntity.builder()
                 .body(newCommentRequest.body())
                 .article(article)
-                .user(UserMapper.MAPPER.toUser(currentUser))
+                .user(currentUser)
                 .build());
 
     return CommentMapper.MAPPER.toCommentResponse(savedComment);
@@ -55,8 +56,8 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<CommentResponse> findArticleComments(
-      UserPrincipal currentUser, String slug, Pageable pageable) {
+  public PageResponse<CommentResponse> findArticleComments(String slug, Pageable pageable) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     var comments = commentRepository.findByArticle(article, pageable);
     var contents =
@@ -65,7 +66,8 @@ public class CommentServiceImpl implements CommentService {
                 comment -> {
                   CommentResponse result = CommentMapper.MAPPER.toCommentResponse(comment);
                   if (currentUser != null) {
-                    FollowKey followId = new FollowKey(currentUser.id(), comment.getUser().getId());
+                    FollowKey followId =
+                        new FollowKey(currentUser.getId(), comment.getUser().getId());
                     result.getUser().setFollowing(followRepository.existsById(followId));
                   }
 
@@ -77,14 +79,15 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteCommentFromArticle(UserPrincipal currentUser, String slug, Long commentId) {
+  public void deleteCommentFromArticle(String slug, Long commentId) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     var comment =
         commentRepository
             .findByIdAndArticle(commentId, article)
             .orElseThrow(ResourceNotFoundException::new);
-    if (!currentUser.id().equals(article.getAuthor().getId())
-        || !currentUser.id().equals(comment.getUser().getId())) {
+    if (!currentUser.getId().equals(article.getAuthor().getId())
+        || !currentUser.getId().equals(comment.getUser().getId())) {
       throw new NoAuthorizationException();
     }
 

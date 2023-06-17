@@ -3,7 +3,7 @@ package com.minhlq.blogs.mapper;
 import com.minhlq.blogs.dto.request.UpdateUserRequest;
 import com.minhlq.blogs.dto.response.ProfileResponse;
 import com.minhlq.blogs.model.UserEntity;
-import com.minhlq.blogs.payload.UserPrincipal;
+import com.minhlq.blogs.payload.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -29,26 +29,6 @@ public interface UserMapper {
   UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
   /**
-   * Convert and populate a userDetails to user entity object.
-   *
-   * @param userDetails the user details
-   * @return the User
-   */
-  @Mappings(
-      value = {
-        @Mapping(target = "createdBy", ignore = true),
-        @Mapping(target = "createdAt", ignore = true),
-        @Mapping(target = "updatedBy", ignore = true),
-        @Mapping(target = "updatedAt", ignore = true),
-        @Mapping(target = "userRoles", ignore = true),
-        @Mapping(target = "verificationToken", ignore = true),
-        @Mapping(target = "version", ignore = true),
-        @Mapping(target = "articles", ignore = true),
-        @Mapping(target = "comments", ignore = true)
-      })
-  UserEntity toUser(UserPrincipal userDetails);
-
-  /**
    * Convert and populate a user to userProfile object.
    *
    * @param user the user
@@ -56,6 +36,8 @@ public interface UserMapper {
    * @return the profile
    */
   ProfileResponse toProfileResponse(UserEntity user, boolean following);
+
+  UserResponse toUserResponse(UserEntity user);
 
   @Mappings(
       value = {

@@ -1,6 +1,5 @@
 package com.minhlq.blogs.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 
 /**
@@ -36,15 +35,6 @@ public interface JwtService {
    * @return the username
    */
   String getUsernameFromJwt(String token);
-
-  /**
-   * Retrieves the token from the request cookie or request header if present and valid.
-   *
-   * @param request the httpRequest
-   * @param fromCookie if token should be retrieved from the cookies.
-   * @return the token token
-   */
-  String getJwtToken(HttpServletRequest request, boolean fromCookie);
 
   /**
    * Validates the Jwt token passed to it.

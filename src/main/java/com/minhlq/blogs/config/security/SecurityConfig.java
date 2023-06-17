@@ -1,7 +1,6 @@
 package com.minhlq.blogs.config.security;
 
 import com.minhlq.blogs.constant.AppConstants;
-import com.minhlq.blogs.constant.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * This class holds security configuration settings for this application.
@@ -39,8 +37,6 @@ public class SecurityConfig {
   private final PasswordEncoder passwordEncoder;
 
   private final UserDetailsService userDetailsService;
-
-  private final JwtRequestFilter jwtRequestFilter;
 
   /**
    * Configures global user's with authentication credentials.
@@ -82,20 +78,28 @@ public class SecurityConfig {
             authorize
                 .requestMatchers(HttpMethod.OPTIONS)
                 .permitAll()
-                .requestMatchers(SecurityConstants.PUBLIC_MATCHERS.toArray(String[]::new))
+                .requestMatchers(
+                    "/resources/**",
+                    "/static/**",
+                    "/actuator/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-resources/**",
+                    "/webjars/**",
+                    "/auth/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, AppConstants.ARTICLES + AppConstants.FEEDS)
+                .requestMatchers(
+                    HttpMethod.GET, AppConstants.ARTICLES_ENDPOINT + AppConstants.FEEDS_ENDPOINT)
                 .authenticated()
                 .requestMatchers(
                     HttpMethod.GET,
-                    AppConstants.ARTICLES + AppConstants.ALL_PATTERN,
-                    AppConstants.USER + AppConstants.USERNAME,
-                    AppConstants.TAGS)
+                    AppConstants.ARTICLES_ENDPOINT + AppConstants.ALL_PATTERN_ENDPOINT,
+                    AppConstants.CURRENT_USER_ENDPOINT + AppConstants.PROFILE_ENDPOINT,
+                    AppConstants.TAGS_ENDPOINT)
                 .permitAll()
                 .anyRequest()
                 .authenticated());
     http.oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
-    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     http.sessionManagement(
         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     http.exceptionHandling(

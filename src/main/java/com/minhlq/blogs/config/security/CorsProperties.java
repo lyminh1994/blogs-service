@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 public class CorsProperties {
 
   @Value("${cors.max-age}")
-  private int maxAge;
+  private Long maxAge;
 
   @Value("${cors.allow-credentials}")
   private boolean allowCredentials;

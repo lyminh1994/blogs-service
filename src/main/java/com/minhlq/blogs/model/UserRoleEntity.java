@@ -2,8 +2,10 @@ package com.minhlq.blogs.model;
 
 import jakarta.persistence.*;
 import java.util.Objects;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -13,8 +15,10 @@ import lombok.ToString;
  * @version 1.0
  * @since 1.0
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users_roles")
 public class UserRoleEntity extends AuditEntity {

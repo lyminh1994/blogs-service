@@ -11,7 +11,7 @@ create table roles
     id          bigint not null primary key,
     description varchar(255),
     name        varchar(255)
-    );
+);
 
 create table users
 (
@@ -34,8 +34,8 @@ create table users
     phone                 varchar(255) unique,
     profile_image         varchar(255),
     username              varchar(50)  not null unique,
-    verification_token    varchar(255)
-    );
+    verification_token    text
+);
 
 create table users_roles
 (
@@ -48,14 +48,14 @@ create table users_roles
     version    smallint     not null,
     role_id    bigint references roles,
     user_id    bigint references users
-    );
+);
 
 create table follows
 (
     follow_id bigint not null,
     user_id   bigint not null,
     primary key (follow_id, user_id)
-    );
+);
 
 create table articles
 (
@@ -71,27 +71,27 @@ create table articles
     slug        varchar(255) unique,
     title       varchar(255),
     user_id     bigint references users
-    );
+);
 
 create table articles_favorites
 (
     article_id bigint not null,
     user_id    bigint not null,
     primary key (article_id, user_id)
-    );
+);
 
 create table tags
 (
     id   bigint       not null primary key,
     name varchar(255) not null
-    );
+);
 
 create table articles_tags
 (
     article_id bigint not null,
     tag_id     bigint not null,
     primary key (article_id, tag_id)
-    );
+);
 
 create table comments
 (
@@ -105,7 +105,7 @@ create table comments
     body       varchar(255),
     article_id bigint references articles,
     user_id    bigint references users
-    );
+);
 
 create table revinfo
 (
@@ -129,4 +129,4 @@ create table users_aud
     profile_image varchar(255),
     username      varchar(255),
     primary key (rev, id)
-    );
+);

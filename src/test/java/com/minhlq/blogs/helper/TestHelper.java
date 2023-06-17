@@ -1,20 +1,10 @@
 package com.minhlq.blogs.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minhlq.blogs.model.UserEntity;
-import com.minhlq.blogs.payload.UserPrincipal;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class TestHelper {
 
@@ -43,31 +33,6 @@ public class TestHelper {
   public static Collection<String> getUserEqualsFields() {
     String[] userEquals = ArrayUtils.addAll(BASE_EQUALS_AND_HASH_CODE_FIELDS, USER_EQUALS_FIELDS);
     return List.of(userEquals);
-  }
-
-  /**
-   * Sets the authentication object for unit testing purposes.
-   *
-   * @param username the user to authenticate
-   * @param role the role to be assigned
-   */
-  public static void setAuthentication(final String username, final String role) {
-    List<SimpleGrantedAuthority> authorities =
-        Collections.singletonList(new SimpleGrantedAuthority(role));
-    Authentication auth;
-    if (username.equals("anonymous")) {
-      UserDetails user =
-          User.builder().username(username).password(username).authorities(authorities).build();
-
-      auth = new AnonymousAuthenticationToken(username, user, authorities);
-    } else {
-      UserEntity user = UserHelper.createUser(username);
-      UserPrincipal principal = UserPrincipal.buildUserDetails(user);
-
-      auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
-    }
-
-    SecurityContextHolder.getContext().setAuthentication(auth);
   }
 
   /**

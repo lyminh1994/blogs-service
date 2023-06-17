@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
  * @version 1.0
  * @since 1.0
  */
-public record SignUpRequest(
+public record RegisterRequest(
     @NotBlank(message = "{user.username.cannot.blank}")
         @Size(min = 3, max = 50, message = "{user.invalid.username.size}")
         @DuplicatedUsernameConstraint(message = "{user.username.existed}")
