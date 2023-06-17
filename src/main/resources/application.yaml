@@ -42,6 +42,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   cache:
     type: redis
+    redis:
+      cache-null-values: false
   data:
     redis:
       timeout: 10000ms
