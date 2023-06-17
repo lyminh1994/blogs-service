@@ -21,19 +21,23 @@ spring:
       password: ${SPRING_DATA_REDIS_PASSWORD:Redis@123}
   mvc:
     log-request-details: true
+encryption:
+  secret:
+    password: ${ENCRYPTION_SECRET_PASSWORD:password}
+    salt: ${ENCRYPTION_SECRET_SALT:salt}
 jwt:
   config:
     private-key: ${JWT_CONFIG_PRIVATE_KEY:classpath:secure/app.key}
     public-key: ${JWT_CONFIG_PUBLIC_KEY:classpath:secure/app.pub}
-    ttl: ${JWT_CONFIG_TTL:300000}
+    ttl: ${JWT_CONFIG_TTL:3000}
 # CORS configuration
 cors:
   max-age: ${CORS_MAX_AGE:3600}
   allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
   allowed-methods: ${CORS_ALLOWED_METHODS:GET, POST, PUT, DELETE}
-  allowed-headers: ${CORS_ALLOWED_HEADERS:Authorization, Accept-Language, Content-Type}
+  allowed-headers: ${CORS_ALLOWED_HEADERS:Accept, Accept-Language, Authorization, Cache-Control, Content-Type}
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000/, http://192.168.1.9:3000/}
-  exposed-headers: ${CORS_EXPOSED_HEADERS:Authorization, Cookie}
+  exposed-headers: ${CORS_EXPOSED_HEADERS:Authorization, Set-Cookie}
 # Open API 3 configuration
 springdoc:
   show-actuator: true
@@ -48,7 +52,6 @@ springdoc:
 # Logging configuration
 logging:
   level:
-    root: error
     web: trace
     org.springframework.security: trace
     com.minhlq.blogs: trace
