@@ -56,7 +56,8 @@ public interface UserMapper {
         @Mapping(target = "verificationToken", ignore = true),
         @Mapping(target = "version", ignore = true),
         @Mapping(target = "articles", ignore = true),
-        @Mapping(target = "comments", ignore = true)
+        @Mapping(target = "comments", ignore = true),
+        @Mapping(target = "expiredVerificationToken", ignore = true)
       })
   UserEntity toUser(@MappingTarget UserEntity user, UpdateUserRequest userRequest);
 }
