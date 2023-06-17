@@ -58,6 +58,10 @@ spring:
   flyway:
     table: schema_history
     validate-migration-naming: true
+  docker:
+    compose:
+      enabled: false
+      lifecycle-management: start_only
 # Actuator configuration
 management:
   endpoints:
