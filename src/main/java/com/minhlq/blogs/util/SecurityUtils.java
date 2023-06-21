@@ -49,14 +49,15 @@ public class SecurityUtils {
             .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
             .collect(Collectors.toSet());
 
-    return new User(
-        user.getUsername(),
-        user.getPassword(),
-        user.isEnabled(),
-        user.getLastSuccessfulLogin().isBefore(LocalDateTime.now().plusDays(30)),
-        true,
-        user.getFailedLoginAttempts() < 5,
-        authorities);
+    return User.builder()
+        .username(user.getUsername())
+        .password(user.getPassword())
+        .disabled(user.isEnabled())
+        .accountExpired(user.getLastSuccessfulLogin().isBefore(LocalDateTime.now().plusDays(30)))
+        .accountLocked(user.getFailedLoginAttempts() < 5)
+        .credentialsExpired(true)
+        .authorities(authorities)
+        .build();
   }
 
   /**
