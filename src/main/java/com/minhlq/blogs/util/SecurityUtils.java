@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -44,7 +42,7 @@ public class SecurityUtils {
 
   public UserDetails buildUserDetails(@NotNull UserEntity user) {
     // Build the authorities from the user's roles
-    Set<GrantedAuthority> authorities =
+    var authorities =
         user.getUserRoles().stream()
             .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
             .collect(Collectors.toSet());
@@ -52,10 +50,10 @@ public class SecurityUtils {
     return User.builder()
         .username(user.getUsername())
         .password(user.getPassword())
-        .disabled(user.isEnabled())
-        .accountExpired(user.getLastSuccessfulLogin().isBefore(LocalDateTime.now().plusDays(30)))
-        .accountLocked(user.getFailedLoginAttempts() < 5)
-        .credentialsExpired(true)
+        .disabled(!user.isEnabled())
+        .accountExpired(user.getLastSuccessfulLogin().isAfter(LocalDateTime.now().plusDays(30)))
+        .accountLocked(user.getFailedLoginAttempts() > 5)
+        .credentialsExpired(false)
         .authorities(authorities)
         .build();
   }
