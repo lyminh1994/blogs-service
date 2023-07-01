@@ -65,7 +65,7 @@ public class CookieServiceImpl implements CookieService {
         .secure(Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD))
         .sameSite("strict")
         .path("/")
-        .maxAge(Objects.isNull(maxAge) ? this.duration : maxAge)
+        .maxAge(Objects.isNull(maxAge) ? duration : maxAge)
         .httpOnly(true)
         .build();
   }
@@ -146,7 +146,7 @@ public class CookieServiceImpl implements CookieService {
       @NotNull TokenType tokenType, @NotEmpty String token, Duration maxAge) {
     var httpHeaders = new HttpHeaders();
     addCookieToHeaders(
-        httpHeaders, tokenType, token, Objects.isNull(maxAge) ? this.duration : maxAge);
+        httpHeaders, tokenType, token, Objects.isNull(maxAge) ? duration : maxAge);
 
     return httpHeaders;
   }
