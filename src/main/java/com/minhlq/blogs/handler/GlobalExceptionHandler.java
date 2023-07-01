@@ -20,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -76,6 +77,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.badRequest().body(new ErrorsResource(fieldErrorResources));
   }
 
+  @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+  public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException ex) {
+    return ResponseEntity.badRequest()
+        .body(
+            new ErrorResource(
+                null,
+                null,
+                HttpStatus.BAD_REQUEST.value(),
+                StringUtils.defaultString(ex.getMessage(), ex.getLocalizedMessage())));
+  }
+
   @ExceptionHandler({ResourceNotFoundException.class})
   public ErrorResource handleResourceNotFound(ResourceNotFoundException ex, Locale locale) {
     return new ErrorResource(
@@ -87,7 +100,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   private String getParam(String s) {
-    log.debug("Error param: {}", s);
     var splits = s.split("\\.");
     if (splits.length == 1) {
       return s;
