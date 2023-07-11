@@ -1,6 +1,5 @@
 package com.minhlq.blogs.config.security;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.constant.SecurityConstants;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -87,7 +86,7 @@ public class SecurityBean {
     corsConfiguration.setExposedHeaders(props.getExposedHeaders());
 
     var source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration(AppConstants.ALL_PATTERN_ENDPOINT, corsConfiguration);
+    source.registerCorsConfiguration("/**", corsConfiguration);
     return source;
   }
 

@@ -15,7 +15,7 @@ spring:
   profiles:
     active: dev
   application:
-    name: blogs_service
+    name: @project.name@
   banner:
     location: classpath:static/banner.txt
   jackson:
@@ -64,13 +64,28 @@ spring:
     compose:
       enabled: false
       lifecycle-management: start_only
+  cloud:
+    openfeign:
+      client:
+        config:
+          conduit:
+            url: https://conduit.productionready.io/api
 # Actuator configuration
 management:
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       base-path: /actuator
       exposure:
-        include: ["health", "prometheus", "metrics"]
+        include: [ "health", "prometheus", "metrics" ]
   endpoint:
     health:
       show-details: always
@@ -80,6 +95,8 @@ management:
       enabled: true
 # Logging configuration
 logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   logback:
     rollingpolicy:
       max-file-size: 1MB

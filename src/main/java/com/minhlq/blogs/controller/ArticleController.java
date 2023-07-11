@@ -2,7 +2,6 @@ package com.minhlq.blogs.controller;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.dto.request.NewArticleRequest;
 import com.minhlq.blogs.dto.request.UpdateArticleRequest;
 import com.minhlq.blogs.dto.response.ArticleResponse;
@@ -40,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.ARTICLES_ENDPOINT)
+@RequestMapping("/articles")
 @Tag(name = "Articles", description = "Blog Article APIs")
 public class ArticleController {
 
@@ -68,7 +67,7 @@ public class ArticleController {
    * @param pageable paging
    * @return paging articles
    */
-  @GetMapping(AppConstants.FEEDS_ENDPOINT)
+  @GetMapping("/feeds")
   @Operation(summary = "Get feed", description = "Get followed user articles")
   public PageResponse<ArticleResponse> getFeeds(@ParameterObject Pageable pageable) {
     return articleService.findUserFeeds(pageable);
@@ -78,8 +77,8 @@ public class ArticleController {
    * Get all articles by filter params provided.
    *
    * @param tag tag name
-   * @param favoriteBy username favorite
-   * @param author article author
+   * @param favoriteBy publicId favorite
+   * @param author publicId author
    * @param pageable paging
    * @return paging articles
    */
@@ -101,7 +100,7 @@ public class ArticleController {
    * @return article
    */
   @SecurityRequirements
-  @GetMapping(AppConstants.SLUG_ENDPOINT)
+  @GetMapping("/{slug}")
   @Operation(summary = "Get article", description = "Get article by slug")
   public ArticleResponse getArticle(@PathVariable String slug) {
     return articleService.findBySlug(slug);
@@ -114,7 +113,7 @@ public class ArticleController {
    * @param updateArticleRequest update article details
    * @return updated article
    */
-  @PutMapping(AppConstants.SLUG_ENDPOINT)
+  @PutMapping("/{slug}")
   @Operation(summary = "Update article", description = "Update article by slug")
   public ArticleResponse updateArticle(
       @PathVariable String slug, @RequestBody @Valid UpdateArticleRequest updateArticleRequest) {
@@ -126,7 +125,7 @@ public class ArticleController {
    *
    * @param slug slug
    */
-  @DeleteMapping(AppConstants.SLUG_ENDPOINT)
+  @DeleteMapping("/{slug}")
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete article", description = "Delete article by slug")
   public void deleteArticle(@PathVariable String slug) {
@@ -139,7 +138,7 @@ public class ArticleController {
    * @param slug slug
    * @return article
    */
-  @PutMapping(AppConstants.FAVORITE_ENDPOINT)
+  @PutMapping("/{slug}/favorite")
   @Operation(summary = "Favorite article", description = "Favorite article by slug")
   public ArticleResponse favoriteArticle(@PathVariable String slug) {
     return articleService.favoriteArticle(slug);
@@ -151,7 +150,7 @@ public class ArticleController {
    * @param slug slug
    * @return article
    */
-  @DeleteMapping(AppConstants.FAVORITE_ENDPOINT)
+  @DeleteMapping("/{slug}/favorite")
   @Operation(summary = "UnFavorite article", description = "UnFavorite article by slug")
   public ArticleResponse unFavoriteArticle(@PathVariable String slug) {
     return articleService.unFavoriteArticle(slug);

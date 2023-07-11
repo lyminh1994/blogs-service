@@ -22,6 +22,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
       attributePaths = {"userRoles"})
   Optional<UserEntity> findByUsername(String username);
 
+  Optional<UserEntity> findByPublicId(String publicId);
+
   Optional<UserEntity> findByEmail(String email);
 
   Optional<UserEntity> findByPhone(String phone);

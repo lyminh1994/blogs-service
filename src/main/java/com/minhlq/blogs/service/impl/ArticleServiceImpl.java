@@ -132,10 +132,10 @@ public class ArticleServiceImpl implements ArticleService {
       conditions.and(qTag.name.eq(tagName));
     }
     if (StringUtils.isNotBlank(author)) {
-      conditions.and(qArticle.author.username.eq(author));
+      conditions.and(qArticle.author.publicId.eq(author));
     }
     if (StringUtils.isNotBlank(favoriteBy)) {
-      conditions.and(qUser.username.eq(favoriteBy));
+      conditions.and(qUser.publicId.eq(favoriteBy));
     }
 
     var query =
@@ -191,6 +191,19 @@ public class ArticleServiceImpl implements ArticleService {
                   currentArticle.setTitle(updateRequest.title());
                   currentArticle.setDescription(updateRequest.description());
                   currentArticle.setBody(updateRequest.body());
+
+                  updateRequest
+                      .tagNames()
+                      .forEach(
+                          tag ->
+                              tagRepository
+                                  .findByName(tag)
+                                  .ifPresent(
+                                      entity ->
+                                          articleTagRepository.save(
+                                              new ArticleTagEntity(
+                                                  new ArticleTagKey(
+                                                      currentArticle.getId(), entity.getId())))));
 
                   return articleRepository.save(currentArticle);
                 })

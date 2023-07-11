@@ -74,7 +74,7 @@ public class UserEntity extends AuditEntity {
   private String profileImage;
 
   @NotAudited private String verificationToken;
-  
+
   @NotAudited private LocalDateTime expiredVerificationToken;
 
   @NotAudited @Builder.Default private int failedLoginAttempts = 0;

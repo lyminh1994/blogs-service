@@ -145,8 +145,7 @@ public class CookieServiceImpl implements CookieService {
   public HttpHeaders addCookieToHeaders(
       @NotNull TokenType tokenType, @NotEmpty String token, Duration maxAge) {
     var httpHeaders = new HttpHeaders();
-    addCookieToHeaders(
-        httpHeaders, tokenType, token, Objects.isNull(maxAge) ? duration : maxAge);
+    addCookieToHeaders(httpHeaders, tokenType, token, Objects.isNull(maxAge) ? duration : maxAge);
 
     return httpHeaders;
   }

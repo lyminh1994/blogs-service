@@ -1,6 +1,6 @@
 package com.minhlq.blogs.config;
 
-import com.minhlq.blogs.constant.AppConstants;
+import io.micrometer.observation.annotation.Observed;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Profile;
  * @version 1.0
  * @since 1.0
  */
+@Observed
 @Configuration
 @RequiredArgsConstructor
 public class OpenApiConfig {
@@ -78,7 +79,7 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToMatch(AppConstants.AUTHENTICATION_ENDPOINT + Constants.ALL_PATTERN)
+        .pathsToMatch("/auth/**")
         .build();
   }
 
@@ -104,9 +105,7 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToExclude(
-            endpointProperties.getBasePath() + Constants.ALL_PATTERN,
-            AppConstants.AUTHENTICATION_ENDPOINT + Constants.ALL_PATTERN)
+        .pathsToExclude(endpointProperties.getBasePath() + Constants.ALL_PATTERN, "/auth/**")
         .build();
   }
 

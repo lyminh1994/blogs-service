@@ -1,6 +1,5 @@
 package com.minhlq.blogs.controller;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.dto.response.PageResponse;
 import com.minhlq.blogs.dto.response.TagResponse;
 import com.minhlq.blogs.service.TagService;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.TAGS_ENDPOINT)
+@RequestMapping("/tags")
 @Tag(name = "Tags", description = "Blog Article Tags APIs")
 public class TagsController {
 

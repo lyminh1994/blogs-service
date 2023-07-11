@@ -35,35 +35,35 @@ public interface UserService {
   UserResponse updateUserDetails(@Valid UpdateUserDto updateUserDto);
 
   /**
-   * Returns a user profile for the given username or throw exception if a user could not be found.
+   * Returns a user profile for the given publicId or throw exception if a user could not be found.
    *
-   * @param username The username associated to the user to find
-   * @return a user for the given username or null if a user could not be found
+   * @param publicId The publicId associated to the user to find
+   * @return a user for the given publicId or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse findByUsername(String username);
+  ProfileResponse findByPublicId(String publicId);
 
   /**
-   * Add follow relation and returns a user profile for the given username or throw exception if a
+   * Add follow relation and returns a user profile for the given publicId or throw exception if a
    * user could not be found.
    *
    * @param userId user id
-   * @param username The username associated to the user to find
-   * @return a user for the given username or null if a user could not be found
+   * @param publicId The publicId associated to the user to find
+   * @return a user for the given publicId or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse followByUsername(Long userId, String username);
+  ProfileResponse followByPublicId(Long userId, String publicId);
 
   /**
-   * Remove follow relation and returns a user profile for the given username or throw exception if
+   * Remove follow relation and returns a user profile for the given publicId or throw exception if
    * a user could not be found.
    *
    * @param userId user id
-   * @param username The username associated to the user to find
-   * @return a user for the given username or null if a user could not be found
+   * @param publicId The publicId associated to the user to find
+   * @return a user for the given publicId or null if a user could not be found
    * @throws ResourceNotFoundException in case the given entity is {@literal null}
    */
-  ProfileResponse unFollowByUsername(Long userId, String username);
+  ProfileResponse unFollowByPublicId(Long userId, String publicId);
 
   /**
    * Check username existed in database

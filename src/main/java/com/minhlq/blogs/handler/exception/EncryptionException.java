@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "exception.message")
 public class EncryptionException extends RuntimeException {
 
-  @Serial
-  private static final long serialVersionUID = 4518149233942557017L;
+  @Serial private static final long serialVersionUID = 4518149233942557017L;
 
   /**
    * Constructs a new runtime exception with the specified detail message. The cause is not

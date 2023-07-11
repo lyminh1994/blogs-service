@@ -1,6 +1,5 @@
 package com.minhlq.blogs.service.impl;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.constant.SecurityConstants;
 import com.minhlq.blogs.constant.UserConstants;
 import com.minhlq.blogs.enums.TokenType;
@@ -47,22 +46,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
+  private final UserRepository userRepository;
+  private final AuthenticationManager authenticationManager;
+  private final UserDetailsService userDetailsService;
+  private final CookieService cookieService;
+  private final JwtService jwtService;
+  private final RoleService roleService;
+  private final PasswordEncoder passwordEncoder;
   @Value("${jwt.config.ttl}")
   private Long ttl;
-
-  private final UserRepository userRepository;
-
-  private final AuthenticationManager authenticationManager;
-
-  private final UserDetailsService userDetailsService;
-
-  private final CookieService cookieService;
-
-  private final JwtService jwtService;
-
-  private final RoleService roleService;
-
-  private final PasswordEncoder passwordEncoder;
 
   @Override
   @Transactional
@@ -72,10 +64,11 @@ public class AuthServiceImpl implements AuthService {
     var verificationToken = UUID.randomUUID().toString();
     var uri =
         ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path(AppConstants.AUTHENTICATION_ENDPOINT + AppConstants.VERIFY_ENDPOINT)
+            .path("/auth/verify/{verifyToken}")
             .buildAndExpand(verificationToken)
             .toUri();
     log.debug("Active account link: {}", uri);
+    log.debug("Token: {}", verificationToken);
 
     var user =
         UserEntity.builder()

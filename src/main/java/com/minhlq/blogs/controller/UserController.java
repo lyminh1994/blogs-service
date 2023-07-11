@@ -1,6 +1,5 @@
 package com.minhlq.blogs.controller;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.dto.UpdateUserDto;
 import com.minhlq.blogs.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogs.dto.request.UpdateUserRequest;
@@ -35,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.CURRENT_USER_ENDPOINT)
+@RequestMapping("/user")
 @Tag(name = "User", description = "Blog User Information APIs")
 public class UserController {
 
@@ -66,7 +65,7 @@ public class UserController {
     return userService.updateUserDetails(new UpdateUserDto(currentUser, updateUserRequest));
   }
 
-  @PutMapping(AppConstants.CHANGE_PASSWORD_ENDPOINT)
+  @PutMapping("/password")
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update password", description = "Update current user password")
   public void updatePassword(@RequestBody @Valid UpdatePasswordRequest updatePasswordRequest) {
@@ -76,41 +75,41 @@ public class UserController {
   }
 
   /**
-   * Get user profile by username.
+   * Get user profile by publicId.
    *
-   * @param username the username
+   * @param publicId the publicId
    * @return user profile.
    */
-  @GetMapping(AppConstants.PROFILE_ENDPOINT)
+  @GetMapping("/{publicId}")
   @SecurityRequirements
-  @Operation(summary = "Public profile", description = "Get public user information by username")
-  public ProfileResponse getProfile(@PathVariable String username) {
-    return userService.findByUsername(username);
+  @Operation(summary = "Public profile", description = "Get public user information by publicId")
+  public ProfileResponse getProfile(@PathVariable String publicId) {
+    return userService.findByPublicId(publicId);
   }
 
   /**
-   * Following user by username.
+   * Following user by publicId.
    *
-   * @param username the username following
+   * @param publicId the publicId following
    * @return user profile.
    */
-  @PutMapping(path = AppConstants.FOLLOWING_ENDPOINT)
-  @Operation(summary = "Following", description = "Following user by username")
-  public ProfileResponse following(@PathVariable String username) {
+  @PutMapping(path = "/{publicId}/following")
+  @Operation(summary = "Following", description = "Following user by publicId")
+  public ProfileResponse following(@PathVariable String publicId) {
     var currentUser = userService.getCurrentUser();
-    return userService.followByUsername(currentUser.getId(), username);
+    return userService.followByPublicId(currentUser.getId(), publicId);
   }
 
   /**
-   * Unfollowing user by username.
+   * Unfollowing user by publicId.
    *
-   * @param username the username un-following
+   * @param publicId the publicId un-following
    * @return user profile.
    */
-  @DeleteMapping(path = AppConstants.FOLLOWING_ENDPOINT)
-  @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
-  public ProfileResponse unFollowing(@PathVariable String username) {
+  @DeleteMapping(path = "/{publicId}/following")
+  @Operation(summary = "Unfollowing", description = "Unfollowing user by publicId")
+  public ProfileResponse unFollowing(@PathVariable String publicId) {
     var currentUser = userService.getCurrentUser();
-    return userService.unFollowByUsername(currentUser.getId(), username);
+    return userService.unFollowByPublicId(currentUser.getId(), publicId);
   }
 }

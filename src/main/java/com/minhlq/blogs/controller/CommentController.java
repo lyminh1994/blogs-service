@@ -3,7 +3,6 @@ package com.minhlq.blogs.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.dto.request.NewCommentRequest;
 import com.minhlq.blogs.dto.response.CommentResponse;
 import com.minhlq.blogs.dto.response.PageResponse;
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.COMMENTS_ENDPOINT)
+@RequestMapping("/articles/{slug}/comments")
 @Tag(name = "Comments", description = "Blog Comments of Article APIs")
 public class CommentController {
 
@@ -75,7 +74,7 @@ public class CommentController {
    * @param slug slug
    * @param commentId id
    */
-  @DeleteMapping(AppConstants.COMMENT_ENDPOINT)
+  @DeleteMapping("/{commentId}")
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
   public void deleteComment(@PathVariable String slug, @PathVariable Long commentId) {

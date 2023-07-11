@@ -1,6 +1,5 @@
 package com.minhlq.blogs.config.jpa;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.util.SecurityUtils;
 import java.util.Optional;
 import lombok.EqualsAndHashCode;
@@ -35,6 +34,6 @@ public final class ApplicationAuditorAware implements AuditorAware<String> {
     }
 
     // If there is no authentication, then the system will be used as the current auditor.
-    return Optional.of(AppConstants.DEFAULT_CURRENT_AUDITOR);
+    return Optional.of("SYSTEM");
   }
 }

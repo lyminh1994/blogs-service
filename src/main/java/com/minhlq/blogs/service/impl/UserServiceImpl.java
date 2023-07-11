@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     var principal = (Jwt) SecurityUtils.getAuthentication().getPrincipal();
     String username = principal.getSubject();
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(username)
         .orElseThrow(
             () ->
                 new UsernameNotFoundException(
@@ -71,9 +71,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  public ProfileResponse findByUsername(String username) {
+  public ProfileResponse findByPublicId(String publicId) {
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(publicId)
         .map(
             targetUser -> {
               if (SecurityUtils.isAuthenticated()) {
@@ -92,9 +92,9 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse followByUsername(Long userId, String username) {
+  public ProfileResponse followByPublicId(Long userId, String publicId) {
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(publicId)
         .map(
             targetUser -> {
               var followId = new FollowKey(userId, targetUser.getId());
@@ -108,9 +108,9 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse unFollowByUsername(Long userId, String username) {
+  public ProfileResponse unFollowByPublicId(Long userId, String publicId) {
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(publicId)
         .map(
             targetUser -> {
               var followId = new FollowKey(userId, targetUser.getId());
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean isUsernameExisted(String username) {
-    return userRepository.findByUsername(username).isPresent();
+    return userRepository.findByPublicId(username).isPresent();
   }
 
   @Override
