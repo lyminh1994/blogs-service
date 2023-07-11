@@ -9,4 +9,9 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-public record PageResponse<T>(List<T> contents, long totalElements) {}
+public record PageResponse<T>(List<T> contents, long totalElements) {
+
+  public static <T> PageResponse<T> of(List<T> contents, long totalElements) {
+    return new PageResponse<>(contents, totalElements);
+  }
+}

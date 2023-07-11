@@ -108,13 +108,13 @@ public class ArticleServiceImpl implements ArticleService {
     var currentUser = userService.getCurrentUser();
     var followedUsers = followRepository.findByUserIdQuery(currentUser.getId());
     if (CollectionUtils.isEmpty(followedUsers)) {
-      return new PageResponse<>(Collections.emptyList(), 0);
+      return PageResponse.of(Collections.emptyList(), 0);
     }
 
     var articles = articleRepository.findByFollowedUsersQuery(followedUsers, pageable);
     var contents = getArticleResponses(currentUser, articles.getContent());
 
-    return new PageResponse<>(contents, articles.getTotalElements());
+    return PageResponse.of(contents, articles.getTotalElements());
   }
 
   @Override
@@ -164,7 +164,7 @@ public class ArticleServiceImpl implements ArticleService {
     var currentUser = userService.getCurrentUser();
     var contents = getArticleResponses(currentUser, articles);
 
-    return new PageResponse<>(contents, totalElements);
+    return PageResponse.of(contents, totalElements);
   }
 
   @Override

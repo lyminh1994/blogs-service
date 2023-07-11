@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
                 })
             .toList();
 
-    return new PageResponse<>(contents, comments.getTotalElements());
+    return PageResponse.of(contents, comments.getTotalElements());
   }
 
   @Override

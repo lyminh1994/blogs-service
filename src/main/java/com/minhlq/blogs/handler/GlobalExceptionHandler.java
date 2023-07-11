@@ -1,11 +1,11 @@
 package com.minhlq.blogs.handler;
 
-import com.minhlq.blogs.dto.ErrorResource;
 import com.minhlq.blogs.dto.ErrorsResource;
 import com.minhlq.blogs.dto.FieldErrorResource;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,23 +80,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
   public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
       MethodArgumentTypeMismatchException ex) {
+    FieldErrorResource errorResource =
+        new FieldErrorResource(
+            null,
+            null,
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+            StringUtils.defaultString(ex.getMessage(), ex.getLocalizedMessage()));
     return ResponseEntity.badRequest()
-        .body(
-            new ErrorResource(
-                null,
-                null,
-                HttpStatus.BAD_REQUEST.value(),
-                StringUtils.defaultString(ex.getMessage(), ex.getLocalizedMessage())));
+        .body(new ErrorsResource(Collections.singletonList(errorResource)));
   }
 
   @ExceptionHandler({ResourceNotFoundException.class})
-  public ErrorResource handleResourceNotFound(ResourceNotFoundException ex, Locale locale) {
-    return new ErrorResource(
-        null,
-        null,
-        HttpStatus.NOT_FOUND.value(),
-        StringUtils.defaultString(
-            ex.getMessage(), messageSource.getMessage("not.found", null, locale)));
+  public ErrorsResource handleResourceNotFound(ResourceNotFoundException ex, Locale locale) {
+    FieldErrorResource errorResource =
+        new FieldErrorResource(
+            null,
+            null,
+            HttpStatus.NOT_FOUND.getReasonPhrase(),
+            StringUtils.defaultString(
+                ex.getMessage(), messageSource.getMessage("not.found", null, locale)));
+    return new ErrorsResource(Collections.singletonList(errorResource));
   }
 
   private String getParam(String s) {

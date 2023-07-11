@@ -25,6 +25,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,6 +46,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
+
+  @Value("${jwt.config.ttl}")
+  private Long ttl;
 
   private final UserRepository userRepository;
 
@@ -109,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
     // If the refresh token is valid, then we will not generate a new refresh token.
     var accessToken = updateCookies(username, isRefreshTokenValid, headers);
 
-    return AuthenticationResponse.build(accessToken);
+    return AuthenticationResponse.build(accessToken, ttl);
   }
 
   @Override
@@ -126,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
-    return AuthenticationResponse.build(jwtService.createJwt(username));
+    return AuthenticationResponse.build(jwtService.createJwt(username), ttl);
   }
 
   @Override

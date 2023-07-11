@@ -40,7 +40,7 @@ class TagsControllerTest {
     TagResponse content2 = new TagResponse(2L, "tag2");
     List<TagResponse> expectedContents = Arrays.asList(content1, content2);
     PageResponse<TagResponse> pageResponse =
-        new PageResponse<>(expectedContents, expectedContents.size());
+        PageResponse.of(expectedContents, expectedContents.size());
     given(tagService.getTags(pageRequest)).willReturn(pageResponse);
 
     // when - action or behaviour that we are going test

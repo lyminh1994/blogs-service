@@ -25,7 +25,7 @@ public class TagServiceImpl implements TagService {
   public PageResponse<TagResponse> getTags(Pageable pageable) {
     var tags = tagRepository.findAll(pageable);
 
-    return new PageResponse<>(
+    return PageResponse.of(
         tags.stream().map(entity -> new TagResponse(entity.getId(), entity.getName())).toList(),
         tags.getTotalElements());
   }
