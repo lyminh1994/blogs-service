@@ -52,6 +52,5 @@ springdoc:
 # Logging configuration
 logging:
   level:
-    root: info
     web: trace
-    com.minhlq.blogs: info
+    com.minhlq.blogs: trace
