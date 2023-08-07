@@ -36,3 +36,4 @@ logs/
 
 ### macOS ###
 .DS_Store
+!/qodana.yaml
