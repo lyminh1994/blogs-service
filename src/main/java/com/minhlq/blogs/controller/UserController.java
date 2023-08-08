@@ -4,7 +4,6 @@ import com.minhlq.blogs.dto.UpdateUserDto;
 import com.minhlq.blogs.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogs.dto.request.UpdateUserRequest;
 import com.minhlq.blogs.dto.response.ProfileResponse;
-import com.minhlq.blogs.mapper.UserMapper;
 import com.minhlq.blogs.payload.UserResponse;
 import com.minhlq.blogs.service.UserService;
 import com.minhlq.blogs.util.SecurityUtils;
@@ -42,14 +41,6 @@ public class UserController {
 
   private final UserDetailsPasswordService passwordService;
 
-  @GetMapping
-  @PreAuthorize("isFullyAuthenticated()")
-  @Operation(summary = "Current user", description = "Get current user")
-  public UserResponse getCurrentUser() {
-    var currentUser = userService.getCurrentUser();
-    return UserMapper.MAPPER.toUserResponse(currentUser);
-  }
-
   /**
    * Updates the user profile with the details provided.
    *
@@ -61,7 +52,6 @@ public class UserController {
   @Operation(summary = "Update info", description = "Update current user information")
   public UserResponse updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest) {
     var currentUser = userService.getCurrentUser();
-
     return userService.updateUserDetails(new UpdateUserDto(currentUser, updateUserRequest));
   }
 
