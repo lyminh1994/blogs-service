@@ -72,7 +72,7 @@ public interface ConduitClient {
       @RequestParam(required = false) String author);
 
   @GetMapping("/articles/{slug}")
-  Map<String, ArticleResponse> article(
+  Map<String, ArticleResponse> getArticle(
       @RequestHeader String authorization, @PathVariable String slug);
 
   @PutMapping("/articles/{slug}")
