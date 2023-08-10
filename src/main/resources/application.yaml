@@ -8,8 +8,6 @@ application:
 # Server configuration
 server:
   port: 8080
-  servlet:
-    context-path: /
 # Spring configuration
 spring:
   profiles:

@@ -7,13 +7,10 @@ spring:
     username: postgres
     password: Postgres@123
   jpa:
-    show-sql: true
-    open-in-view: true
     properties:
       hibernate:
         format_sql: true
-    hibernate:
-      ddl-auto: none
+        show_sql: true
   data:
     redis:
       host: localhost
