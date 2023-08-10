@@ -14,8 +14,6 @@ spring:
     active: dev
   application:
     name: @project.name@
-  banner:
-    location: classpath:static/banner.txt
   jackson:
     default-property-inclusion: non_null
     serialization:
