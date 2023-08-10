@@ -5,6 +5,7 @@ import com.minhlq.blogs.constant.UserConstants;
 import com.minhlq.blogs.enums.TokenType;
 import com.minhlq.blogs.enums.UserRole;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
+import com.minhlq.blogs.mapper.UserMapper;
 import com.minhlq.blogs.model.UserEntity;
 import com.minhlq.blogs.payload.AuthenticationResponse;
 import com.minhlq.blogs.payload.LoginRequest;
@@ -20,18 +21,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * This is implement for the authentication service operations.
@@ -53,6 +55,8 @@ public class AuthServiceImpl implements AuthService {
   private final JwtService jwtService;
   private final RoleService roleService;
   private final PasswordEncoder passwordEncoder;
+  private final MessageSource messageSource;
+
   @Value("${jwt.config.ttl}")
   private Long ttl;
 
@@ -61,21 +65,12 @@ public class AuthServiceImpl implements AuthService {
   public void register(RegisterRequest body) {
     var role = roleService.findByName(UserRole.ROLE_USER);
 
-    var verificationToken = UUID.randomUUID().toString();
-    var uri =
-        ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/auth/verify/{verifyToken}")
-            .buildAndExpand(verificationToken)
-            .toUri();
-    log.debug("Active account link: {}", uri);
-    log.debug("Token: {}", verificationToken);
-
     var user =
         UserEntity.builder()
             .username(body.username())
             .password(passwordEncoder.encode(body.password()))
             .email(body.email())
-            .verificationToken(verificationToken)
+            .enabled(true)
             .expiredVerificationToken(
                 LocalDateTime.now().plusDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION))
             .build();
@@ -106,11 +101,12 @@ public class AuthServiceImpl implements AuthService {
     // If the refresh token is valid, then we will not generate a new refresh token.
     var accessToken = updateCookies(username, isRefreshTokenValid, headers);
 
-    return AuthenticationResponse.build(accessToken, ttl);
+    return AuthenticationResponse.build(UserMapper.MAPPER.toUserResponse(user), accessToken, ttl);
   }
 
   @Override
   public AuthenticationResponse getAccessToken(String refreshToken, HttpServletRequest request) {
+    var locale = LocaleContextHolder.getLocale();
     var refreshTokenValid = jwtService.isValidJwtToken(refreshToken);
     if (!refreshTokenValid) {
       throw new IllegalArgumentException("Invalid token");
@@ -118,12 +114,21 @@ public class AuthServiceImpl implements AuthService {
 
     var username = jwtService.getUsernameFromJwt(refreshToken);
     var userDetails = userDetailsService.loadUserByUsername(username);
+    var user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(
+                        messageSource.getMessage(
+                            "user.not.found", new String[] {username}, locale)));
 
     SecurityUtils.clearAuthentication();
     SecurityUtils.validateUserDetailsStatus(userDetails);
     SecurityUtils.authenticateUser(request, userDetails);
 
-    return AuthenticationResponse.build(jwtService.createJwt(username), ttl);
+    return AuthenticationResponse.build(
+        UserMapper.MAPPER.toUserResponse(user), jwtService.createJwt(username), ttl);
   }
 
   @Override

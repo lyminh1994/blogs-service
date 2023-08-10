@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -41,20 +41,24 @@ public class UserServiceImpl implements UserService {
   private final MessageSource messageSource;
 
   @Override
-  @Transactional(readOnly = true)
   public UserEntity getCurrentUser() {
-    var locale = LocaleContextHolder.getLocale();
-    var principal = (Jwt) SecurityUtils.getAuthentication().getPrincipal();
-    String username = principal.getSubject();
-    return userRepository
-        .findByPublicId(username)
-        .orElseThrow(
-            () ->
-                new UsernameNotFoundException(
-                    messageSource.getMessage("user.not.found", new String[] {username}, locale)));
+    if (SecurityUtils.isAuthenticated()) {
+      var locale = LocaleContextHolder.getLocale();
+      var username = (Jwt) SecurityUtils.getAuthentication().getPrincipal();
+      return userRepository
+          .findByUsername(username.getSubject())
+          .orElseThrow(
+              () ->
+                  new UsernameNotFoundException(
+                      messageSource.getMessage(
+                          "user.not.found", new String[] {username.getSubject()}, locale)));
+    }
+
+    return null;
   }
 
   @Override
+  @Transactional
   public UserResponse updateUserDetails(UpdateUserDto updateUserDto) {
     var updatedUser =
         userRepository
@@ -70,7 +74,6 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional(readOnly = true)
   public ProfileResponse findByPublicId(String publicId) {
     return userRepository
         .findByPublicId(publicId)
@@ -92,6 +95,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public ProfileResponse followByPublicId(Long userId, String publicId) {
     return userRepository
         .findByPublicId(publicId)
@@ -99,7 +103,7 @@ public class UserServiceImpl implements UserService {
             targetUser -> {
               var followId = new FollowKey(userId, targetUser.getId());
               if (!followRepository.existsById(followId)) {
-                followRepository.save(new FollowEntity(followId));
+                followRepository.saveAndFlush(new FollowEntity(followId));
               }
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, true);
@@ -108,6 +112,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public ProfileResponse unFollowByPublicId(Long userId, String publicId) {
     return userRepository
         .findByPublicId(publicId)
