@@ -52,8 +52,7 @@ public class ArticleController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(summary = "Create article", description = "Create article")
-  public ArticleResponse createArticle(
-      @RequestBody @Valid NewArticleRequest articleRequest) {
+  public ArticleResponse createArticle(@RequestBody @Valid NewArticleRequest articleRequest) {
     return articleService.createArticle(articleRequest);
   }
 

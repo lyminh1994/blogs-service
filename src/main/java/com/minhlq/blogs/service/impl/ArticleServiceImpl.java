@@ -200,12 +200,12 @@ public class ArticleServiceImpl implements ArticleService {
                                   .findByName(tag)
                                   .ifPresent(
                                       entity ->
-                                          articleTagRepository.save(
+                                          articleTagRepository.saveAndFlush(
                                               new ArticleTagEntity(
                                                   new ArticleTagKey(
                                                       currentArticle.getId(), entity.getId())))));
 
-                  return articleRepository.save(currentArticle);
+                  return articleRepository.saveAndFlush(currentArticle);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
@@ -237,7 +237,7 @@ public class ArticleServiceImpl implements ArticleService {
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     var articleFavoriteKey = new ArticleFavoriteKey(article.getId(), currentUser.getId());
     if (articleFavoriteRepository.findById(articleFavoriteKey).isEmpty()) {
-      articleFavoriteRepository.save(new ArticleFavoriteEntity(articleFavoriteKey));
+      articleFavoriteRepository.saveAndFlush(new ArticleFavoriteEntity(articleFavoriteKey));
     }
 
     return getArticleResponse(currentUser, article);

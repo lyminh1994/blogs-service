@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
 
     var savedComment =
-        commentRepository.save(
+        commentRepository.saveAndFlush(
             CommentEntity.builder()
                 .body(newCommentRequest.body())
                 .article(article)
