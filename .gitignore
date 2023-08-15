@@ -36,4 +36,5 @@ logs/
 
 ### macOS ###
 .DS_Store
-!/qodana.yaml
+/qodana.yaml
+/tempo-data/
