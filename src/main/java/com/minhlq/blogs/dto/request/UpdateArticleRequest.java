@@ -1,6 +1,5 @@
 package com.minhlq.blogs.dto.request;
 
-import com.minhlq.blogs.annotation.DuplicatedArticleConstraint;
 import java.util.List;
 
 /**
@@ -11,7 +10,4 @@ import java.util.List;
  * @since 2023-08-09
  */
 public record UpdateArticleRequest(
-    @DuplicatedArticleConstraint String title,
-    String body,
-    String description,
-    List<String> tagNames) {}
+    String title, String body, String description, List<String> tagNames) {}

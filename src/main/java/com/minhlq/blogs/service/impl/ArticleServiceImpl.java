@@ -195,17 +195,18 @@ public class ArticleServiceImpl implements ArticleService {
                   updateRequest
                       .tagNames()
                       .forEach(
-                          tag ->
-                              tagRepository
-                                  .findByName(tag)
-                                  .ifPresent(
-                                      entity ->
-                                          articleTagRepository.saveAndFlush(
-                                              new ArticleTagEntity(
-                                                  new ArticleTagKey(
-                                                      currentArticle.getId(), entity.getId())))));
+                          tag -> {
+                            TagEntity tagEntity =
+                                tagRepository
+                                    .findByName(tag)
+                                    .orElseGet(() -> tagRepository.save(new TagEntity(null, tag)));
 
-                  return articleRepository.saveAndFlush(currentArticle);
+                            ArticleTagKey articleTag =
+                                new ArticleTagKey(currentArticle.getId(), tagEntity.getId());
+                            articleTagRepository.save(new ArticleTagEntity(articleTag));
+                          });
+
+                  return articleRepository.save(currentArticle);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
