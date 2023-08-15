@@ -1,8 +1,5 @@
 # Application configuration
 application:
-  title: @project.name@
-  version: @project.version@
-  description: @project.description@
   static-resource-location: /tmp/media/
   static-resource-url: /media/**
 # Server configuration
@@ -10,10 +7,10 @@ server:
   port: 8080
 # Spring configuration
 spring:
-  profiles:
-    active: dev
   application:
     name: @project.name@
+  devtools:
+    add-properties: true
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -23,6 +20,9 @@ spring:
     mapper:
       accept-case-insensitive-enums: true
   datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: Postgres@123
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       auto-commit: true
@@ -36,12 +36,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true
   cache:
     type: redis
     redis:
       cache-null-values: false
   data:
     redis:
+      host: localhost
+      port: 6379
+      password: Redis@123
       timeout: 10000ms
       database: 3
       lettuce:
@@ -66,6 +71,24 @@ spring:
         config:
           conduit:
             url: https://conduit.productionready.io/api
+encryption:
+  secret:
+    password: password
+    salt: salt
+jwt:
+  config:
+    private-key: classpath:secure/app.key
+    public-key: classpath:secure/app.pub
+    ttl: 3000000
+
+# CORS configuration
+cors:
+  max-age: 3600
+  allow-credentials: true
+  allowed-methods: GET, POST, PUT, DELETE
+  allowed-headers: Accept, Accept-Language, Authorization, Cache-Control, Content-Type
+  allowed-origins: http://localhost:3000/, http://192.168.1.15:3000/
+  exposed-headers: Authorization, Set-Cookie
 # Actuator configuration
 management:
   metrics:
@@ -89,6 +112,17 @@ management:
       enabled: true
     prometheus:
       enabled: true
+# Open API 3 configuration
+springdoc:
+  title: @project.name@
+  version: @project.version@
+  description: @project.description@
+  show-actuator: true
+  swagger-ui:
+    use-root-path: true
+    display-request-duration: true
+    with-credentials: true
+    groups-order: desc
 # Logging configuration
 logging:
   pattern:
@@ -102,3 +136,5 @@ logging:
     name: logs/blogs-service.log
   level:
     root: info
+    web: trace
+    com.minhlq.blogs: trace
