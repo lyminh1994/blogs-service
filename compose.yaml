@@ -41,6 +41,7 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass Redis@123
     restart: unless-stopped
   tempo:
+    container_name: grafana_tempo_container
     image: grafana/tempo
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     command: [ "-config.file=/etc/tempo.yaml" ]
@@ -51,6 +52,7 @@ services:
       - "14268"  # jaeger ingest
       - "9411:9411" # zipkin
   loki:
+    container_name: grafana_loki_container
     image: grafana/loki
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     command: [ "-config.file=/etc/loki/local-config.yaml" ]
@@ -62,6 +64,7 @@ services:
       - JAEGER_SAMPLER_TYPE=const
       - JAEGER_SAMPLER_PARAM=1
   prometheus:
+    container_name: prom_prometheus_container
     image: prom/prometheus
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     command:
@@ -70,8 +73,9 @@ services:
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "9091:9090"
+      - "9090:9090"
   grafana:
+    container_name: grafana_container
     image: grafana/grafana
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     volumes:
@@ -82,9 +86,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
-      - "3001:3000"
-# Prometheus: http://localhost:9091/
-# Grafana: http://localhost:3001/
+      - "3000:3000"
 networks:
   postgres:
     driver: bridge
