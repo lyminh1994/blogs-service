@@ -4,14 +4,20 @@ import com.minhlq.blogs.constant.SecurityConstants;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -33,10 +39,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityBean {
 
   @Value("${jwt.config.private-key}")
-  private RSAPrivateKey privateKey;
+  private Resource privateKey;
 
   @Value("${jwt.config.public-key}")
-  private RSAPublicKey publicKey;
+  private Resource publicKey;
 
   /**
    * Creates and configures a bean for the password encoder.
@@ -54,8 +60,9 @@ public class SecurityBean {
    * @return The configured JwtDecoder bean.
    */
   @Bean
-  public JwtDecoder jwtDecoder() {
-    return NimbusJwtDecoder.withPublicKey(publicKey).build();
+  public JwtDecoder jwtDecoder()
+      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    return NimbusJwtDecoder.withPublicKey(getPublicKey()).build();
   }
 
   /**
@@ -64,10 +71,27 @@ public class SecurityBean {
    * @return The configured JwtEncoder bean.
    */
   @Bean
-  public JwtEncoder jwtEncoder() {
-    var jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
+  public JwtEncoder jwtEncoder()
+      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    var jwk = new RSAKey.Builder(getPublicKey()).privateKey(getPrivateKey()).build();
     var jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwkSource);
+  }
+
+  private RSAPublicKey getPublicKey()
+      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    var publicKeyBytes = publicKey.getInputStream().readAllBytes();
+    var keySpec = new PKCS8EncodedKeySpec(publicKeyBytes);
+    var keyFactory = KeyFactory.getInstance("RSA");
+    return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+  }
+
+  private RSAPrivateKey getPrivateKey()
+      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    var privateKeyBytes = privateKey.getInputStream().readAllBytes();
+    var keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+    var keyFactory = KeyFactory.getInstance("RSA");
+    return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
   }
 
   /**
