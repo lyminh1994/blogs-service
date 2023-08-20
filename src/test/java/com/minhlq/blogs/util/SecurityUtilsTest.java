@@ -2,23 +2,33 @@ package com.minhlq.blogs.util;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.minhlq.blogs.enums.TokenType;
+import com.minhlq.blogs.model.RoleEntity;
+import com.minhlq.blogs.model.UserEntity;
+import com.minhlq.blogs.model.UserRoleEntity;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +49,74 @@ class SecurityUtilsTest {
         () -> ReflectionUtils.newInstance(SecurityUtils.class));
   }
 
+  @Test
+  void givenUser_whenCallBuildUserDetails_thenReturnUserDetails() {
+    // given UserEntity
+    UserEntity mockUser = mock(UserEntity.class);
+    when(mockUser.getUsername()).thenReturn("testuser");
+    when(mockUser.getPassword()).thenReturn("testpassword");
+    when(mockUser.isEnabled()).thenReturn(false);
+    when(mockUser.getLastSuccessfulLogin()).thenReturn(LocalDateTime.now());
+    when(mockUser.getFailedLoginAttempts()).thenReturn(6);
+
+    RoleEntity mockRole = mock(RoleEntity.class);
+    when(mockRole.getName()).thenReturn("ROLE_USER");
+
+    UserRoleEntity mockUserRole = mock(UserRoleEntity.class);
+    when(mockUserRole.getRole()).thenReturn(mockRole);
+
+    Set<UserRoleEntity> userRoles = new HashSet<>();
+    userRoles.add(mockUserRole);
+    when(mockUser.getUserRoles()).thenReturn(userRoles);
+
+    // when call buildUserDetails
+    UserDetails actual = SecurityUtils.buildUserDetails(mockUser);
+
+    // then
+    assertNotNull(actual);
+    assertEquals("testuser", actual.getUsername());
+    assertEquals("testpassword", actual.getPassword());
+    assertFalse(actual.isEnabled());
+    assertTrue(actual.isAccountNonExpired());
+    assertFalse(actual.isAccountNonLocked());
+    assertTrue(actual.isCredentialsNonExpired());
+    assertEquals(1, actual.getAuthorities().size());
+    assertTrue(actual.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")));
+  }
+
+  @Test
+  void whenWithNullAuthentication_thenIsAuthenticatedFalse() {
+    boolean actual = SecurityUtils.isAuthenticated(null);
+
+    assertFalse(actual);
+  }
+
+  @Test
+  void givenAuthenticatedAuthentication_thenIsAuthenticatedTrue() {
+    Authentication authentication = mock(Authentication.class);
+    when(authentication.isAuthenticated()).thenReturn(true);
+    boolean actual = SecurityUtils.isAuthenticated(authentication);
+
+    assertTrue(actual);
+  }
+
+  @Test
+  void givenAnonymousAuthenticationToken_thenIsAuthenticatedFalse() {
+    AnonymousAuthenticationToken anonymousToken = mock(AnonymousAuthenticationToken.class);
+    when(anonymousToken.isAuthenticated()).thenReturn(true);
+    boolean actual = SecurityUtils.isAuthenticated(anonymousToken);
+
+    assertFalse(actual);
+  }
+
+  @Test
+  void givenUnauthenticatedAuthentication_thenIsAuthenticatedFalse() {
+    Authentication authentication = mock(Authentication.class);
+    when(authentication.isAuthenticated()).thenReturn(false);
+    boolean actual = SecurityUtils.isAuthenticated(authentication);
+
+    assertFalse(actual);
+  }
 
   @Test
   void getAuthentication_ReturnsAuthenticationFromSecurityContextHolder() {
@@ -59,6 +137,7 @@ class SecurityUtilsTest {
 
     // Verify that the method returned the expected Authentication object
     assertEquals(expected, actual);
+    assertFalse(SecurityUtils.isAuthenticated());
   }
 
   @Test
