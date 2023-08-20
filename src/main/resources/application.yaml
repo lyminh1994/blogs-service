@@ -33,6 +33,7 @@ spring:
       maximum-pool-size: 30
       pool-name: blogs-pool
   jpa:
+    open-in-view: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -124,13 +125,6 @@ springdoc:
 logging:
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
-  logback:
-    rollingpolicy:
-      max-file-size: 1MB
-      max-history: 10
-  file:
-    path: logs
-    name: logs/blogs-service.log
   level:
     root: info
     web: trace

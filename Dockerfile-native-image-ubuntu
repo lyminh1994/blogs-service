@@ -1,0 +1,3 @@
+FROM ubuntu:jammy
+COPY target/blogs-service blogs-service
+ENTRYPOINT ["/blogs-service"]

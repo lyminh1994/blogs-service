@@ -5,8 +5,6 @@ import com.minhlq.blogs.constant.SecurityConstants;
 import com.minhlq.blogs.enums.TokenType;
 import com.minhlq.blogs.service.CookieService;
 import jakarta.servlet.http.Cookie;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
@@ -42,7 +40,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public Cookie createCookie(@NotNull HttpCookie httpCookie) {
+  public Cookie createCookie(HttpCookie httpCookie) {
     var cookie = new Cookie(httpCookie.getName(), httpCookie.getValue());
     cookie.setSecure(
         Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD));
@@ -60,7 +58,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie createCookie(@NotNull String name, String value, Duration maxAge) {
+  public HttpCookie createCookie(String name, String value, Duration maxAge) {
     return ResponseCookie.from(name, value)
         .secure(Arrays.asList(environment.getActiveProfiles()).contains(ProfileTypeConstants.PROD))
         .sameSite("strict")
@@ -78,7 +76,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie createTokenCookie(@NotEmpty String token, TokenType tokenType) {
+  public HttpCookie createTokenCookie(String token, TokenType tokenType) {
     return createTokenCookie(token, tokenType, duration);
   }
 
@@ -92,7 +90,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpCookie createTokenCookie(
-      @NotEmpty String token, @NotNull TokenType tokenType, Duration maxAge) {
+      String token, TokenType tokenType, Duration maxAge) {
     return createCookie(tokenType.getName(), token, maxAge);
   }
 
@@ -103,7 +101,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the cookie
    */
   @Override
-  public HttpCookie deleteTokenCookie(@NotNull TokenType tokenType) {
+  public HttpCookie deleteTokenCookie(TokenType tokenType) {
     return createCookie(tokenType.getName(), StringUtils.EMPTY, Duration.ZERO);
   }
 
@@ -114,7 +112,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the httpHeaders
    */
   @Override
-  public HttpHeaders addDeletedCookieToHeaders(@NotNull TokenType tokenType) {
+  public HttpHeaders addDeletedCookieToHeaders(TokenType tokenType) {
     var httpCookie = deleteTokenCookie(tokenType);
     var httpHeaders = new HttpHeaders();
     httpHeaders.add(HttpHeaders.SET_COOKIE, httpCookie.toString());
@@ -129,7 +127,7 @@ public class CookieServiceImpl implements CookieService {
    * @return the httpHeaders
    */
   @Override
-  public HttpHeaders addCookieToHeaders(@NotNull TokenType tokenType, @NotEmpty String token) {
+  public HttpHeaders addCookieToHeaders(TokenType tokenType, String token) {
     return addCookieToHeaders(tokenType, token, duration);
   }
 
@@ -143,7 +141,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public HttpHeaders addCookieToHeaders(
-      @NotNull TokenType tokenType, @NotEmpty String token, Duration maxAge) {
+      TokenType tokenType, String token, Duration maxAge) {
     var httpHeaders = new HttpHeaders();
     addCookieToHeaders(httpHeaders, tokenType, token, Objects.isNull(maxAge) ? duration : maxAge);
 
@@ -160,7 +158,7 @@ public class CookieServiceImpl implements CookieService {
    */
   @Override
   public void addCookieToHeaders(
-      HttpHeaders httpHeaders, @NotNull TokenType tokenType, String token, Duration maxAge) {
+      HttpHeaders httpHeaders, TokenType tokenType, String token, Duration maxAge) {
     httpHeaders.add(HttpHeaders.SET_COOKIE, createTokenCookie(token, tokenType, maxAge).toString());
   }
 }
