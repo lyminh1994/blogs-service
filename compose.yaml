@@ -38,7 +38,7 @@ services:
       - redis:/data/redis
     ports:
       - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass Redis@123
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_DEFAULT_PASSWORD}
     restart: unless-stopped
   tempo:
     container_name: grafana_tempo_container
