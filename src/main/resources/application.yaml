@@ -62,16 +62,6 @@ spring:
   flyway:
     table: schema_history
     validate-migration-naming: true
-  docker:
-    compose:
-      enabled: false
-      lifecycle-management: start_only
-  cloud:
-    openfeign:
-      client:
-        config:
-          conduit:
-            url: https://conduit.productionready.io/api
 encryption:
   secret:
     password: password
@@ -127,5 +117,4 @@ logging:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   level:
     root: info
-    web: trace
-    com.minhlq.blogs: trace
+    com.minhlq.blogs: info

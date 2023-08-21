@@ -2,7 +2,6 @@ package com.minhlq.blogs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * The class has the main method to get the application started.
@@ -11,7 +10,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @version 1.0
  * @since 1.0
  */
-@EnableFeignClients
 @SpringBootApplication
 public class BlogsApplication {
 
