@@ -1,13 +1,11 @@
 package com.minhlq.blogs.controller;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.enums.TokenType;
 import com.minhlq.blogs.payload.AuthenticationResponse;
-import com.minhlq.blogs.payload.SignInRequest;
-import com.minhlq.blogs.payload.SignUpRequest;
+import com.minhlq.blogs.payload.LoginRequest;
+import com.minhlq.blogs.payload.RegisterRequest;
 import com.minhlq.blogs.service.AuthService;
 import com.minhlq.blogs.service.CookieService;
-import com.minhlq.blogs.service.UserService;
 import com.minhlq.blogs.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -24,6 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,28 +35,25 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0
  */
 @RestController
-@SecurityRequirements
+@RequestMapping("/auth")
 @RequiredArgsConstructor
+@SecurityRequirements
 @Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthController {
 
-  private final UserService userService;
-
   private final AuthService authService;
-
   private final CookieService cookieService;
 
   /**
    * Creates a new user and return JWT token.
    *
-   * @param signUpBody the register
-   * @return the jwt token details
+   * @param registerRequest the register
    */
-  @PostMapping(AppConstants.SIGN_UP)
-  @Operation(summary = "Sign up", description = "Create new account")
-  public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpBody) {
-    userService.createUser(signUpBody);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+  @PostMapping("/register")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Operation(summary = "Register", description = "Create new account")
+  public void register(@RequestBody @Valid RegisterRequest registerRequest) {
+    authService.register(registerRequest);
   }
 
   /**
@@ -65,48 +62,45 @@ public class AuthController {
    *
    * <p>A refresh token is generated and returned as a cookie.
    *
-   * @param requestBody the login request
-   * @param request The request
+   * @param loginRequest the login request
+   * @param httpRequest The request
    * @return the jwt token details
    */
-  @PostMapping(AppConstants.SIGN_IN)
-  @Operation(
-      summary = "Sign in",
-      description = "Authentication account and return access information")
-  public ResponseEntity<AuthenticationResponse> signIn(
-      @RequestBody @Valid SignInRequest requestBody, HttpServletRequest request) {
+  @PostMapping("/login")
+  @Operation(summary = "Login", description = "Authentication account and return access token")
+  public ResponseEntity<AuthenticationResponse> login(
+      @RequestBody @Valid LoginRequest loginRequest, HttpServletRequest httpRequest) {
     var responseHeaders = new HttpHeaders();
     var body =
-        authService.signIn(
-            SecurityUtils.getRefreshTokenFromCookies(request), requestBody, responseHeaders);
+        authService.login(
+            SecurityUtils.getRefreshTokenFromCookies(httpRequest), loginRequest, responseHeaders);
     return ResponseEntity.ok().headers(responseHeaders).body(body);
   }
 
   /**
    * Refreshes the current access token and refresh token accordingly.
    *
-   * @param request The request
+   * @param httpRequest The request
    * @return the jwt token details
    */
-  @GetMapping(AppConstants.REFRESH_TOKEN)
-  @Operation(
-      summary = "Refresh access token",
-      description = "Create and return new access information")
-  public AuthenticationResponse refreshToken(HttpServletRequest request) {
-    return authService.refreshAccessToken(
-        SecurityUtils.getRefreshTokenFromCookies(request), request);
+  @GetMapping("/refresh-token")
+  @Operation(summary = "Refresh access token", description = "Create and return new access token")
+  public AuthenticationResponse refreshAccessToken(HttpServletRequest httpRequest) {
+    return authService.getAccessToken(
+        SecurityUtils.getRefreshTokenFromCookies(httpRequest), httpRequest);
   }
 
   /**
    * Logout the user from the system and clear all cookies from request and response.
    *
-   * @param request the http request
-   * @param response the http response
+   * @param httpRequest the http request
+   * @param httpResponse the http response
    */
-  @DeleteMapping(AppConstants.SIGN_OUT)
-  @Operation(summary = "Sign out", description = "Sign out and clear cookie of user browser")
-  public ResponseEntity<Void> signOut(HttpServletRequest request, HttpServletResponse response) {
-    authService.signOut(request, response);
+  @DeleteMapping("/logout")
+  @Operation(summary = "Logout", description = "Clear cookie of user browser")
+  public ResponseEntity<Void> logout(
+      HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    authService.logout(httpRequest, httpResponse);
     return ResponseEntity.noContent()
         .headers(cookieService.addDeletedCookieToHeaders(TokenType.REFRESH))
         .build();
@@ -117,10 +111,10 @@ public class AuthController {
    *
    * @param verifyToken the token
    */
-  @GetMapping(AppConstants.VERIFY)
+  @GetMapping("/verify/{verifyToken}")
+  @ResponseStatus(HttpStatus.ACCEPTED)
   @Operation(summary = "Verify account", description = "Active account by provided token in email")
-  public ResponseEntity<Void> verify(@PathVariable String verifyToken) {
+  public void verifyAccount(@PathVariable String verifyToken) {
     authService.activeAccount(verifyToken);
-    return ResponseEntity.accepted().build();
   }
 }

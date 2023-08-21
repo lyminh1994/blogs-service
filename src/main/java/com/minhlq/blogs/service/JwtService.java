@@ -1,7 +1,6 @@
 package com.minhlq.blogs.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * This is the contract for the jwt service operations.
@@ -27,30 +26,21 @@ public interface JwtService {
    * @param expiration the expiration date
    * @return the token
    */
-  String createJwt(String username, Date expiration);
+  String createJwt(String username, Instant expiration);
 
   /**
    * Retrieve username from the token.
    *
-   * @param jwt the token
+   * @param token the token
    * @return the username
    */
-  String getUsernameFromJwt(String jwt);
-
-  /**
-   * Retrieves the jwt token from the request cookie or request header if present and valid.
-   *
-   * @param request the httpRequest
-   * @param fromCookie if jwt should be retrieved from the cookies.
-   * @return the jwt token
-   */
-  String getJwtToken(HttpServletRequest request, boolean fromCookie);
+  String getUsernameFromJwt(String token);
 
   /**
    * Validates the Jwt token passed to it.
    *
-   * @param jwt the token
+   * @param token the token
    * @return if valid or not
    */
-  boolean isValidJwtToken(String jwt);
+  boolean isValidJwtToken(String token);
 }

@@ -9,9 +9,14 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
@@ -24,7 +29,11 @@ import org.hibernate.envers.NotAudited;
  * @version 1.0
  * @since 1.0
  */
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Audited
 @Table(name = "users")
@@ -58,7 +67,7 @@ public class UserEntity extends AuditEntity {
 
   private LocalDate birthday;
 
-  private Gender gender = Gender.FEMALE;
+  private Gender gender;
 
   private boolean enabled;
 
@@ -66,14 +75,27 @@ public class UserEntity extends AuditEntity {
 
   @NotAudited private String verificationToken;
 
-  @NotAudited private int failedLoginAttempts = 0;
+  @NotAudited private LocalDateTime expiredVerificationToken;
 
-  @NotAudited private LocalDateTime lastSuccessfulLogin = LocalDateTime.now();
+  @NotAudited @Builder.Default private int failedLoginAttempts = 0;
+
+  @NotAudited @Builder.Default private LocalDateTime lastSuccessfulLogin = LocalDateTime.now();
+
+  @NotAudited
+  @ToString.Exclude
+  @Builder.Default
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<UserRoleEntity> userRoles = new HashSet<>();
+
+  @NotAudited
+  @ToString.Exclude
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+  private List<ArticleEntity> articles;
 
   @NotAudited
   @ToString.Exclude
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-  private Set<UserRoleEntity> userRoles = new HashSet<>();
+  private List<CommentEntity> comments;
 
   @Override
   public boolean equals(Object o) {
@@ -105,9 +127,7 @@ public class UserEntity extends AuditEntity {
    * @param role the role
    */
   public void addRole(final RoleEntity role) {
-    UserRoleEntity userRole = new UserRoleEntity(this, role);
     userRoles.add(new UserRoleEntity(this, role));
-    userRole.setUser(this);
   }
 
   /**
@@ -118,7 +138,6 @@ public class UserEntity extends AuditEntity {
   public void removeRole(final RoleEntity role) {
     UserRoleEntity userRole = new UserRoleEntity(this, role);
     userRoles.remove(userRole);
-    userRole.setUser(null);
   }
 
   /**
@@ -126,7 +145,7 @@ public class UserEntity extends AuditEntity {
    *
    * @return the full name of the user
    */
-  public String getName() {
+  public String getFullName() {
     return StringUtils.trimToEmpty(StringUtils.join(firstName, StringUtils.SPACE, lastName));
   }
 }

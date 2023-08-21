@@ -1,8 +1,8 @@
 package com.minhlq.blogs.service.impl;
 
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.repository.UserRepository;
+import com.minhlq.blogs.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
@@ -16,11 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsPasswordServiceImpl implements UserDetailsPasswordService {
 
   private final UserRepository userRepository;
-
   private final PasswordEncoder passwordEncoder;
 
   @Override
-  public UserPrincipal updatePassword(UserDetails userDetails, String newPassword) {
+  public UserDetails updatePassword(UserDetails userDetails, String newPassword) {
     var user =
         userRepository
             .findByUsername(userDetails.getUsername())
@@ -29,6 +28,6 @@ public class UserDetailsPasswordServiceImpl implements UserDetailsPasswordServic
     user.setPassword(passwordEncoder.encode(newPassword));
     userRepository.saveAndFlush(user);
 
-    return UserPrincipal.buildUserDetails(user);
+    return SecurityUtils.buildUserDetails(user);
   }
 }

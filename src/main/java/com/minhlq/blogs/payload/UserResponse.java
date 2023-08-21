@@ -1,10 +1,7 @@
 package com.minhlq.blogs.payload;
 
 import com.minhlq.blogs.enums.Gender;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Collection;
-import org.springframework.security.core.GrantedAuthority;
 
 /**
  * This class models the format of the user response produced.
@@ -21,19 +18,5 @@ public record UserResponse(
     String phone,
     LocalDate birthday,
     Gender gender,
-    String profileImage,
-    Collection<? extends GrantedAuthority> authorities) {
-
-  public static UserResponse getUserResponse(@NotNull UserPrincipal userDetails) {
-    return new UserResponse(
-        userDetails.publicId(),
-        userDetails.email(),
-        userDetails.firstName(),
-        userDetails.lastName(),
-        userDetails.phone(),
-        userDetails.birthday(),
-        userDetails.gender(),
-        userDetails.profileImage(),
-        userDetails.authorities());
-  }
+    String profileImage) {
 }

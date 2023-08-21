@@ -1,11 +1,9 @@
 package com.minhlq.blogs.controller;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.dto.UpdateUserDto;
 import com.minhlq.blogs.dto.request.UpdatePasswordRequest;
 import com.minhlq.blogs.dto.request.UpdateUserRequest;
 import com.minhlq.blogs.dto.response.ProfileResponse;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.payload.UserResponse;
 import com.minhlq.blogs.service.UserService;
 import com.minhlq.blogs.util.SecurityUtils;
@@ -14,8 +12,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,22 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.USER)
+@RequestMapping("/user")
 @Tag(name = "User", description = "Blog User Information APIs")
 public class UserController {
 
   private final UserService userService;
-
   private final UserDetailsPasswordService passwordService;
-
-  @GetMapping
-  @PreAuthorize("isFullyAuthenticated()")
-  @Operation(summary = "Current user", description = "Get current user")
-  public UserResponse getCurrentUser(@AuthenticationPrincipal UserPrincipal currentUser) {
-    return UserResponse.getUserResponse(currentUser);
-  }
 
   /**
    * Updates the user profile with the details provided.
@@ -58,64 +49,56 @@ public class UserController {
   @PutMapping
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update info", description = "Update current user information")
-  public UserResponse updateUser(
-      @RequestBody @Valid UpdateUserRequest updateUserRequest,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    var userDetails =
-        userService.updateUserDetails(new UpdateUserDto(currentUser, updateUserRequest));
-
-    // Authenticate user with the updated profile.
-    SecurityUtils.authenticateUser(userDetails);
-
-    return UserResponse.getUserResponse(userDetails);
+  public UserResponse updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest) {
+    var currentUser = userService.getCurrentUser();
+    return userService.updateUserDetails(new UpdateUserDto(currentUser, updateUserRequest));
   }
 
-  @PutMapping(AppConstants.PASSWORD)
+  @PutMapping("/password")
   @PreAuthorize("isFullyAuthenticated()")
   @Operation(summary = "Update password", description = "Update current user password")
-  public void updatePassword(
-      @RequestBody @Valid UpdatePasswordRequest updatePasswordRequest,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    passwordService.updatePassword(currentUser, updatePasswordRequest.newPassword());
+  public void updatePassword(@RequestBody @Valid UpdatePasswordRequest updatePasswordRequest) {
+    var currentUser = userService.getCurrentUser();
+    passwordService.updatePassword(
+        SecurityUtils.buildUserDetails(currentUser), updatePasswordRequest.newPassword());
   }
 
   /**
-   * Get user profile by username.
+   * Get user profile by publicId.
    *
-   * @param username the username
+   * @param publicId the publicId
    * @return user profile.
    */
-  @GetMapping(AppConstants.USERNAME)
+  @GetMapping("/{publicId}")
   @SecurityRequirements
-  @Operation(summary = "Public profile", description = "Get public user information by username")
-  public ProfileResponse getProfile(
-      @PathVariable String username, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return userService.findByUsername(currentUser, username);
+  @Operation(summary = "Public profile", description = "Get public user information by publicId")
+  public ProfileResponse getProfile(@PathVariable String publicId) {
+    return userService.findByPublicId(publicId);
   }
 
   /**
-   * Following user by username.
+   * Following user by publicId.
    *
-   * @param username the username following
+   * @param publicId the publicId following
    * @return user profile.
    */
-  @PutMapping(path = AppConstants.FOLLOWING)
-  @Operation(summary = "Following", description = "Following user by username")
-  public ProfileResponse following(
-      @PathVariable String username, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return userService.followByUsername(currentUser.id(), username);
+  @PutMapping(path = "/{publicId}/following")
+  @Operation(summary = "Following", description = "Following user by publicId")
+  public ProfileResponse following(@PathVariable String publicId) {
+    var currentUser = userService.getCurrentUser();
+    return userService.followByPublicId(currentUser.getId(), publicId);
   }
 
   /**
-   * Unfollowing user by username.
+   * Unfollowing user by publicId.
    *
-   * @param username the username un-following
+   * @param publicId the publicId un-following
    * @return user profile.
    */
-  @DeleteMapping(path = AppConstants.FOLLOWING)
-  @Operation(summary = "Unfollowing", description = "Unfollowing user by username")
-  public ProfileResponse unFollowing(
-      @PathVariable String username, @AuthenticationPrincipal UserPrincipal currentUser) {
-    return userService.unFollowByUsername(currentUser.id(), username);
+  @DeleteMapping(path = "/{publicId}/following")
+  @Operation(summary = "Unfollowing", description = "Unfollowing user by publicId")
+  public ProfileResponse unFollowing(@PathVariable String publicId) {
+    var currentUser = userService.getCurrentUser();
+    return userService.unFollowByPublicId(currentUser.getId(), publicId);
   }
 }

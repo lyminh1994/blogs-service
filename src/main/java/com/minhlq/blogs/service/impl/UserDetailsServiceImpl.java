@@ -1,14 +1,13 @@
 package com.minhlq.blogs.service.impl;
 
-import com.minhlq.blogs.constant.CacheConstants;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.repository.UserRepository;
+import com.minhlq.blogs.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
   private final MessageSource messageSource;
-
   private final UserRepository userRepository;
 
   /**
@@ -43,8 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
    *     GrantedAuthority
    */
   @Override
-  @Cacheable(value = CacheConstants.USER_DETAILS, unless = "#result != null")
-  public UserPrincipal loadUserByUsername(final String username) {
+  public UserDetails loadUserByUsername(final String username) {
     var locale = LocaleContextHolder.getLocale();
     if (StringUtils.isBlank(username)) {
       throw new UsernameNotFoundException(
@@ -60,6 +57,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         messageSource.getMessage(
                             "user.not.found", new String[] {username}, locale)));
 
-    return UserPrincipal.buildUserDetails(user);
+    return SecurityUtils.buildUserDetails(user);
   }
 }

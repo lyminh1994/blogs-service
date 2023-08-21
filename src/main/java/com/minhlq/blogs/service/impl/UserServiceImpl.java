@@ -1,34 +1,25 @@
 package com.minhlq.blogs.service.impl;
 
-import com.minhlq.blogs.constant.AppConstants;
-import com.minhlq.blogs.constant.CacheConstants;
-import com.minhlq.blogs.constant.UserConstants;
 import com.minhlq.blogs.dto.UpdateUserDto;
 import com.minhlq.blogs.dto.response.ProfileResponse;
-import com.minhlq.blogs.enums.UserRole;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogs.mapper.UserMapper;
 import com.minhlq.blogs.model.FollowEntity;
 import com.minhlq.blogs.model.UserEntity;
 import com.minhlq.blogs.model.unionkey.FollowKey;
-import com.minhlq.blogs.payload.SignUpRequest;
-import com.minhlq.blogs.payload.UserPrincipal;
+import com.minhlq.blogs.payload.UserResponse;
 import com.minhlq.blogs.repository.FollowRepository;
 import com.minhlq.blogs.repository.UserRepository;
-import com.minhlq.blogs.service.EncryptionService;
-import com.minhlq.blogs.service.JwtService;
-import com.minhlq.blogs.service.RoleService;
 import com.minhlq.blogs.service.UserService;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
+import com.minhlq.blogs.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * The UserServiceImpl class provides implementation for the UserService definitions.
@@ -39,55 +30,37 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  */
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
-
-  private final RoleService roleService;
-
-  private final JwtService jwtService;
-
-  private final PasswordEncoder passwordEncoder;
-
-  private final EncryptionService encryptionService;
-
   private final FollowRepository followRepository;
+  private final MessageSource messageSource;
 
   @Override
-  public void createUser(SignUpRequest signUpBody) {
-    var role = roleService.findByName(UserRole.ROLE_USER);
-    var ttl = Duration.ofDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION);
+  public UserEntity getCurrentUser() {
+    if (SecurityUtils.isAuthenticated()) {
+      var locale = LocaleContextHolder.getLocale();
+      var username = (Jwt) SecurityUtils.getAuthentication().getPrincipal();
+      return userRepository
+          .findByUsername(username.getSubject())
+          .orElseThrow(
+              () ->
+                  new UsernameNotFoundException(
+                      messageSource.getMessage(
+                          "user.not.found", new String[] {username.getSubject()}, locale)));
+    }
 
-    var verificationToken =
-        jwtService.createJwt(
-            signUpBody.username(), Date.from(Instant.now().plusSeconds(ttl.toSeconds())));
-
-    var encodedVerifyToken = encryptionService.encode(verificationToken);
-    var uri =
-        ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path(AppConstants.VERIFY)
-            .buildAndExpand(encodedVerifyToken)
-            .toUri();
-    log.debug("{}", uri);
-
-    var user = new UserEntity();
-    user.setUsername(signUpBody.username());
-    user.setPassword(passwordEncoder.encode(signUpBody.password()));
-    user.setEmail(signUpBody.email());
-    user.setVerificationToken(encodedVerifyToken);
-    user.addRole(role);
-
-    userRepository.save(user);
+    return null;
   }
 
   @Override
-  @CachePut(value = CacheConstants.USER_DETAILS, unless = "#result != null")
-  public UserPrincipal updateUserDetails(UpdateUserDto updateUserDto) {
+  @Transactional
+  public UserResponse updateUserDetails(UpdateUserDto updateUserDto) {
     var updatedUser =
         userRepository
-            .findById(updateUserDto.targetUser().id())
+            .findById(updateUserDto.targetUser().getId())
             .map(
                 currentUser -> {
                   var updateUser = UserMapper.MAPPER.toUser(currentUser, updateUserDto.params());
@@ -95,36 +68,40 @@ public class UserServiceImpl implements UserService {
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
-    return UserPrincipal.buildUserDetails(updatedUser);
+    return UserMapper.MAPPER.toUserResponse(updatedUser);
   }
 
   @Override
-  @Transactional(readOnly = true)
-  public ProfileResponse findByUsername(UserPrincipal currentUser, String username) {
+  public ProfileResponse findByPublicId(String publicId) {
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(publicId)
         .map(
             targetUser -> {
-              boolean following =
-                  currentUser != null
-                      && followRepository
-                          .findById(new FollowKey(currentUser.id(), targetUser.getId()))
-                          .isPresent();
+              if (SecurityUtils.isAuthenticated()) {
+                var currentUser = getCurrentUser();
+                boolean following =
+                    currentUser != null
+                        && followRepository
+                            .findById(new FollowKey(currentUser.getId(), targetUser.getId()))
+                            .isPresent();
+                return UserMapper.MAPPER.toProfileResponse(targetUser, following);
+              }
 
-              return UserMapper.MAPPER.toProfileResponse(targetUser, following);
+              return UserMapper.MAPPER.toProfileResponse(targetUser, false);
             })
         .orElseThrow(ResourceNotFoundException::new);
   }
 
   @Override
-  public ProfileResponse followByUsername(Long userId, String username) {
+  @Transactional
+  public ProfileResponse followByPublicId(Long userId, String publicId) {
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(publicId)
         .map(
             targetUser -> {
               var followId = new FollowKey(userId, targetUser.getId());
               if (!followRepository.existsById(followId)) {
-                followRepository.save(new FollowEntity(followId));
+                followRepository.saveAndFlush(new FollowEntity(followId));
               }
 
               return UserMapper.MAPPER.toProfileResponse(targetUser, true);
@@ -133,9 +110,10 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ProfileResponse unFollowByUsername(Long userId, String username) {
+  @Transactional
+  public ProfileResponse unFollowByPublicId(Long userId, String publicId) {
     return userRepository
-        .findByUsername(username)
+        .findByPublicId(publicId)
         .map(
             targetUser -> {
               var followId = new FollowKey(userId, targetUser.getId());
@@ -148,7 +126,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean isUsernameExisted(String username) {
-    return userRepository.findByUsername(username).isPresent();
+    return userRepository.findByPublicId(username).isPresent();
   }
 
   @Override

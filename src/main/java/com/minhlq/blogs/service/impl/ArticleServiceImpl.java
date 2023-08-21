@@ -7,7 +7,6 @@ import com.minhlq.blogs.dto.response.PageResponse;
 import com.minhlq.blogs.handler.exception.NoAuthorizationException;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogs.mapper.ArticleMapper;
-import com.minhlq.blogs.mapper.UserMapper;
 import com.minhlq.blogs.model.ArticleEntity;
 import com.minhlq.blogs.model.ArticleFavoriteEntity;
 import com.minhlq.blogs.model.ArticleTagEntity;
@@ -17,16 +16,17 @@ import com.minhlq.blogs.model.QArticleTagEntity;
 import com.minhlq.blogs.model.QTagEntity;
 import com.minhlq.blogs.model.QUserEntity;
 import com.minhlq.blogs.model.TagEntity;
+import com.minhlq.blogs.model.UserEntity;
 import com.minhlq.blogs.model.unionkey.ArticleFavoriteKey;
 import com.minhlq.blogs.model.unionkey.ArticleTagKey;
 import com.minhlq.blogs.model.unionkey.FollowKey;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.repository.ArticleFavoriteRepository;
 import com.minhlq.blogs.repository.ArticleRepository;
 import com.minhlq.blogs.repository.ArticleTagRepository;
 import com.minhlq.blogs.repository.FollowRepository;
 import com.minhlq.blogs.repository.TagRepository;
 import com.minhlq.blogs.service.ArticleService;
+import com.minhlq.blogs.service.UserService;
 import com.minhlq.blogs.util.ArticleUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -52,21 +52,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleServiceImpl implements ArticleService {
 
   private final JPAQueryFactory queryFactory;
-
   private final ArticleRepository articleRepository;
-
   private final ArticleTagRepository articleTagRepository;
-
   private final ArticleFavoriteRepository articleFavoriteRepository;
-
   private final TagRepository tagRepository;
-
   private final FollowRepository followRepository;
+  private final UserService userService;
 
   @Override
   @Transactional
-  public ArticleResponse createArticle(UserPrincipal currentUser, NewArticleRequest createRequest) {
-    var author = UserMapper.MAPPER.toUser(currentUser);
+  public ArticleResponse createArticle(NewArticleRequest createRequest) {
+    var author = userService.getCurrentUser();
     var savedArticle =
         articleRepository.saveAndFlush(
             ArticleEntity.builder()
@@ -86,7 +82,8 @@ public class ArticleServiceImpl implements ArticleService {
                     var savedTag =
                         tagRepository
                             .findByName(tagName)
-                            .orElseGet(() -> tagRepository.saveAndFlush(new TagEntity(tagName)));
+                            .orElseGet(
+                                () -> tagRepository.saveAndFlush(new TagEntity(null, tagName)));
 
                     var articleTagId = new ArticleTagKey(savedArticle.getId(), savedTag.getId());
 
@@ -101,25 +98,23 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public PageResponse<ArticleResponse> findUserFeeds(UserPrincipal currentUser, Pageable pageable) {
-    var followedUsers = followRepository.findByUserIdQuery(currentUser.id());
+  public PageResponse<ArticleResponse> findUserFeeds(Pageable pageable) {
+    var currentUser = userService.getCurrentUser();
+    var followedUsers = followRepository.findByUserIdQuery(currentUser.getId());
     if (CollectionUtils.isEmpty(followedUsers)) {
-      return new PageResponse<>(Collections.emptyList(), 0);
+      return PageResponse.of(Collections.emptyList(), 0);
     }
 
     var articles = articleRepository.findByFollowedUsersQuery(followedUsers, pageable);
     var contents = getArticleResponses(currentUser, articles.getContent());
 
-    return new PageResponse<>(contents, articles.getTotalElements());
+    return PageResponse.of(contents, articles.getTotalElements());
   }
 
   @Override
   public PageResponse<ArticleResponse> findRecentArticles(
-      UserPrincipal currentUser,
-      String tagName,
-      String favoriteBy,
-      String author,
-      Pageable pageable) {
+      String tagName, String favoriteBy, String author, Pageable pageable) {
+
     var qTag = QTagEntity.tagEntity;
     var qArticle = QArticleEntity.articleEntity;
     var qUser = QUserEntity.userEntity;
@@ -131,10 +126,10 @@ public class ArticleServiceImpl implements ArticleService {
       conditions.and(qTag.name.eq(tagName));
     }
     if (StringUtils.isNotBlank(author)) {
-      conditions.and(qArticle.author.username.eq(author));
+      conditions.and(qArticle.author.publicId.eq(author));
     }
     if (StringUtils.isNotBlank(favoriteBy)) {
-      conditions.and(qUser.username.eq(favoriteBy));
+      conditions.and(qUser.publicId.eq(favoriteBy));
     }
 
     var query =
@@ -160,27 +155,29 @@ public class ArticleServiceImpl implements ArticleService {
             .limit(pageable.getPageSize())
             .fetch();
 
+    var currentUser = userService.getCurrentUser();
     var contents = getArticleResponses(currentUser, articles);
 
-    return new PageResponse<>(contents, totalElements);
+    return PageResponse.of(contents, totalElements);
   }
 
   @Override
-  public ArticleResponse findBySlug(UserPrincipal currentUser, String slug) {
+  public ArticleResponse findBySlug(String slug) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     return getArticleResponse(currentUser, article);
   }
 
   @Override
   @Transactional
-  public ArticleResponse updateArticle(
-      UserPrincipal currentUser, String slug, UpdateArticleRequest updateRequest) {
+  public ArticleResponse updateArticle(String slug, UpdateArticleRequest updateRequest) {
+    var currentUser = userService.getCurrentUser();
     var newArticle =
         articleRepository
             .findBySlug(slug)
             .map(
                 currentArticle -> {
-                  if (!currentUser.id().equals(currentArticle.getAuthor().getId())) {
+                  if (!currentUser.getId().equals(currentArticle.getAuthor().getId())) {
                     throw new NoAuthorizationException();
                   }
 
@@ -188,6 +185,20 @@ public class ArticleServiceImpl implements ArticleService {
                   currentArticle.setTitle(updateRequest.title());
                   currentArticle.setDescription(updateRequest.description());
                   currentArticle.setBody(updateRequest.body());
+
+                  updateRequest
+                      .tagNames()
+                      .forEach(
+                          tag -> {
+                            TagEntity tagEntity =
+                                tagRepository
+                                    .findByName(tag)
+                                    .orElseGet(() -> tagRepository.save(new TagEntity(null, tag)));
+
+                            ArticleTagKey articleTag =
+                                new ArticleTagKey(currentArticle.getId(), tagEntity.getId());
+                            articleTagRepository.save(new ArticleTagEntity(articleTag));
+                          });
 
                   return articleRepository.save(currentArticle);
                 })
@@ -198,9 +209,10 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public void deleteArticle(UserPrincipal currentUser, String slug) {
+  public void deleteArticle(String slug) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    if (!currentUser.id().equals(article.getAuthor().getId())) {
+    if (!currentUser.getId().equals(article.getAuthor().getId())) {
       throw new NoAuthorizationException();
     }
 
@@ -215,11 +227,12 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleResponse favoriteArticle(UserPrincipal currentUser, String slug) {
+  public ArticleResponse favoriteArticle(String slug) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    var articleFavoriteKey = new ArticleFavoriteKey(article.getId(), currentUser.id());
+    var articleFavoriteKey = new ArticleFavoriteKey(article.getId(), currentUser.getId());
     if (articleFavoriteRepository.findById(articleFavoriteKey).isEmpty()) {
-      articleFavoriteRepository.save(new ArticleFavoriteEntity(articleFavoriteKey));
+      articleFavoriteRepository.saveAndFlush(new ArticleFavoriteEntity(articleFavoriteKey));
     }
 
     return getArticleResponse(currentUser, article);
@@ -227,9 +240,10 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleResponse unFavoriteArticle(UserPrincipal currentUser, String slug) {
+  public ArticleResponse unFavoriteArticle(String slug) {
+    var currentUser = userService.getCurrentUser();
     var article = articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    var articleFavorite = new ArticleFavoriteKey(article.getId(), currentUser.id());
+    var articleFavorite = new ArticleFavoriteKey(article.getId(), currentUser.getId());
     articleFavoriteRepository
         .findById(articleFavorite)
         .ifPresent(articleFavoriteRepository::delete);
@@ -249,13 +263,13 @@ public class ArticleServiceImpl implements ArticleService {
    * @param article the article
    * @return article
    */
-  private ArticleResponse getArticleResponse(UserPrincipal currentUser, ArticleEntity article) {
+  private ArticleResponse getArticleResponse(UserEntity currentUser, ArticleEntity article) {
     var result = ArticleMapper.MAPPER.toArticleResponse(article);
     if (currentUser != null) {
-      var followId = new FollowKey(currentUser.id(), article.getAuthor().getId());
+      var followId = new FollowKey(currentUser.getId(), article.getAuthor().getId());
       result.getAuthor().setFollowing(followRepository.existsById(followId));
 
-      var articleFavoriteId = new ArticleFavoriteKey(article.getId(), currentUser.id());
+      var articleFavoriteId = new ArticleFavoriteKey(article.getId(), currentUser.getId());
       result.setFavorite(articleFavoriteRepository.existsById(articleFavoriteId));
     }
 
@@ -287,7 +301,7 @@ public class ArticleServiceImpl implements ArticleService {
    * @return articles
    */
   private List<ArticleResponse> getArticleResponses(
-      UserPrincipal currentUser, List<ArticleEntity> articles) {
+      UserEntity currentUser, List<ArticleEntity> articles) {
     return articles.stream().map(article -> getArticleResponse(currentUser, article)).toList();
   }
 }

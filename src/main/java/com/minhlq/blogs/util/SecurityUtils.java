@@ -2,12 +2,15 @@ package com.minhlq.blogs.util;
 
 import com.minhlq.blogs.constant.UserConstants;
 import com.minhlq.blogs.enums.TokenType;
-import com.minhlq.blogs.payload.UserPrincipal;
+import com.minhlq.blogs.model.UserEntity;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountExpiredException;
@@ -17,7 +20,9 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
@@ -34,6 +39,24 @@ import org.springframework.security.web.authentication.rememberme.AbstractRememb
 @Slf4j
 @UtilityClass
 public class SecurityUtils {
+
+  public UserDetails buildUserDetails(@NotNull UserEntity user) {
+    // Build the authorities from the user's roles
+    var authorities =
+        user.getUserRoles().stream()
+            .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
+            .collect(Collectors.toSet());
+
+    return User.builder()
+        .username(user.getUsername())
+        .password(user.getPassword())
+        .disabled(!user.isEnabled())
+        .accountExpired(user.getLastSuccessfulLogin().isAfter(LocalDateTime.now().plusDays(30)))
+        .accountLocked(user.getFailedLoginAttempts() > 5)
+        .credentialsExpired(false)
+        .authorities(authorities)
+        .build();
+  }
 
   /**
    * Returns true if the user is authenticated.
@@ -83,21 +106,6 @@ public class SecurityUtils {
    * Creates an authentication object with the userDetails then set authentication to
    * SecurityContextHolder.
    *
-   * @param userDetails the userDetails
-   */
-  public void authenticateUser(UserPrincipal userDetails) {
-    if (Objects.nonNull(userDetails)) {
-      var authorities = userDetails.getAuthorities();
-      var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-
-      setAuthentication(authentication);
-    }
-  }
-
-  /**
-   * Creates an authentication object with the userDetails then set authentication to
-   * SecurityContextHolder.
-   *
    * @param request the httpServletRequest
    * @param userDetails the userDetails
    */
@@ -125,20 +133,6 @@ public class SecurityUtils {
     var authentication = authenticationManager.authenticate(authenticationToken);
 
     setAuthentication(authentication);
-  }
-
-  /**
-   * Returns the user details from the authenticated object if authenticated.
-   *
-   * @return the user details
-   */
-  public UserPrincipal getAuthenticatedUserDetails() {
-    if (isAuthenticated()) {
-      return (UserPrincipal) getAuthentication().getPrincipal();
-    }
-
-    log.warn("Unauthorized Access detected...");
-    return null;
   }
 
   /**

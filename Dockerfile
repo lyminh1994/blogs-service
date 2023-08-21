@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-alpine
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+FROM eclipse-temurin:17.0.5_8-jre-alpine
+LABEL authors="lyminh"
+
+COPY target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

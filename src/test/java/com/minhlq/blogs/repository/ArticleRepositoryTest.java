@@ -2,19 +2,19 @@ package com.minhlq.blogs.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.minhlq.blogs.helper.EnableTestcontainers;
 import com.minhlq.blogs.model.ArticleEntity;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
+@EnableTestcontainers
 @Sql({"classpath:/sql/users.sql", "classpath:/sql/articles.sql"})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ArticleRepositoryTest {
 
   @Autowired ArticleRepository repository;

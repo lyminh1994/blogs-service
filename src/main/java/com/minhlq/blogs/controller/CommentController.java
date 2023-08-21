@@ -3,11 +3,9 @@ package com.minhlq.blogs.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.minhlq.blogs.constant.AppConstants;
 import com.minhlq.blogs.dto.request.NewCommentRequest;
 import com.minhlq.blogs.dto.response.CommentResponse;
 import com.minhlq.blogs.dto.response.PageResponse;
-import com.minhlq.blogs.payload.UserPrincipal;
 import com.minhlq.blogs.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -16,7 +14,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AppConstants.COMMENTS)
+@RequestMapping("/articles/{slug}/comments")
 @Tag(name = "Comments", description = "Blog Comments of Article APIs")
 public class CommentController {
 
@@ -52,10 +49,8 @@ public class CommentController {
   @ResponseStatus(CREATED)
   @Operation(summary = "Create comment", description = "Create comment for article")
   public CommentResponse createComment(
-      @PathVariable String slug,
-      @RequestBody @Valid NewCommentRequest newCommentRequest,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    return commentService.addCommentToArticle(currentUser, slug, newCommentRequest);
+      @PathVariable String slug, @RequestBody @Valid NewCommentRequest newCommentRequest) {
+    return commentService.addCommentToArticle(slug, newCommentRequest);
   }
 
   /**
@@ -67,12 +62,10 @@ public class CommentController {
    */
   @GetMapping
   @SecurityRequirements
-  @Operation(summary = "Get comments", description = "Get all comments by article slug")
+  @Operation(summary = "Get comments", description = "Get all comments for article by slug")
   public PageResponse<CommentResponse> getComments(
-      @PathVariable String slug,
-      @ParameterObject Pageable pageable,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    return commentService.findArticleComments(currentUser, slug, pageable);
+      @PathVariable String slug, @ParameterObject Pageable pageable) {
+    return commentService.findArticleComments(slug, pageable);
   }
 
   /**
@@ -81,13 +74,10 @@ public class CommentController {
    * @param slug slug
    * @param commentId id
    */
-  @DeleteMapping(AppConstants.COMMENT)
+  @DeleteMapping("/{commentId}")
   @ResponseStatus(NO_CONTENT)
   @Operation(summary = "Delete comment", description = "Delete comment of article")
-  public void deleteComment(
-      @PathVariable String slug,
-      @PathVariable Long commentId,
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    commentService.deleteCommentFromArticle(currentUser, slug, commentId);
+  public void deleteComment(@PathVariable String slug, @PathVariable Long commentId) {
+    commentService.deleteCommentFromArticle(slug, commentId);
   }
 }

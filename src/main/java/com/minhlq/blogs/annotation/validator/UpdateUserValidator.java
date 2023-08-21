@@ -33,7 +33,7 @@ public class UpdateUserValidator
         StringUtils.isBlank(email)
             || userRepository
                 .findByEmail(email)
-                .map(user -> Objects.equals(user.getId(), targetUser.id()))
+                .map(user -> Objects.equals(user.getId(), targetUser.getId()))
                 .orElse(true);
 
     var hibernateContext = context.unwrap(HibernateConstraintValidatorContext.class);
@@ -50,7 +50,7 @@ public class UpdateUserValidator
         StringUtils.isBlank(phone)
             || userRepository
                 .findByPhone(phone)
-                .map(user -> Objects.equals(user.getId(), targetUser.id()))
+                .map(user -> Objects.equals(user.getId(), targetUser.getId()))
                 .orElse(true);
     if (!isValidPhone) {
       hibernateContext.disableDefaultConstraintViolation();

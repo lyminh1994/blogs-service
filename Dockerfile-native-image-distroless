@@ -1,0 +1,3 @@
+FROM gcr.io/distroless/base
+COPY target/blogs-service blogs-service
+ENTRYPOINT ["/blogs-service"]

@@ -128,7 +128,7 @@ public class EncryptionServiceImpl implements EncryptionService {
       return null;
     }
 
-    return URLDecoder.decode(text, StandardCharsets.UTF_8).replaceAll("\\s+", "+");
+    return URLDecoder.decode(text, StandardCharsets.UTF_8);
   }
 
   private Key getKeyFromPassword() {

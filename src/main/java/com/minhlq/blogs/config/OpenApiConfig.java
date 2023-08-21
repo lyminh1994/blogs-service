@@ -1,6 +1,5 @@
 package com.minhlq.blogs.config;
 
-import com.minhlq.blogs.constant.AppConstants;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.customizers.OpenApiCustomizer;
-import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.utils.Constants;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +32,6 @@ public class OpenApiConfig {
   public static final String LICENSE_NAME = "Apache 2.0";
   public static final String LICENSE_URL = "https://springdoc.org";
 
-  private final OperationCustomizer actuatorCustomizer;
-
   /**
    * Configures the actuator group.
    *
@@ -44,7 +40,7 @@ public class OpenApiConfig {
   @Bean
   @Profile("!prod")
   public GroupedOpenApi actuatorApi(
-      @Value("${application.version}") String version,
+      @Value("${springdoc.version}") String version,
       OpenApiCustomizer actuatorOpenApiCustomizer,
       WebEndpointProperties endpointProperties) {
     return GroupedOpenApi.builder()
@@ -53,7 +49,6 @@ public class OpenApiConfig {
         .addOpenApiCustomizer(actuatorOpenApiCustomizer)
         .addOpenApiCustomizer(
             openApi -> openApi.info(new Info().title("Actuator APIs").version(version)))
-        .addOperationCustomizer(actuatorCustomizer)
         .pathsToExclude(endpointProperties.getBasePath() + Constants.HEALTH_PATTERN)
         .build();
   }
@@ -65,9 +60,9 @@ public class OpenApiConfig {
    */
   @Bean
   public GroupedOpenApi authenticationOpenApi(
-      @Value("${application.title}") String name,
-      @Value("${application.version}") String version,
-      @Value("${application.description}") String description) {
+      @Value("${springdoc.title}") String name,
+      @Value("${springdoc.version}") String version,
+      @Value("${springdoc.description}") String description) {
     return GroupedOpenApi.builder()
         .group("Authentication")
         .addOpenApiCustomizer(
@@ -79,12 +74,7 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToMatch(
-            AppConstants.SIGN_UP,
-            AppConstants.SIGN_IN,
-            AppConstants.REFRESH_TOKEN,
-            AppConstants.SIGN_OUT,
-            AppConstants.VERIFY)
+        .pathsToMatch("/auth/**")
         .build();
   }
 
@@ -95,9 +85,9 @@ public class OpenApiConfig {
    */
   @Bean
   public GroupedOpenApi generalOpenApi(
-      @Value("${application.title}") String name,
-      @Value("${application.version}") String version,
-      @Value("${application.description}") String description,
+      @Value("${springdoc.title}") String name,
+      @Value("${springdoc.version}") String version,
+      @Value("${springdoc.description}") String description,
       WebEndpointProperties endpointProperties) {
     return GroupedOpenApi.builder()
         .group("Blogs")
@@ -110,13 +100,7 @@ public class OpenApiConfig {
                         .description(description)
                         .termsOfService(TERMS_OF_SERVICE)
                         .license(new License().name(LICENSE_NAME).url(LICENSE_URL))))
-        .pathsToExclude(
-            endpointProperties.getBasePath() + Constants.ALL_PATTERN,
-            AppConstants.SIGN_UP,
-            AppConstants.SIGN_IN,
-            AppConstants.REFRESH_TOKEN,
-            AppConstants.SIGN_OUT,
-            AppConstants.VERIFY)
+        .pathsToExclude(endpointProperties.getBasePath() + Constants.ALL_PATTERN, "/auth/**")
         .build();
   }
 

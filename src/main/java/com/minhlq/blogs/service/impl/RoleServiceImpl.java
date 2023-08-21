@@ -1,16 +1,12 @@
 package com.minhlq.blogs.service.impl;
 
-import com.minhlq.blogs.constant.CacheConstants;
 import com.minhlq.blogs.enums.UserRole;
 import com.minhlq.blogs.handler.exception.ResourceNotFoundException;
 import com.minhlq.blogs.model.RoleEntity;
 import com.minhlq.blogs.repository.RoleRepository;
 import com.minhlq.blogs.service.RoleService;
 import java.text.MessageFormat;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +32,6 @@ public class RoleServiceImpl implements RoleService {
    */
   @Override
   @Transactional
-  @CachePut({CacheConstants.ROLE, CacheConstants.ROLES})
   public RoleEntity save(RoleEntity role) {
     return roleRepository.save(role);
   }
@@ -48,28 +43,13 @@ public class RoleServiceImpl implements RoleService {
    * @return the role tuple that matches the id given
    */
   @Override
-  @Cacheable(value = CacheConstants.ROLE, unless = "#result != null")
   public RoleEntity findByName(UserRole role) {
     return roleRepository
         .findByName(role.name())
-        .orElseGet(
-            () -> {
-              if (UserRole.ROLE_USER.match(role)) {
-                var roleEntity = new RoleEntity();
-                roleEntity.setName(UserRole.ROLE_USER.name());
-                roleEntity.setDescription(UserRole.ROLE_USER.getDescription());
-                return roleRepository.save(roleEntity);
-              }
-
-              throw new ResourceNotFoundException(
-                  MessageFormat.format(
-                      "Role with name {0} do not existed in database", role.name()));
-            });
-  }
-
-  @Override
-  @Cacheable(value = CacheConstants.ROLES, unless = "!#result.isEmpty()")
-  public List<RoleEntity> findAll() {
-    return roleRepository.findAll();
+        .orElseThrow(
+            () ->
+                new ResourceNotFoundException(
+                    MessageFormat.format(
+                        "Role with name {0} do not existed in database", role.name())));
   }
 }

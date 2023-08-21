@@ -17,8 +17,6 @@ import org.springframework.lang.NonNull;
 @EqualsAndHashCode
 public final class ApplicationAuditorAware implements AuditorAware<String> {
 
-  private static final String DEFAULT_AUDITOR = "system";
-
   /**
    * Returns the current auditor of the application.
    *
@@ -31,12 +29,11 @@ public final class ApplicationAuditorAware implements AuditorAware<String> {
     // Check if there is a user logged in.
     // If so, use the logged-in user as the current auditor.
     // spring injects an anonymousUser if there is no authentication and authorization
-    var authentication = SecurityUtils.getAuthentication();
-    if (SecurityUtils.isAuthenticated(authentication)) {
-      return Optional.ofNullable(authentication.getName());
+    if (SecurityUtils.isAuthenticated()) {
+      return Optional.ofNullable(SecurityUtils.getAuthentication().getName());
     }
 
     // If there is no authentication, then the system will be used as the current auditor.
-    return Optional.of(DEFAULT_AUDITOR);
+    return Optional.of("SYSTEM");
   }
 }

@@ -1,7 +1,7 @@
 package com.minhlq.blogs.annotation.validator;
 
 import com.minhlq.blogs.annotation.UpdatePasswordConstraint;
-import com.minhlq.blogs.util.SecurityUtils;
+import com.minhlq.blogs.service.UserService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,11 @@ public class UpdatePasswordValidator
 
   private final PasswordEncoder passwordEncoder;
 
+  private final UserService userService;
+
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    var currentUser = SecurityUtils.getAuthenticatedUserDetails();
+    var currentUser = userService.getCurrentUser();
     return passwordEncoder.matches(value, currentUser.getPassword());
   }
 }
