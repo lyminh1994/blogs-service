@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 public class CookieServiceImpl implements CookieService {
 
   private final Environment environment;
-
   private final Duration duration = Duration.ofDays(SecurityConstants.DEFAULT_TOKEN_DURATION);
 
   /**

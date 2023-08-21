@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 public class JwtServiceImpl implements JwtService {
 
   private final JwtEncoder jwtEncoder;
-
   private final JwtDecoder jwtDecoder;
 
   @Value("${jwt.config.ttl}")

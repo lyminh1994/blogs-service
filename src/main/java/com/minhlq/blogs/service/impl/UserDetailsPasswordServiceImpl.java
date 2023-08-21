@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsPasswordServiceImpl implements UserDetailsPasswordService {
 
   private final UserRepository userRepository;
-
   private final PasswordEncoder passwordEncoder;
 
   @Override

@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
   private final MessageSource messageSource;
-
   private final UserRepository userRepository;
 
   /**

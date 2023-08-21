@@ -52,17 +52,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleServiceImpl implements ArticleService {
 
   private final JPAQueryFactory queryFactory;
-
   private final ArticleRepository articleRepository;
-
   private final ArticleTagRepository articleTagRepository;
-
   private final ArticleFavoriteRepository articleFavoriteRepository;
-
   private final TagRepository tagRepository;
-
   private final FollowRepository followRepository;
-
   private final UserService userService;
 
   @Override

@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * This is implement for the authentication service operations.
@@ -65,12 +67,20 @@ public class AuthServiceImpl implements AuthService {
   public void register(RegisterRequest body) {
     var role = roleService.findByName(UserRole.ROLE_USER);
 
+    var verificationToken = UUID.randomUUID().toString();
+    var uri =
+        ServletUriComponentsBuilder.fromCurrentContextPath()
+            .path("/auth/verify/{verifyToken}")
+            .buildAndExpand(verificationToken)
+            .toUri();
+    log.debug("Active account link: {}", uri);
     var user =
         UserEntity.builder()
             .username(body.username())
             .password(passwordEncoder.encode(body.password()))
             .email(body.email())
             .enabled(true)
+            .verificationToken(verificationToken)
             .expiredVerificationToken(
                 LocalDateTime.now().plusDays(UserConstants.DAYS_TO_ALLOW_ACCOUNT_ACTIVATION))
             .build();

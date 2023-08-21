@@ -31,11 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentServiceImpl implements CommentService {
 
   private final ArticleRepository articleRepository;
-
   private final CommentRepository commentRepository;
-
   private final FollowRepository followRepository;
-
   private final UserService userService;
 
   @Override
