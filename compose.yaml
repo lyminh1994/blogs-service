@@ -31,15 +31,6 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-  redis:
-    container_name: redis_container
-    image: redis
-    volumes:
-      - redis:/data/redis
-    ports:
-      - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_DEFAULT_PASSWORD}
-    restart: unless-stopped
   tempo:
     container_name: grafana_tempo_container
     image: grafana/tempo
@@ -94,6 +85,4 @@ volumes:
   postgres:
     driver: local
   pgadmin:
-    driver: local
-  redis:
     driver: local
