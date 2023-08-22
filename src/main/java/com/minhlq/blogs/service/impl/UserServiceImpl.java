@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean isUsernameExisted(String username) {
-    return userRepository.findByPublicId(username).isPresent();
+    return userRepository.findByUsername(username).isPresent();
   }
 
   @Override
