@@ -251,11 +251,6 @@ public class ArticleServiceImpl implements ArticleService {
     return getArticleResponse(currentUser, article);
   }
 
-  @Override
-  public boolean isSlugExited(String slug) {
-    return articleRepository.findBySlug(ArticleUtils.toSlug(slug)).isPresent();
-  }
-
   /**
    * Add user details and tag name to article.
    *
