@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final FollowRepository followRepository;
   private final MessageSource messageSource;
+  private final UserMapper userMapper;
 
   @Override
   public UserEntity getCurrentUser() {
@@ -63,12 +64,12 @@ public class UserServiceImpl implements UserService {
             .findById(updateUserDto.targetUser().getId())
             .map(
                 currentUser -> {
-                  var updateUser = UserMapper.MAPPER.toUser(currentUser, updateUserDto.params());
+                  var updateUser = userMapper.toUser(currentUser, updateUserDto.params());
                   return userRepository.saveAndFlush(updateUser);
                 })
             .orElseThrow(ResourceNotFoundException::new);
 
-    return UserMapper.MAPPER.toUserResponse(updatedUser);
+    return userMapper.toUserResponse(updatedUser);
   }
 
   @Override
@@ -84,10 +85,10 @@ public class UserServiceImpl implements UserService {
                         && followRepository
                             .findById(new FollowKey(currentUser.getId(), targetUser.getId()))
                             .isPresent();
-                return UserMapper.MAPPER.toProfileResponse(targetUser, following);
+                return userMapper.toProfileResponse(targetUser, following);
               }
 
-              return UserMapper.MAPPER.toProfileResponse(targetUser, false);
+              return userMapper.toProfileResponse(targetUser, false);
             })
         .orElseThrow(ResourceNotFoundException::new);
   }
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService {
                 followRepository.saveAndFlush(new FollowEntity(followId));
               }
 
-              return UserMapper.MAPPER.toProfileResponse(targetUser, true);
+              return userMapper.toProfileResponse(targetUser, true);
             })
         .orElseThrow(ResourceNotFoundException::new);
   }
@@ -119,7 +120,7 @@ public class UserServiceImpl implements UserService {
               var followId = new FollowKey(userId, targetUser.getId());
               followRepository.findById(followId).ifPresent(followRepository::delete);
 
-              return UserMapper.MAPPER.toProfileResponse(targetUser, false);
+              return userMapper.toProfileResponse(targetUser, false);
             })
         .orElseThrow(ResourceNotFoundException::new);
   }

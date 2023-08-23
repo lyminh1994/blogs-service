@@ -10,7 +10,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
 /**
  * The UserMapper class outlines the supported conversions between User entity and other data
@@ -21,12 +20,10 @@ import org.mapstruct.factory.Mappers;
  * @since 1.0
  */
 @Mapper(
+    componentModel = "spring",
     nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
-
-  /** The mapper instance. */
-  UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
   /**
    * Convert and populate a user to userProfile object.

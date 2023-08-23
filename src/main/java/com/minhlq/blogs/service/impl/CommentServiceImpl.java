@@ -34,6 +34,7 @@ public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
   private final FollowRepository followRepository;
   private final UserService userService;
+  private final CommentMapper commentMapper;
 
   @Override
   public CommentResponse addCommentToArticle(String slug, NewCommentRequest newCommentRequest) {
@@ -48,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
                 .user(currentUser)
                 .build());
 
-    return CommentMapper.MAPPER.toCommentResponse(savedComment);
+    return commentMapper.toCommentResponse(savedComment);
   }
 
   @Override
@@ -61,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
         comments.getContent().stream()
             .map(
                 comment -> {
-                  CommentResponse result = CommentMapper.MAPPER.toCommentResponse(comment);
+                  CommentResponse result = commentMapper.toCommentResponse(comment);
                   if (currentUser != null) {
                     FollowKey followId =
                         new FollowKey(currentUser.getId(), comment.getUser().getId());

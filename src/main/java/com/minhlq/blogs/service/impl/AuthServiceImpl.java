@@ -58,6 +58,7 @@ public class AuthServiceImpl implements AuthService {
   private final RoleService roleService;
   private final PasswordEncoder passwordEncoder;
   private final MessageSource messageSource;
+  private final UserMapper userMapper;
 
   @Value("${jwt.config.ttl}")
   private Long ttl;
@@ -111,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
     // If the refresh token is valid, then we will not generate a new refresh token.
     var accessToken = updateCookies(username, isRefreshTokenValid, headers);
 
-    return AuthenticationResponse.build(UserMapper.MAPPER.toUserResponse(user), accessToken, ttl);
+    return AuthenticationResponse.build(userMapper.toUserResponse(user), accessToken, ttl);
   }
 
   @Override
@@ -138,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
     SecurityUtils.authenticateUser(request, userDetails);
 
     return AuthenticationResponse.build(
-        UserMapper.MAPPER.toUserResponse(user), jwtService.createJwt(username), ttl);
+        userMapper.toUserResponse(user), jwtService.createJwt(username), ttl);
   }
 
   @Override

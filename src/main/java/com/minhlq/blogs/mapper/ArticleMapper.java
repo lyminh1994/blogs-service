@@ -6,7 +6,6 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
 /**
  * The ArticleMapper class outlines the supported conversions between Article entity and other data
@@ -16,11 +15,8 @@ import org.mapstruct.factory.Mappers;
  * @version 1.0
  * @since 1.0
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ArticleMapper {
-
-  /** The mapper instance. */
-  ArticleMapper MAPPER = Mappers.getMapper(ArticleMapper.class);
 
   @Mappings(
       value = {

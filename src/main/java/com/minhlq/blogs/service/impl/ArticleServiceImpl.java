@@ -58,6 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
   private final TagRepository tagRepository;
   private final FollowRepository followRepository;
   private final UserService userService;
+  private final ArticleMapper articleMapper;
 
   @Override
   @Transactional
@@ -94,7 +95,7 @@ public class ArticleServiceImpl implements ArticleService {
       articleTagRepository.saveAll(articleTags);
     }
 
-    return ArticleMapper.MAPPER.toArticleResponse(savedArticle, tagNames);
+    return articleMapper.toArticleResponse(savedArticle, tagNames);
   }
 
   @Override
@@ -259,7 +260,7 @@ public class ArticleServiceImpl implements ArticleService {
    * @return article
    */
   private ArticleResponse getArticleResponse(UserEntity currentUser, ArticleEntity article) {
-    var result = ArticleMapper.MAPPER.toArticleResponse(article);
+    var result = articleMapper.toArticleResponse(article);
     if (currentUser != null) {
       var followId = new FollowKey(currentUser.getId(), article.getAuthor().getId());
       result.getAuthor().setFollowing(followRepository.existsById(followId));
