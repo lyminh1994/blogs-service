@@ -1,6 +1,5 @@
 package com.minhlq.blogs.dto;
 
-import com.minhlq.blogs.annotation.UpdateUserConstraint;
 import com.minhlq.blogs.dto.request.UpdateUserRequest;
 import com.minhlq.blogs.model.UserEntity;
 
@@ -11,5 +10,4 @@ import com.minhlq.blogs.model.UserEntity;
  * @version 1.0
  * @since 1.0
  */
-@UpdateUserConstraint
 public record UpdateUserDto(UserEntity targetUser, UpdateUserRequest params) {}

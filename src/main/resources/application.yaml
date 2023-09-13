@@ -33,12 +33,15 @@ spring:
       maximum-pool-size: 30
       pool-name: blogs-pool
   jpa:
+    show-sql: false
     open-in-view: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         show_sql: true
+        bytecode:
+          use_reflection_optimizer: false
   flyway:
     table: schema_history
     validate-migration-naming: true
@@ -55,7 +58,7 @@ cors:
   allow-credentials: true
   allowed-methods: GET, POST, PUT, DELETE
   allowed-headers: Accept, Accept-Language, Authorization, Cache-Control, Content-Type
-  allowed-origins: http://localhost:3000, http://localhost:3001, http://192.168.1.15:3000
+  allowed-origins: http://localhost:3000
   exposed-headers: Authorization, Set-Cookie
 # Actuator configuration
 management:

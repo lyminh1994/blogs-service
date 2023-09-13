@@ -1,6 +1,5 @@
 package com.minhlq.blogs.dto.request;
 
-import com.minhlq.blogs.annotation.DuplicatedArticleConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  * @since 2023-08-09
  */
 public record NewArticleRequest(
-    @NotBlank @DuplicatedArticleConstraint String title,
+    @NotBlank String title,
     @NotBlank String description,
     @NotBlank String body,
     List<String> tagNames) {}
