@@ -5,6 +5,7 @@ application:
 # Server configuration
 server:
   port: 8080
+  forward-headers-strategy: framework
 # Spring configuration
 spring:
   application:
