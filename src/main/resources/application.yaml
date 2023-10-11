@@ -2,7 +2,7 @@
 application:
   loki:
     host: ${APPLICATION_LOKI_HOST:localhost}
-    port: ${APPLICATION_LOKI_POST:3100}
+    port: ${APPLICATION_LOKI_PORT:3100}
   static-resource-location: /tmp/media/
   static-resource-url: /media/**
 # Server configuration
